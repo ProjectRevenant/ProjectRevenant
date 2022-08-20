@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.arm;
 
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;

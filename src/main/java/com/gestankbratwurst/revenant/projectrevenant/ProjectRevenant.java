@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerTickTask;
@@ -74,7 +75,7 @@ public final class ProjectRevenant extends JavaPlugin {
 
     Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
-
+    Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
 
 
     MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));

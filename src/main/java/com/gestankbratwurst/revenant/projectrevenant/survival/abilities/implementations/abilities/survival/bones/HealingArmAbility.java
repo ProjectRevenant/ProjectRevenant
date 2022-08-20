@@ -3,6 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.arm.HealingArmEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class HealingArmAbility extends Ability {
   public HealingArmAbility() {
     super(RevenantAbility.HEALING_ARM);
+    this.addEffect(new HealingArmEffect());
   }
 
   @Override
@@ -31,7 +33,7 @@ public class HealingArmAbility extends Ability {
   @Override
   public List<Component> getInfos(Player viewer) {
     return List.of(
-            Component.text("§7Dein Schaden ist um §c15% §7verringert.")
+            Component.text("§7Dein Nahkampf ist um §c15% §7verringert.")
     );
   }
 
