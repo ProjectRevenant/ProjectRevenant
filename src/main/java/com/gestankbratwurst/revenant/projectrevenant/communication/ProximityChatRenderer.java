@@ -7,7 +7,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 /**
  * Used to render proximity chat messages with their correct color
@@ -27,22 +26,13 @@ public class ProximityChatRenderer implements ChatRenderer {
 
     if (viewer instanceof Player targetPlayer) {
 
-      /*
-        Gets the absolute block distance as well as a lerped (0.0 -> 1.0) distance
-       */
+      double maxDistanceSq = maxDistance * maxNamedDistance;
+      double distanceSq = source.getLocation().distanceSquared(targetPlayer.getLocation());
+      float lerpedDistance = (float) ((1.0 / maxDistanceSq) * distanceSq);
 
-      double distance = source.getLocation().distanceSquared(targetPlayer.getLocation());
-      float lerpedDistance = (float) ((1.0 / maxDistance) * distance);
-
-      /*
-        Obscures Player name to "?????" if distance is larger then maxNamedDistance
-       */
-
-      Component styledMessage = distance >= maxNamedDistance ? Component.text("?????") : sourceDisplayName;
-
+      Component styledMessage = distanceSq >= maxDistanceSq ? Component.text("?????") : sourceDisplayName;
 
       styledMessage = styledMessage.color(TextColor.lerp(lerpedDistance, nearColor, farColor));
-
       styledMessage = styledMessage.append(Component.text(": ")).append(message.color(textColor));
 
       return styledMessage;
