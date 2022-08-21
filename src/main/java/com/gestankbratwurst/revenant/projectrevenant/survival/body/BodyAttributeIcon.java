@@ -21,13 +21,13 @@ public class BodyAttributeIcon {
         RangeMap<Integer, TextureModel> rangeMap = TreeRangeMap.create();
         attributeIcons.put(identifier, rangeMap);
         if (identifier.contains("shift")) {
-          rangeMap.put(Range.atLeast(75), TextureModel.GRADIENT_ICON_3);
-          rangeMap.put(Range.closedOpen(25, 75), TextureModel.GRADIENT_ICON_2);
-          rangeMap.put(Range.open(0, 25), TextureModel.GRADIENT_ICON_1);
+          rangeMap.put(Range.atLeast(60), TextureModel.GRADIENT_ICON_3);
+          rangeMap.put(Range.closedOpen(20, 60), TextureModel.GRADIENT_ICON_2);
+          rangeMap.put(Range.open(0, 20), TextureModel.GRADIENT_ICON_1);
           rangeMap.put(Range.singleton(0), TextureModel.GRADIENT_ICON_0);
-          rangeMap.put(Range.atMost(-75), TextureModel.GRADIENT_ICON_M3);
-          rangeMap.put(Range.openClosed(-75, -25), TextureModel.GRADIENT_ICON_M2);
-          rangeMap.put(Range.open(-25, 0), TextureModel.GRADIENT_ICON_M1);
+          rangeMap.put(Range.atMost(-60), TextureModel.GRADIENT_ICON_M3);
+          rangeMap.put(Range.openClosed(-60, -20), TextureModel.GRADIENT_ICON_M2);
+          rangeMap.put(Range.open(-20, 0), TextureModel.GRADIENT_ICON_M1);
         } else {
           for (int i = 0; i <= 100; i += 4) {
             String modelId = identifier.toUpperCase() + "_" + i;

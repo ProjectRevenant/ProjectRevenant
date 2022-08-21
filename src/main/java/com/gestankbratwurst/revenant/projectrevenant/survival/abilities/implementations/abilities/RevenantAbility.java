@@ -25,5 +25,6 @@ public class RevenantAbility {
   public static String HEALING_ARM = "healing-arm";
   public static String HEALING_HEAD = "healing-head";
   public static String HEALING_RIBS = "healing-ribs";
+  public static String SPRINTING_DEBUFF = "sprinting-debuff";
 
 }

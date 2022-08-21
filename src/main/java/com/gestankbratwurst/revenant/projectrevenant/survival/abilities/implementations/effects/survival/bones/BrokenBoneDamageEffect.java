@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BrokenBoneDamageEffect extends AbilityEffect<Player> {
 
-  private static final double TRIGGER_CHANCE = 0.075;
+  private static final double TRIGGER_CHANCE = 0.05;
 
   public BrokenBoneDamageEffect(String identifier) {
     super(AbilityTrigger.PLAYER_EVERY_SECOND, identifier);
@@ -25,7 +25,7 @@ public class BrokenBoneDamageEffect extends AbilityEffect<Player> {
     if(ThreadLocalRandom.current().nextDouble() > TRIGGER_CHANCE) {
       return;
     }
-    RevenantPlayer.of(element).getBody().getAttribute(BodyAttribute.HEALTH).applyToCurrentValue(current -> current - 5);
+    RevenantPlayer.of(element).getBody().getAttribute(BodyAttribute.HEALTH).applyToCurrentValue(current -> current - 0.5);
     element.damage(0);
   }
 }

@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Values;
 import com.gestankbratwurst.core.mmcore.util.Msg;
+import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import org.bukkit.entity.Player;
 
@@ -21,4 +22,9 @@ public class DebugCommand extends BaseCommand {
     Msg.sendInfo(sender, "Du hast das " + internalName + " item erhalten.");
   }
 
+  @Subcommand("droploot")
+  @CommandCompletion("@LootType")
+  public void onDropLoot(Player sender, @Values("@LootType") LootType type) {
+    type.getGenerator().apply(sender).applyTo(sender, sender.getLocation());
+  }
 }

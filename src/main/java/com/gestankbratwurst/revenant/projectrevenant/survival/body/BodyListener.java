@@ -4,9 +4,15 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.hunger.SprintingDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.LegBone;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,6 +30,9 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @RequiredArgsConstructor
 public class BodyListener implements Listener {
@@ -95,6 +104,15 @@ public class BodyListener implements Listener {
     Body body = bodyManager.getBody(livingEntity);
     body.getAttribute(BodyAttribute.HEALTH).applyToCurrentValue(current -> current - event.getDamage());
     if (entity instanceof Player player) {
+      RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
+      if(event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+        double chance = event.getDamage() < 4 ? 0 : event.getDamage() / 20;
+        if(ThreadLocalRandom.current().nextDouble() < chance) {
+          String boneType = ThreadLocalRandom.current().nextBoolean() ? LegBone.LEFT : LegBone.RIGHT;
+          revenantPlayer.getBody().getSkeleton().getBone(boneType).breakBone();
+          player.playSound(player.getLocation(), Sound.ENTITY_TURTLE_EGG_CRACK, 1.2F, 0.66F);
+        }
+      }
       if (MMCore.getTabListManager().getView(player).getTablist() instanceof RevenantUserTablist userTablist) {
         userTablist.updateBody();
       }
@@ -168,6 +186,17 @@ public class BodyListener implements Listener {
     event.getEntity().setSaturation(5.0F);
     event.getEntity().setExhaustion(0.0F);
     event.setCancelled(true);
+  }
+
+  @EventHandler
+  public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
+    RevenantPlayer revenantPlayer = RevenantPlayer.of(event.getPlayer());
+    if (event.isSprinting()) {
+      revenantPlayer.addAbility(new SprintingDebuff());
+    } else {
+      revenantPlayer.removeAbility(RevenantAbility.SPRINTING_DEBUFF);
+    }
+    EntityAbilityCache.autoUpdate(event.getPlayer(), Player.class);
   }
 
 }

@@ -1,5 +1,6 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones;
 
+import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import lombok.Getter;
 
@@ -10,16 +11,19 @@ public abstract class Bone {
   @Getter
   private final String boneType;
   @Getter
+  private final String boneDisplayName;
+  @Getter
   private BoneStatus boneStatus;
   private int statusTimeLeft;
 
-  public Bone(String boneType) {
+  public Bone(String boneType, String boneDisplayName) {
     this.boneType = boneType;
     this.boneStatus = BoneStatus.HEALTHY;
+    this.boneDisplayName = boneDisplayName;
   }
 
   public Bone() {
-    this("NO_TYPE");
+    this("NO_TYPE", "NO_TYPE");
   }
 
   public void breakBone() {
@@ -55,5 +59,7 @@ public abstract class Bone {
   }
 
   public abstract List<Ability> getEffects();
+
+  public abstract TextureModel getCurrentGuiIcon();
 
 }

@@ -9,6 +9,7 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerT
 import com.gestankbratwurst.revenant.projectrevenant.data.player.ReventantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.ExperienceCommand;
+import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluationRegistry;
@@ -27,6 +28,8 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyManager;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyRunnable;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.Bone;
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.BoneType;
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.SkeletonCommand;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.combat.CombatListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
@@ -71,12 +74,13 @@ public final class ProjectRevenant extends JavaPlugin {
     Bukkit.getPluginManager().registerEvents(new BodyListener(bodyManager), this);
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("BodyAttribute", Arrays.asList(BodyAttribute.getValues()));
     MMCore.getPaperCommandManager().registerCommand(new BodyCommand(bodyManager));
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("@BoneType", Arrays.asList(BoneType.values()));
+    MMCore.getPaperCommandManager().registerCommand(new SkeletonCommand());
     TaskManager.getInstance().runRepeatedBukkit(new BodyRunnable(bodyManager), 1, 1);
 
     Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
-
 
     MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));
 
@@ -90,6 +94,7 @@ public final class ProjectRevenant extends JavaPlugin {
     TaskManager.getInstance().runRepeatedBukkit(abilitySecondTask, 1, 1);
 
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantItem", RevenantItem.getInternalNames());
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("LootType", Arrays.stream(LootType.values()).map(Enum::toString).toList());
     MMCore.getPaperCommandManager().registerCommand(new DebugCommand());
 
     MMCore.getTabListManager().setDefaultTabListProvider(player -> new RevenantUserTablist(player.getUniqueId()));

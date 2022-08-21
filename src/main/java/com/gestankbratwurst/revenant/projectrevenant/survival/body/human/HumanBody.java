@@ -105,6 +105,12 @@ public class HumanBody extends Body {
     speed.setMaxValue(40.0);
     speed.setMinValue(0.0);
     speed.setCurrentValue(15.0);
+
+    // Luck value in -100 -> 100
+    BodyAttribute luck = this.getAttribute(BodyAttribute.LUCK);
+    luck.setMaxValue(100.0);
+    luck.setMinValue(-100.0);
+    luck.setCurrentValue(1.5);
   }
 
   @Override
@@ -124,17 +130,6 @@ public class HumanBody extends Body {
     if (MMCore.getTabListManager().getView(player).getTablist() instanceof RevenantUserTablist userTablist) {
       userTablist.updateBody();
     }
-  }
-
-  @Override
-  public void tick() {
-    Player player = Bukkit.getPlayer(this.getEntityId());
-    if (player == null) {
-      return;
-    }
-    temperatureCheckup(player);
-    hungerAndThirstCheckup(player);
-    super.tick();
   }
 
   private void hungerAndThirstCheckup(Player player) {
@@ -194,7 +189,7 @@ public class HumanBody extends Body {
     }
     BodyAttribute tempShiftAttribute = getAttribute(BodyAttribute.TEMPERATURE_SHIFT);
     tempShiftAttribute.setCurrentValue(resultingValue);
-    tempAttribute.applyToCurrentValue(current -> current + tempShiftAttribute.getCurrentValueModified());
+    tempAttribute.applyToCurrentValue(current -> current + tempShiftAttribute.getCurrentValueModified() * 20);
     double afterTemp = tempAttribute.getCurrentValueModified();
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
 
@@ -222,6 +217,8 @@ public class HumanBody extends Body {
     if (player == null) {
       return;
     }
+    temperatureCheckup(player);
+    hungerAndThirstCheckup(player);
     if (MMCore.getTabListManager().getView(player).getTablist() instanceof RevenantUserTablist userTablist) {
       userTablist.updateBody();
     }

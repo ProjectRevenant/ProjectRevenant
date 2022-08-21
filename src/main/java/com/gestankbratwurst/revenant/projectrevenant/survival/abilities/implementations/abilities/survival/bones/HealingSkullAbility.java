@@ -11,7 +11,7 @@ import java.util.List;
 
 public class HealingSkullAbility extends Ability {
   public HealingSkullAbility() {
-    super(RevenantAbility.HEALING_ARM);
+    super(RevenantAbility.HEALING_HEAD);
     this.addEffect(new HealingSkullEffect());
   }
 

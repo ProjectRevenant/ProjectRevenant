@@ -25,6 +25,7 @@ public class BodyAttribute {
   public static String MELEE_DAMAGE = "melee_damage";
   public static String RANGED_DAMAGE = "ranged_damage";
   public static String SPEED = "speed";
+  public static String LUCK = "luck";
 
   @Getter
   private static final String[] values = {
@@ -43,7 +44,8 @@ public class BodyAttribute {
           PHYSICAL_ARMOR,
           MELEE_DAMAGE,
           RANGED_DAMAGE,
-          SPEED
+          SPEED,
+          LUCK
   };
 
   @Getter
