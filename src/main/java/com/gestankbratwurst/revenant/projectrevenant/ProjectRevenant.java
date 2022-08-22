@@ -9,6 +9,7 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerT
 import com.gestankbratwurst.revenant.projectrevenant.data.player.ReventantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.ExperienceCommand;
+import com.gestankbratwurst.revenant.projectrevenant.levelsystem.MinecraftExpListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
@@ -81,6 +82,7 @@ public final class ProjectRevenant extends JavaPlugin {
     Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+    Bukkit.getPluginManager().registerEvents(new MinecraftExpListener(), this);
 
     MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));
 
