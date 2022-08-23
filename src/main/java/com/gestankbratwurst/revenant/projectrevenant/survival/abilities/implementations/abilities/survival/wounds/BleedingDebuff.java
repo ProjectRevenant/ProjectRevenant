@@ -2,20 +2,22 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.common.UtilMath;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class BleedingDebuff extends Ability {
+public class BleedingDebuff extends TimedAbility {
   public BleedingDebuff() {
     super(RevenantAbility.BLEEDING_DEBUFF);
+    this.addEffect(new BleedingEffect());
   }
 
   private int getIntensity() {
-    return 0;
+    return ((BleedingEffect) this.getEffect("bleeding-effect")).getIntensity();
   }
 
   @Override
@@ -44,11 +46,19 @@ public class BleedingDebuff extends Ability {
 
   @Override
   public List<Component> getInfos(Player viewer) {
-    return null;
+    return List.of(
+            Component.text("§7Du verlierst Lebenspunkte.")
+    );
   }
 
   @Override
   public TextureModel getModel() {
-    return null;
+    return switch (getIntensity()) {
+      case 1 -> TextureModel.BLEEDING_1;
+      case 2 -> TextureModel.BLEEDING_2;
+      case 3 -> TextureModel.BLEEDING_3;
+      case 4 -> TextureModel.BLEEDING_4;
+      default -> TextureModel.BLEEDING_5;
+    };
   }
 }

@@ -18,6 +18,7 @@ public class MinecraftExpListener implements Listener {
         RevenantPlayer player = RevenantPlayer.of(event.getPlayer());
         player.addExperience(event.getExperienceOrb().getExperience() * conversionRate);
         event.getExperienceOrb().remove();
+        event.setCancelled(true);
     }
 
 }

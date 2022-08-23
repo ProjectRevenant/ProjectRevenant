@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.loot.manager;
 
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -12,7 +13,13 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class LootManager {
 
+  @Getter
+  private static final LootManager instance = new LootManager();
   private static final NamespacedKey lootTypeKey = NamespaceFactory.provide("loot-type");
+
+  private LootManager() {
+
+  }
 
   public boolean hasLoot(PersistentDataHolder holder) {
     return hasLoot(holder.getPersistentDataContainer());
