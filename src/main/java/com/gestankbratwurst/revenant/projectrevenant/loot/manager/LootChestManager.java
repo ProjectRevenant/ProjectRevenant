@@ -39,7 +39,6 @@ public class LootChestManager implements Flushable {
 
   }
 
-  // TODO: Proberly add chests to respawn
   public void enqueChestForRespawn(LootableChest lootableChest) {
     UUID worldId = lootableChest.getWorldUUID();
     long chunkKey = lootableChest.getChunkID();
@@ -48,13 +47,41 @@ public class LootChestManager implements Flushable {
     World world = Bukkit.getWorld(worldId);
 
     if (world != null) {
+      //potential null pointer
       Chunk chunk = world.getChunkAt(chunkKey);
       if (chunk.isLoaded()) {
-        spawnLootableChest(lootableChest);
+        spawnLootableChest(lootableChest, false);
       }
     }
 
-    spawnableLootChests.get(worldId).getInChunk(chunkKey).addAtLocation(position, lootableChest);
+    WorldDomain<ChunkDomain<LootableChest>> worldDomain = spawnableLootChests.get(worldId);
+
+
+    if(worldDomain == null){
+
+      WorldDomain<ChunkDomain<LootableChest>> newWorldDomain = new WorldDomain<>();
+      ChunkDomain<LootableChest> newChunkDomain = new ChunkDomain<LootableChest>();
+      newChunkDomain.addAtLocation(position, lootableChest);
+      newWorldDomain.addInChunk(chunkKey, newChunkDomain);
+
+      spawnableLootChests.put(worldId, newWorldDomain);
+
+    } else {
+      ChunkDomain<LootableChest> chunkDomain = worldDomain.getInChunk(chunkKey);
+
+      if(chunkDomain == null){
+        ChunkDomain<LootableChest> newChunkDomain = new ChunkDomain<LootableChest>();
+        newChunkDomain.addAtLocation(position, lootableChest);
+        worldDomain.addInChunk(chunkKey, newChunkDomain);
+
+      } else {
+
+        chunkDomain.addAtLocation(position, lootableChest);
+
+      }
+
+    }
+
   }
 
   public void dequeChestFromRespawn(LootableChest lootableChest) {
@@ -84,7 +111,12 @@ public class LootChestManager implements Flushable {
     }
   }
 
-  public void spawnLootableChest(LootableChest lootableChest) {
+  /**
+   *
+   * @param lootableChest Chest that is to be spawned
+   * @param removeFromList Set to false if the chest is not in spawnableLootChests
+   */
+  public void spawnLootableChest(LootableChest lootableChest, boolean removeFromList) {
     LootManager lootManager = LootManager.getInstance();
 
     World world = Bukkit.getWorld(lootableChest.getWorldUUID());
@@ -101,7 +133,10 @@ public class LootChestManager implements Flushable {
     lootManager.applyTypeTo(state, lootableChest.getType());
     state.update(true);
 
-    dequeChestFromRespawn(lootableChest);
+    if(removeFromList){
+      dequeChestFromRespawn(lootableChest);
+    }
+
   }
 
 
