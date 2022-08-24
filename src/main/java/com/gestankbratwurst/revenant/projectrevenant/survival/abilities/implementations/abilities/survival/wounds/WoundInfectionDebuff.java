@@ -46,7 +46,7 @@ public class WoundInfectionDebuff extends Ability {
             Component.text("§7Du schwitzt und verbrauchst §c15%§7 mehr Wasser."),
             Component.text("§7Du verbrauchst §c15%§7 mehr Nahrung."),
             Component.text("§7Wenn du diese Infektion nicht in §6" + timeLeft),
-            Component.text("§7heilst, stirbst du.")
+            Component.text("§7heilst, §cstirbst du§7.")
     );
   }
 

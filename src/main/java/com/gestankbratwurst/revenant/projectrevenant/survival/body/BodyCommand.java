@@ -8,11 +8,16 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Values;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
+import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.wounds.BleedingDebuff;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.wounds.WoundInfectionDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.time.Duration;
 
 @RequiredArgsConstructor
 @CommandAlias("body")
@@ -44,9 +49,71 @@ public class BodyCommand extends BaseCommand {
 
   @Subcommand("attribute change")
   @CommandPermission("admin")
-  @CommandCompletion("@Nothing @BodyAttribute @Nothing")
+  @CommandCompletion("@players @BodyAttribute @Nothing")
   public void onAttribute(CommandSender sender, OnlinePlayer player, @Values("@BodyAttribute") String bodyAttribute, double value) {
     RevenantPlayer.of(player.player.getUniqueId()).getBody().getAttribute(bodyAttribute).setCurrentValue(value);
+  }
+
+  @Subcommand("illness add")
+  @CommandPermission("admin")
+  @CommandCompletion("@players @Illness")
+  public void onAddIllness(CommandSender sender, OnlinePlayer target, @Values("@Illness") String illness) {
+    Player player = target.player;
+    RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
+    BleedingDebuff debuff = new BleedingDebuff();
+    debuff.setDurationFromNow(Duration.ofMinutes(5));
+    switch (illness) {
+      case "BLEEDING_I":
+        revenantPlayer.addAbility(debuff);
+      case "BLEEDING_II":
+        debuff.setIntensity(2);
+        revenantPlayer.addAbility(debuff);
+      case "BLEEDING_III":
+        debuff.setIntensity(3);
+        revenantPlayer.addAbility(debuff);
+      case "BLEEDING_IV":
+        debuff.setIntensity(4);
+        revenantPlayer.addAbility(debuff);
+      case "BLEEDING_V":
+        debuff.setIntensity(5);
+        revenantPlayer.addAbility(debuff);
+      case "INFECTION":
+        WoundInfectionDebuff woundInfectionDebuff = new WoundInfectionDebuff();
+        revenantPlayer.addAbility(woundInfectionDebuff);
+      default:
+        Msg.sendError(sender, "Unknown illness {}.", illness);
+    }
+  }
+
+  @Subcommand("illness remove")
+  @CommandPermission("admin")
+  @CommandCompletion("@players @Illness")
+  public void onRemoveIllness(CommandSender sender, OnlinePlayer target, @Values("@Illness") String illness) {
+    Player player = target.player;
+    RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
+    BleedingDebuff debuff = new BleedingDebuff();
+    debuff.setDurationFromNow(Duration.ofMinutes(5));
+    switch (illness) {
+      case "BLEEDING_I":
+        revenantPlayer.removeAbility(debuff);
+      case "BLEEDING_II":
+        debuff.setIntensity(2);
+        revenantPlayer.removeAbility(debuff);
+      case "BLEEDING_III":
+        debuff.setIntensity(3);
+        revenantPlayer.removeAbility(debuff);
+      case "BLEEDING_IV":
+        debuff.setIntensity(4);
+        revenantPlayer.removeAbility(debuff);
+      case "BLEEDING_V":
+        debuff.setIntensity(5);
+        revenantPlayer.removeAbility(debuff);
+      case "INFECTION":
+        WoundInfectionDebuff woundInfectionDebuff = new WoundInfectionDebuff();
+        revenantPlayer.removeAbility(woundInfectionDebuff);
+      default:
+        Msg.sendError(sender, "Unknown illness {}.", illness);
+    }
   }
 
 }

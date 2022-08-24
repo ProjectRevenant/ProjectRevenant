@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
-import org.bson.Document;
 
 public class WoundConsumptionFoodModifier extends BodyAttributeModifier {
 
@@ -14,6 +13,7 @@ public class WoundConsumptionFoodModifier extends BodyAttributeModifier {
 
   @Override
   public double applyAsDouble(double operand) {
-    return operand < 0 ? operand * (1.0 + mod) : operand * (1.0 - mod) ;
+    return operand < 0 ? operand * (1.0 + mod) : operand * (1.0 - mod);
   }
+
 }

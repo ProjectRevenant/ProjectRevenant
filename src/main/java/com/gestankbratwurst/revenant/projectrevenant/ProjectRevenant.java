@@ -10,7 +10,9 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.ReventantPlayer
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.ExperienceCommand;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.MinecraftExpListener;
+import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
+import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluationRegistry;
@@ -38,16 +40,21 @@ import com.gestankbratwurst.revenant.projectrevenant.ui.actionbar.ActionBarListe
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListListener;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListTask;
+import com.gestankbratwurst.revenant.projectrevenant.util.gson.BlockDataSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 
 public final class ProjectRevenant extends JavaPlugin {
 
   private RevenantPlayerManager revenantPlayerManager;
   private BodyManager bodyManager;
+  private LootChestManager lootChestManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -57,8 +64,13 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).bodyManager;
   }
 
+  public static LootChestManager getLootChestManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).lootChestManager;
+  }
+
   @Override
   public void onEnable() {
+    MMCore.getGsonProvider().registerTypeHierarchyAdapter(BlockData.class, new BlockDataSerializer());
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Body.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(BodyAttributeModifier.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Ability.class);
@@ -74,15 +86,29 @@ public final class ProjectRevenant extends JavaPlugin {
     bodyManager = new BodyManager();
     Bukkit.getPluginManager().registerEvents(new BodyListener(bodyManager), this);
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("BodyAttribute", Arrays.asList(BodyAttribute.getValues()));
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("Illness", List.of(
+            "BLEEDING_I",
+            "BLEEDING_II",
+            "BLEEDING_III",
+            "BLEEDING_IV",
+            "BLEEDING_V",
+            "INFECTION"
+    ));
     MMCore.getPaperCommandManager().registerCommand(new BodyCommand(bodyManager));
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("@BoneType", Arrays.asList(BoneType.values()));
     MMCore.getPaperCommandManager().registerCommand(new SkeletonCommand());
     TaskManager.getInstance().runRepeatedBukkit(new BodyRunnable(bodyManager), 1, 1);
 
+    lootChestManager = LootChestManager.create();
+    lootChestManager.initialize();
+    long lootManagerFlushDelay = Duration.ofMinutes(15).toSeconds() * 20;
+    TaskManager.getInstance().runRepeatedBukkitAsync(() -> lootChestManager.flush(), lootManagerFlushDelay, lootManagerFlushDelay);
+
     Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
     Bukkit.getPluginManager().registerEvents(new MinecraftExpListener(), this);
+    Bukkit.getPluginManager().registerEvents(new LootListener(lootChestManager), this);
 
     MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));
 
@@ -121,5 +147,6 @@ public final class ProjectRevenant extends JavaPlugin {
   @Override
   public void onDisable() {
     revenantPlayerManager.flush();
+    lootChestManager.flush();
   }
 }

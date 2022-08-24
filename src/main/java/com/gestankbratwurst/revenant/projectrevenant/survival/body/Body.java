@@ -90,6 +90,7 @@ public abstract class Body implements DeserializationPostProcessable {
         entity.setHealth(0);
         entity.damage(0);
       });
+      return;
     }
     attributeMap.get(BodyAttribute.HEALTH).applyToCurrentValue(current -> current + attributeMap.get(BodyAttribute.HEALTH_SHIFT).getCurrentValueModified());
     attributeMap.get(BodyAttribute.WATER).applyToCurrentValue(current -> current + attributeMap.get(BodyAttribute.WATER_SHIFT).getCurrentValueModified());

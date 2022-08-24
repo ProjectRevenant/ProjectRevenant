@@ -37,7 +37,7 @@ public class LevelContainer {
   }
 
   public double getProgressPercent() {
-    return 1.0 / getExperienceTowardsNextLevel() * getExperienceProgressTowardsNextLevel();
+    return Math.min(1.0, 1.0 / getExperienceTowardsNextLevel() * getExperienceProgressTowardsNextLevel());
   }
 
 }

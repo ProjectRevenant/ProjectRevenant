@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 public class WorldDomain<T> implements Iterable<T> {
 
@@ -19,16 +20,20 @@ public class WorldDomain<T> implements Iterable<T> {
     worldDomainMap.put(chunk, inChunk);
   }
 
-  public void removeInChunk(Long chunk){
+  public void removeInChunk(Long chunk) {
     worldDomainMap.remove(chunk);
   }
 
-  public boolean isEmpty(){
+  public boolean isEmpty() {
     return worldDomainMap.isEmpty();
   }
 
   public Set<Long> getKeys() {
     return worldDomainMap.keySet();
+  }
+
+  public T getOrCreate(Long chunk, Function<Long, T> creator) {
+    return worldDomainMap.computeIfAbsent(chunk, creator);
   }
 
   @NotNull

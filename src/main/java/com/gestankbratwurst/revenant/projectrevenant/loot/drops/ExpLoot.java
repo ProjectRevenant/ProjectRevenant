@@ -21,7 +21,6 @@ public class ExpLoot implements Loot {
 
   @Override
   public void applyTo(Player looter, Inventory inventory) {
-    int expAmount = experienceFunction.applyAsInt(looter);
-    looter.giveExp(expAmount);
+    applyTo(looter, looter.getLocation());
   }
 }

@@ -11,9 +11,19 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class BleedingDebuff extends TimedAbility {
-  public BleedingDebuff() {
+  public BleedingDebuff(int intensity) {
     super(RevenantAbility.BLEEDING_DEBUFF);
-    this.addEffect(new BleedingEffect());
+    BleedingEffect effect = new BleedingEffect();
+    effect.setIntensity(intensity);
+    this.addEffect(effect);
+  }
+
+  public BleedingDebuff() {
+    this(1);
+  }
+
+  public void setIntensity(int intensity) {
+    ((BleedingEffect) this.getEffect("bleeding-effect")).setIntensity(intensity);
   }
 
   private int getIntensity() {
@@ -47,7 +57,8 @@ public class BleedingDebuff extends TimedAbility {
   @Override
   public List<Component> getInfos(Player viewer) {
     return List.of(
-            Component.text("§7Du verlierst Lebenspunkte.")
+            Component.text("§7Du verlierst Lebenspunkte."),
+            Component.text("§7Diese Wunde kann sich infizieren.")
     );
   }
 

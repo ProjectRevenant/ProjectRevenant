@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +31,8 @@ public class ChunkDomain<T> implements Iterable<T> {
   public Set<Integer> getKeys() {
     return chunkDomainMap.keySet();
   }
+
+  public Collection<T> getValues() { return chunkDomainMap.values(); }
 
   @NotNull
   @Override
