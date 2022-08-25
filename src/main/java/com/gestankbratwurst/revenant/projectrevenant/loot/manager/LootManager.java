@@ -16,6 +16,7 @@ public class LootManager {
   @Getter
   private static final LootManager instance = new LootManager();
   private static final NamespacedKey lootTypeKey = NamespaceFactory.provide("loot-type");
+  private static final NamespacedKey removalKey = NamespaceFactory.provide("for-removal");
 
   private LootManager() {
 
@@ -52,6 +53,18 @@ public class LootManager {
 
   public void applyTypeTo(PersistentDataContainer container, LootType type) {
     container.set(lootTypeKey, PersistentDataType.STRING, type.name());
+  }
+
+  public void removeTypeFrom(PersistentDataContainer container) {
+    container.remove(lootTypeKey);
+  }
+
+  public void tagForRemoval(PersistentDataContainer container){
+    container.set(removalKey, PersistentDataType.BYTE, (byte) 0x1);
+  }
+
+  public boolean isForRemoval(PersistentDataContainer container){
+    return container.has(removalKey);
   }
 
 }

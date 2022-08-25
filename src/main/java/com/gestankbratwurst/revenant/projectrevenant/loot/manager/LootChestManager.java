@@ -19,35 +19,64 @@ import java.io.File;
 import java.io.Flushable;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.UUID;
 
 public class LootChestManager implements Flushable {
 
   private final transient Map<UUID, WorldDomain<ChunkDomain<LootableChest>>> spawnableLootChests = new HashMap<>();
-  private final Set<LootableChest> allChests = new HashSet<>();
+  private final transient PriorityQueue<LootableChest> respawnQueue = new PriorityQueue<>();
+  private final Map<LootableChest.Position, LootableChest> allChests = new HashMap<>();
 
   public void addLootChest(LootableChest chest) {
-    allChests.add(chest);
-    enqueChestForRespawn(chest);
+    allChests.put(chest.getPosition(), chest);
+    enqueChestForSpawn(chest);
   }
 
-  public void removeLootChest(LootableChest chest) {
-    allChests.remove(chest);
-    dequeChestFromRespawn(chest);
+  public void removeLootChestAt(LootableChest.Position position) {
+    Optional.ofNullable(allChests.remove(position)).ifPresent(this::eraseFromPossibleRespawn);
+  }
+
+  private void eraseFromPossibleRespawn(LootableChest lootableChest) {
+    respawnQueue.remove(lootableChest);
+    dequeChestFromSpawn(lootableChest);
+  }
+
+  public LootableChest getLootableChestAt(LootableChest.Position position) {
+    return allChests.get(position);
   }
 
   public void initialize() {
-    allChests.forEach(this::enqueChestForRespawn);
+    allChests.values().forEach(this::enqueChestForSpawn);
+  }
+
+  public void addToRespawnQueue(LootableChest lootableChest){
+
+    respawnQueue.add(lootableChest);
+
+  }
+
+  public void checkRespawnQueue() {
+
+    LootableChest chest = respawnQueue.peek();
+
+    if (chest == null || chest.getRespawnTimestamp() > System.currentTimeMillis()) {
+      return;
+    }
+
+    enqueChestForSpawn(chest);
+    respawnQueue.poll();
+
+    checkRespawnQueue();
   }
 
   /**
    * Spawns all chests in @param chunk and deques them from spawnableLootChests
    */
 
-  public void checkRespawnableChestsInChunk(Chunk chunk) {
+  public void checkSpawnableChestsInChunk(Chunk chunk) {
     UUID worldId = chunk.getWorld().getUID();
     WorldDomain<ChunkDomain<LootableChest>> worldDomain = spawnableLootChests.get(worldId);
 
@@ -67,7 +96,7 @@ public class LootChestManager implements Flushable {
     for (LootableChest lootableChest : chunkDomain.getValues()) {
       taskManager.runBukkitSyncDelayed(() -> {
         spawnLootableChest(lootableChest);
-        dequeChestFromRespawn(lootableChest);
+        dequeChestFromSpawn(lootableChest);
       }, tickDelay);
 
       tickDelay += 1;
@@ -75,10 +104,10 @@ public class LootChestManager implements Flushable {
 
   }
 
-  public void enqueChestForRespawn(LootableChest lootableChest) {
-    UUID worldId = lootableChest.getWorldUUID();
-    long chunkKey = lootableChest.getChunkID();
-    int position = lootableChest.getLocationInChunk();
+  public void enqueChestForSpawn(LootableChest lootableChest) {
+    UUID worldId = lootableChest.getPosition().getWorldId();
+    long chunkKey = lootableChest.getPosition().getChunkId();
+    int position = lootableChest.getPosition().getRelLoc();
 
     World world = Bukkit.getWorld(worldId);
 
@@ -99,10 +128,10 @@ public class LootChestManager implements Flushable {
     worldDomain.addInChunk(chunkKey, chunkDomain);
   }
 
-  public void dequeChestFromRespawn(LootableChest lootableChest) {
-    UUID worldId = lootableChest.getWorldUUID();
-    long chunkKey = lootableChest.getChunkID();
-    int position = lootableChest.getLocationInChunk();
+  public void dequeChestFromSpawn(LootableChest lootableChest) {
+    UUID worldId = lootableChest.getPosition().getWorldId();
+    long chunkKey = lootableChest.getPosition().getChunkId();
+    int position = lootableChest.getPosition().getRelLoc();
 
     WorldDomain<ChunkDomain<LootableChest>> worldDomain = spawnableLootChests.get(worldId);
 
@@ -129,14 +158,14 @@ public class LootChestManager implements Flushable {
   public void spawnLootableChest(LootableChest lootableChest) {
     LootManager lootManager = LootManager.getInstance();
 
-    World world = Bukkit.getWorld(lootableChest.getWorldUUID());
+    World world = Bukkit.getWorld(lootableChest.getPosition().getWorldId());
 
     if (world == null) {
       throw new IllegalStateException("Illegal lootable chest spawn in unloaded world.");
     }
 
-    Chunk chunk = world.getChunkAt(lootableChest.getChunkID());
-    int position = lootableChest.getLocationInChunk();
+    Chunk chunk = world.getChunkAt(lootableChest.getPosition().getChunkId());
+    int position = lootableChest.getPosition().getRelLoc();
 
     Block block = chunk.getBlock(UtilChunk.blockKeyToX(position), UtilChunk.blockKeyToY(position), UtilChunk.blockKeyToZ(position));
 

@@ -43,7 +43,7 @@ public class DebugCommand extends BaseCommand {
 
   @Subcommand("lootchest add")
   @CommandCompletion("@LootType")
-  public void onLootchestAdd(Player sender, @Values("@LootType") LootType type, int respawnDuration) {
+  public void onLootchestAdd(Player sender, @Values("@LootType") LootType type) {
     UUID worldID = sender.getWorld().getUID();
     long chunkID = sender.getChunk().getChunkKey();
     int location = UtilChunk.relativeKeyOf(sender.getLocation().getBlock());
@@ -52,7 +52,7 @@ public class DebugCommand extends BaseCommand {
     Chest chestData = (Chest) Bukkit.createBlockData(Material.CHEST);
     chestData.setFacing(facing);
 
-    ProjectRevenant.getLootChestManager().addLootChest(new LootableChest(type, respawnDuration, worldID, chunkID, location, chestData));
+    ProjectRevenant.getLootChestManager().addLootChest(new LootableChest(type, new LootableChest.Position(worldID, chunkID, location), chestData));
   }
 
   @Subcommand("lootchest remove")
@@ -63,7 +63,7 @@ public class DebugCommand extends BaseCommand {
       return;
     }
 
-    ProjectRevenant.getLootChestManager().removeLootChest(LootableChest.identityAt(block));
+    ProjectRevenant.getLootChestManager().removeLootChestAt(LootableChest.Position.at(block));
     block.setType(Material.AIR);
   }
 }

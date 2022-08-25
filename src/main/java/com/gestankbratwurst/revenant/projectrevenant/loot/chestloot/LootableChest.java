@@ -3,34 +3,48 @@ package com.gestankbratwurst.revenant.projectrevenant.loot.chestloot;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
-public class LootableChest {
+@RequiredArgsConstructor
+public class LootableChest implements Comparable<LootableChest> {
 
-  public static LootableChest identityAt(Block block) {
-    UUID worldId = block.getWorld().getUID();
-    long chunkId = UtilChunk.getChunkKey(block.getChunk());
-    int relLoc = UtilChunk.relativeKeyOf(block);
-    return new LootableChest(LootType.DUMMY_LOOT, 0, worldId, chunkId, relLoc, null);
+  @Data
+  @AllArgsConstructor
+  public static class Position {
+
+    public static Position at(Location location) {
+      return Position.at(location.getBlock());
+    }
+
+    public static Position at(Block block) {
+      UUID worldId = block.getWorld().getUID();
+      long chunkId = UtilChunk.getChunkKey(block.getChunk());
+      int relLoc = UtilChunk.relativeKeyOf(block);
+      return new Position(worldId, chunkId, relLoc);
+    }
+
+    private final UUID worldId;
+    private final long chunkId;
+    private final int relLoc;
   }
 
   private final LootType type;
-  private final long respawnTime;
-  private final UUID worldUUID;
-  private final long chunkID;
-  private final int locationInChunk;
-  private BlockData blockData;
+  private final Position position;
+  private final BlockData blockData;
+  private long respawnTimestamp = 0L;
 
   @Override
   public int hashCode() {
-    return Objects.hash(worldUUID, chunkID, locationInChunk);
+    return position.hashCode();
   }
 
   @Override
@@ -40,6 +54,19 @@ public class LootableChest {
       return false;
     }
 
-    return lootChest.locationInChunk == locationInChunk && lootChest.chunkID == chunkID && lootChest.worldUUID.equals(worldUUID);
+    return this.position.equals(lootChest.position);
+  }
+
+  public void setRespawnTimestamp(long respawnTimestamp) {
+    this.respawnTimestamp = respawnTimestamp;
+  }
+
+  public void setRespawnTimeFromNow() {
+    this.setRespawnTimestamp(System.currentTimeMillis() + type.getRespawnTimeMillis());
+  }
+
+  @Override
+  public int compareTo(@NotNull LootableChest other) {
+    return Long.compare(this.respawnTimestamp, other.respawnTimestamp);
   }
 }

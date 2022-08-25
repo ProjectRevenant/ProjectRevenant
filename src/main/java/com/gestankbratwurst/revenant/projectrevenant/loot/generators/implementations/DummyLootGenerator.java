@@ -1,6 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot.generators.implementations;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.loot.drops.ChanceLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.CompoundLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.SimpleExpLoot;
@@ -21,6 +22,8 @@ public class DummyLootGenerator implements LootGenerator {
 
     int roundedHealth = (int) Math.round(revenantPlayer.getBody().getAttribute(BodyAttribute.HEALTH).getCurrentValueModified());
     int itemAmount = roundedHealth / 2;
+
+    lootbag.addLoot(new ChanceLoot(0.1, new SimpleItemLoot(new ItemStack(Material.STONE, 10))));
 
     lootbag.addLoot(new SimpleExpLoot(roundedHealth));
     lootbag.addLoot(new SimpleItemLoot(new ItemStack(Material.GRASS_BLOCK, itemAmount)));

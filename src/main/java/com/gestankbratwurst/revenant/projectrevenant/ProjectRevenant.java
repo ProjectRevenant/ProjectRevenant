@@ -18,6 +18,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityE
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluationRegistry;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilitySecondTask;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.RevenantDisplayCompiler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.ItemStackAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.LivingEntityAbilityEvaluator;
@@ -40,6 +41,7 @@ import com.gestankbratwurst.revenant.projectrevenant.ui.actionbar.ActionBarListe
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListListener;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListTask;
+import com.gestankbratwurst.revenant.projectrevenant.util.gson.AbilityTriggerSerializer;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.BlockDataSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -76,6 +78,7 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Ability.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
+    MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
 
     revenantPlayerManager = new RevenantPlayerManager();
     Bukkit.getPluginManager().registerEvents(new ReventantPlayerListener(revenantPlayerManager), this);
@@ -103,6 +106,7 @@ public final class ProjectRevenant extends JavaPlugin {
     lootChestManager.initialize();
     long lootManagerFlushDelay = Duration.ofMinutes(15).toSeconds() * 20;
     TaskManager.getInstance().runRepeatedBukkitAsync(() -> lootChestManager.flush(), lootManagerFlushDelay, lootManagerFlushDelay);
+    TaskManager.getInstance().runRepeatedBukkit(() -> lootChestManager.checkRespawnQueue(), 0, 10);
 
     Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);

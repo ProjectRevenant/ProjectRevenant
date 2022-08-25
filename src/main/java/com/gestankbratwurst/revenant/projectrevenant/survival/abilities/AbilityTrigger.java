@@ -1,17 +1,23 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.abilities;
 
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AbilityTrigger<T> {
 
   @Getter
   private final Class<T> triggerClass;
+  @Getter
   private final String identifier;
 
   private AbilityTrigger(Class<T> triggerClass, String identifier) {
@@ -39,5 +45,26 @@ public class AbilityTrigger<T> {
   public static final AbilityTrigger<Body> PASSIVE_ATTRIBUTE = new AbilityTrigger<>(Body.class, "PASSIVE_ATTRIBUTE");
   public static final AbilityTrigger<Player> PLAYER_EVERY_SECOND = new AbilityTrigger<>(Player.class, "PLAYER_EVERY_SECOND");
   public static final AbilityTrigger<PlayerInteractEvent> PLAYER_INTERACT = new AbilityTrigger<>(PlayerInteractEvent.class, "PLAYER_INTERACT");
+
+  private static final Map<String, AbilityTrigger<?>> triggerMap = new ConcurrentHashMap<>();
+
+  public static AbilityTrigger<?> fromIdentifier(String identifier) {
+    return triggerMap.get(identifier);
+  }
+
+  static {
+    try {
+      Method idMethod = AbilityTrigger.class.getMethod("getIdentifier");
+      for (Field field : AbilityTrigger.class.getDeclaredFields()) {
+        if (Modifier.isStatic(field.getModifiers()) && field.getType() == AbilityTrigger.class) {
+          AbilityTrigger<?> trigger = (AbilityTrigger<?>) field.get(null);
+          String identifier = (String) idMethod.invoke(trigger);
+          triggerMap.put(identifier, trigger);
+        }
+      }
+    } catch (ReflectiveOperationException exception) {
+      exception.printStackTrace();
+    }
+  }
 
 }

@@ -25,4 +25,9 @@ public class CompoundLoot implements Loot {
     this.lootList.add(loot);
   }
 
+  public CompoundLoot and(Loot loot) {
+    addLoot(loot);
+    return this;
+  }
+
 }
