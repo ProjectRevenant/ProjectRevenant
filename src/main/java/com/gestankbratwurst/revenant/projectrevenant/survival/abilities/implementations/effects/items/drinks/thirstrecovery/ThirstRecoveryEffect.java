@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.thirstrecovery;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.thirstrecovery;
 
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;

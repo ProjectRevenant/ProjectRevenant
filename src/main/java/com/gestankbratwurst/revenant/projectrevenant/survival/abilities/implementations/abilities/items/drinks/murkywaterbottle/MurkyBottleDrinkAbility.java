@@ -1,18 +1,20 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.saltywaterbottle;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.murkywaterbottle;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.saltybottle.SaltyBottleDrinkEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.clearwaterbottle.ClearWaterDrinkEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.murkywaterbottle.MurkyBottleDrinkEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class SaltyBottleAbility extends Ability {
-  public SaltyBottleAbility() {
-    super(RevenantAbility.SALTY_BOTTLE_DRINK);
-    this.addEffect(new SaltyBottleDrinkEffect());
+public class MurkyBottleDrinkAbility extends Ability {
+  public MurkyBottleDrinkAbility() {
+    super(RevenantAbility.MURKY_BOTTLE_DRINK);
+    this.addEffect(new ClearWaterDrinkEffect());
+    this.addEffect(new MurkyBottleDrinkEffect());
   }
 
   @Override
@@ -33,7 +35,7 @@ public class SaltyBottleAbility extends Ability {
   @Override
   public List<Component> getInfos(Player viewer) {
     return List.of(
-            Component.text("§7Enthält §e1L §7salziges Wasser.")
+            Component.text("§7Enthält §e1L §7trübes Wasser.")
     );
   }
 

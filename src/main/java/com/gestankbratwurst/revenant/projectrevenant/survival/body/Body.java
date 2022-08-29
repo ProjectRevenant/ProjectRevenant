@@ -42,6 +42,7 @@ public abstract class Body implements DeserializationPostProcessable {
   private transient UUID entityId;
   @Getter
   private transient int ticksAlive;
+  private transient double lastNotificationWeight;
 
   public Body() {
     this.attributeMap = new HashMap<>();
@@ -76,8 +77,12 @@ public abstract class Body implements DeserializationPostProcessable {
       ability.reactOn(entity, AbilityTrigger.PASSIVE_ATTRIBUTE, this);
     }
     BodyAttribute speedAttribute = getAttribute(BodyAttribute.SPEED);
-    double mcSpeed = speedAttribute.getCurrentValueModified() / (22.25 * 5);
+    double mcSpeed = speedAttribute.getCurrentValueModified() / (23.0 * 5);
     Objects.requireNonNull(entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(mcSpeed);
+
+    BodyAttribute attackSpeedAttribute = getAttribute(BodyAttribute.ATTACK_SPEED);
+    double mcAttackSpeed = attackSpeedAttribute.getCurrentValueModified();
+    Optional.ofNullable(entity.getAttribute(Attribute.GENERIC_ATTACK_SPEED)).ifPresent(attr -> attr.setBaseValue(mcAttackSpeed));
   }
 
   public void tick() {
@@ -106,19 +111,16 @@ public abstract class Body implements DeserializationPostProcessable {
 
   protected void tickSeconds() {
     Entity entity = Bukkit.getEntity(entityId);
-    if (!(entity instanceof LivingEntity livingEntity)) {
-      return;
-    }
-    // TODO: If performance is good then enable this for all LivingEntities
-    this.checkIfWet(livingEntity);
-    this.checkIfDry(livingEntity);
-  }
-
-  private void checkIfWet(LivingEntity entity) {
     if (!(entity instanceof Player player)) {
       return;
     }
-    Block block = entity.getLocation().getBlock();
+    // TODO: If performance is good then enable this for all LivingEntities
+    this.checkIfWet(player);
+    this.checkIfDry(player);
+  }
+
+  private void checkIfWet(Player player) {
+    Block block = player.getLocation().getBlock();
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
     if (block.getType() == Material.WATER) {
       Ability wetAbility = revenantPlayer.getAbility(RevenantAbility.WET_DEBUFF);
@@ -130,12 +132,12 @@ public abstract class Body implements DeserializationPostProcessable {
       }
       return;
     }
-    boolean raining = entity.getWorld().hasStorm();
+    boolean raining = player.getWorld().hasStorm();
     if (!raining) {
       return;
     }
-    double roofY = entity.getWorld().getHighestBlockAt(entity.getEyeLocation()).getY();
-    if (roofY > entity.getEyeLocation().getY()) {
+    double roofY = player.getWorld().getHighestBlockAt(player.getEyeLocation()).getY();
+    if (roofY > player.getEyeLocation().getY()) {
       return;
     }
     Ability wetAbility = revenantPlayer.getAbility(RevenantAbility.WET_DEBUFF);
@@ -150,13 +152,10 @@ public abstract class Body implements DeserializationPostProcessable {
     }
   }
 
-  private void checkIfDry(LivingEntity entity) {
-    if (!(entity instanceof Player player)) {
-      return;
-    }
+  private void checkIfDry(Player player) {
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
-    boolean dry = WorldEnvironmentFetcher.isDry(entity.getLocation(), false);
-    boolean nearHeatSource = WorldEnvironmentFetcher.isNearHeatSource(entity.getLocation());
+    boolean dry = WorldEnvironmentFetcher.isDry(player.getLocation(), false);
+    boolean nearHeatSource = WorldEnvironmentFetcher.isNearHeatSource(player.getLocation());
     if (dry || nearHeatSource) {
       Ability dryAbility = revenantPlayer.getAbility(RevenantAbility.DRY_BUFF);
       if (dryAbility == null) {
@@ -189,7 +188,10 @@ public abstract class Body implements DeserializationPostProcessable {
     double max = weightAttr.getMaxValueModified();
     if (weight >= max) {
       if (entity instanceof Player player) {
-        Msg.sendWarning(player, "Du bist überladen. {}", "%.1fkg/%.1fkg".formatted(weightAttr.getCurrentValue(), weightAttr.getMaxValueModified()));
+        if (weight != lastNotificationWeight) {
+          lastNotificationWeight = weight;
+          Msg.sendWarning(player, "Du bist überladen. {}", "%.1fkg/%.1fkg".formatted(weightAttr.getCurrentValue(), weightAttr.getMaxValueModified()));
+        }
       }
     }
     if (entity instanceof Player player) {

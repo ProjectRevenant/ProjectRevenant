@@ -29,6 +29,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     implementation("com.github.Redempt:Crunch:1.1.2")
+    implementation("net.kyori:adventure-text-minimessage:4.11.0")
 }
 
 publishing {

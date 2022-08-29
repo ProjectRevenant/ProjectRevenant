@@ -5,6 +5,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -48,22 +49,28 @@ public class CombatEvaluator {
           }}
   );
 
-  public static double evaluateAttack(Entity attacker, LivingEntity defender) {
-    double damage = 0;
+  private static final double maxPercentageDamageReduction = 0.9;
+  private static final double curveAmplifier = 0.0075;
+
+  public static double evaluateAttack(Entity attacker, LivingEntity defender, boolean critical) {
+    double damage;
     if(attacker instanceof Projectile projectile) {
       damage = ItemCombatStat.fetchProjectileDamage(projectile);
     } else if(attacker instanceof LivingEntity livingAttacker) {
+      float cooldownMod = attacker instanceof Player player ? player.getAttackCooldown() : 1.0F;
+      cooldownMod = cooldownMod * cooldownMod * cooldownMod * cooldownMod;
       Body attackerBody = ProjectRevenant.getBodyManager().getBody(livingAttacker);
-      damage = attackerBody.getAttribute(BodyAttribute.MELEE_DAMAGE).getCurrentValueModified();
+      damage = attackerBody.getAttribute(BodyAttribute.MELEE_DAMAGE).getCurrentValueModified() * cooldownMod;
     } else {
       throw new RuntimeException("Unhandled damage by " + attacker.getType());
     }
     double defence = ProjectRevenant.getBodyManager().getBody(defender).getAttribute(BodyAttribute.PHYSICAL_ARMOR).getCurrentValueModified();
-    double defenceScalar = 0.9 * Math.tanh(-defence * 0.0075) + 1;
-    return damage * defenceScalar;
+
+    double defenceScalar = maxPercentageDamageReduction * Math.tanh(-defence * curveAmplifier) + 1;
+    return damage * defenceScalar * (critical ? 1.15 : 1.0);
   }
 
-  public static double evaluateDamage(LivingEntity defender, EntityDamageEvent.DamageCause damageCause, double initialDamage) {
+  public static double evaluateEnvironmentalDamage(LivingEntity defender, EntityDamageEvent.DamageCause damageCause, double initialDamage) {
     double percentage = environmentalPercentageDamages.getOrDefault(damageCause, 0.0) * initialDamage;
     Body body = ProjectRevenant.getBodyManager().getBody(defender);
     BodyAttribute healthAttr = body.getAttribute(BodyAttribute.HEALTH);

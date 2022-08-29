@@ -65,23 +65,30 @@ public class BodyCommand extends BaseCommand {
     switch (illness) {
       case "BLEEDING_I":
         revenantPlayer.addAbility(debuff);
+        break;
       case "BLEEDING_II":
         debuff.setIntensity(2);
         revenantPlayer.addAbility(debuff);
+        break;
       case "BLEEDING_III":
         debuff.setIntensity(3);
         revenantPlayer.addAbility(debuff);
+        break;
       case "BLEEDING_IV":
         debuff.setIntensity(4);
         revenantPlayer.addAbility(debuff);
+        break;
       case "BLEEDING_V":
         debuff.setIntensity(5);
         revenantPlayer.addAbility(debuff);
+        break;
       case "INFECTION":
         WoundInfectionDebuff woundInfectionDebuff = new WoundInfectionDebuff();
         revenantPlayer.addAbility(woundInfectionDebuff);
+        break;
       default:
         Msg.sendError(sender, "Unknown illness {}.", illness);
+        break;
     }
   }
 
@@ -96,23 +103,29 @@ public class BodyCommand extends BaseCommand {
     switch (illness) {
       case "BLEEDING_I":
         revenantPlayer.removeAbility(debuff);
+        break;
       case "BLEEDING_II":
         debuff.setIntensity(2);
         revenantPlayer.removeAbility(debuff);
+        break;
       case "BLEEDING_III":
         debuff.setIntensity(3);
         revenantPlayer.removeAbility(debuff);
+        break;
       case "BLEEDING_IV":
         debuff.setIntensity(4);
         revenantPlayer.removeAbility(debuff);
+        break;
       case "BLEEDING_V":
         debuff.setIntensity(5);
         revenantPlayer.removeAbility(debuff);
       case "INFECTION":
         WoundInfectionDebuff woundInfectionDebuff = new WoundInfectionDebuff();
         revenantPlayer.removeAbility(woundInfectionDebuff);
+        break;
       default:
         Msg.sendError(sender, "Unknown illness {}.", illness);
+        break;
     }
   }
 

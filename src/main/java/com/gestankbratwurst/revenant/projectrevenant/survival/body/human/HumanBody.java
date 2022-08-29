@@ -111,6 +111,12 @@ public class HumanBody extends Body {
     luck.setMaxValue(100.0);
     luck.setMinValue(-100.0);
     luck.setCurrentValue(1.5);
+
+    // Attacks/s (?)
+    BodyAttribute attackSpeed = this.getAttribute(BodyAttribute.ATTACK_SPEED);
+    attackSpeed.setMaxValue(2.5);
+    attackSpeed.setMinValue(0.0);
+    attackSpeed.setCurrentValue(1.0);
   }
 
   @Override

@@ -113,7 +113,7 @@ public class WorldEnvironmentFetcher {
     if(!isDay(world)) {
       return false;
     }
-    return location.getBlock().getLightLevel() == 15 || location.getBlock().getRelative(BlockFace.DOWN).getLightLevel() == 15;
+    return location.getBlock().getLightLevel() > 13 || location.getBlock().getRelative(BlockFace.DOWN).getLightLevel() > 13;
   }
 
   public static boolean isNearHeatSource(Location location) {

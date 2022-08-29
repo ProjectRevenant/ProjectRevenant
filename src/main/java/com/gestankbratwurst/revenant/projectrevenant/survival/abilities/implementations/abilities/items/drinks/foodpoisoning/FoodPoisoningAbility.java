@@ -1,9 +1,9 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.foodpoisoning;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.foodpoisoning;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.murkywaterbottle.FoodPoisoningEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.murkywaterbottle.FoodPoisoningEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -41,6 +41,6 @@ public class FoodPoisoningAbility extends TimedAbility {
 
   @Override
   public TextureModel getModel() {
-    return null;
+    return TextureModel.FOOD_POISONING;
   }
 }

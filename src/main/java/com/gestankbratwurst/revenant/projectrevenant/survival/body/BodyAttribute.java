@@ -9,23 +9,24 @@ import java.util.function.DoubleUnaryOperator;
 
 public class BodyAttribute {
 
-  public static String HEALTH = "health";
-  public static String WEIGHT = "weight";
-  public static String NUTRITION = "nutrition";
-  public static String WATER = "water";
-  public static String TEMPERATURE = "temperature";
-  public static String HEALTH_SHIFT = "health_shift";
-  public static String WEIGHT_SHIFT = "weight_shift";
-  public static String NUTRITION_SHIFT = "nutrition_shift";
-  public static String WATER_SHIFT = "water_shift";
-  public static String TEMPERATURE_SHIFT = "temperature_shift";
-  public static String HEAT_RESISTANCE = "heat_resistance";
-  public static String COLD_RESISTANCE = "cold_resistance";
-  public static String PHYSICAL_ARMOR = "physical_armor";
-  public static String MELEE_DAMAGE = "melee_damage";
-  public static String RANGED_DAMAGE = "ranged_damage";
-  public static String SPEED = "speed";
-  public static String LUCK = "luck";
+  public static final String HEALTH = "health";
+  public static final String WEIGHT = "weight";
+  public static final String NUTRITION = "nutrition";
+  public static final String WATER = "water";
+  public static final String TEMPERATURE = "temperature";
+  public static final String HEALTH_SHIFT = "health_shift";
+  public static final String WEIGHT_SHIFT = "weight_shift";
+  public static final String NUTRITION_SHIFT = "nutrition_shift";
+  public static final String WATER_SHIFT = "water_shift";
+  public static final String TEMPERATURE_SHIFT = "temperature_shift";
+  public static final String HEAT_RESISTANCE = "heat_resistance";
+  public static final String COLD_RESISTANCE = "cold_resistance";
+  public static final String PHYSICAL_ARMOR = "physical_armor";
+  public static final String MELEE_DAMAGE = "melee_damage";
+  public static final String RANGED_DAMAGE = "ranged_damage";
+  public static final String SPEED = "speed";
+  public static final String LUCK = "luck";
+  public static final String ATTACK_SPEED = "attack_speed";
 
   @Getter
   private static final String[] values = {
@@ -45,7 +46,8 @@ public class BodyAttribute {
           MELEE_DAMAGE,
           RANGED_DAMAGE,
           SPEED,
-          LUCK
+          LUCK,
+          ATTACK_SPEED
   };
 
   @Getter

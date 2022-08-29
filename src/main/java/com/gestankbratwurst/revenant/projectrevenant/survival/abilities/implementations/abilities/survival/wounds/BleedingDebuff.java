@@ -5,7 +5,11 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilMath;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingInfectionEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingParticleEffect;
 import net.kyori.adventure.text.Component;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -16,6 +20,8 @@ public class BleedingDebuff extends TimedAbility {
     BleedingEffect effect = new BleedingEffect();
     effect.setIntensity(intensity);
     this.addEffect(effect);
+    this.addEffect(new BleedingParticleEffect());
+    this.addEffect(new BleedingInfectionEffect());
   }
 
   public BleedingDebuff() {

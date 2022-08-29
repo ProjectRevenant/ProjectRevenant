@@ -1,18 +1,18 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.emptybottle;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.clearwaterbottle;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.emptybottle.EmptyBottleGatherEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.clearwaterbottle.ClearWaterDrinkEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class EmptyBottleAbility extends Ability {
-  public EmptyBottleAbility() {
-    super(RevenantAbility.EMPTY_BOTTLE_FILL);
-    this.addEffect(new EmptyBottleGatherEffect());
+public class ClearBottleAbility extends Ability {
+  public ClearBottleAbility() {
+    super(RevenantAbility.CLEAR_BOTTLE_DRINK);
+    this.addEffect(new ClearWaterDrinkEffect());
   }
 
   @Override
@@ -27,14 +27,13 @@ public class EmptyBottleAbility extends Ability {
 
   @Override
   public Component getInfoTitle(Player viewer) {
-    return Component.text("§fAuffüllbar");
+    return Component.text("§fTrinkbar");
   }
 
   @Override
   public List<Component> getInfos(Player viewer) {
     return List.of(
-            Component.text("§7Du kannst Flüssigkeiten"),
-            Component.text("§7hiermit aufsammeln.")
+            Component.text("§7Enthält §e1L §7Wasser.")
     );
   }
 
@@ -42,4 +41,5 @@ public class EmptyBottleAbility extends Ability {
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }
+
 }

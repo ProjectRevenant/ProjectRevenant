@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.emptybottle;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.emptybottle;
 
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;

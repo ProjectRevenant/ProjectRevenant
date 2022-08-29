@@ -1,10 +1,10 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.murkywaterbottle;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.murkywaterbottle;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.foodpoisoning.FoodPoisoningAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.foodpoisoning.FoodPoisoningAbility;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.time.Duration;
