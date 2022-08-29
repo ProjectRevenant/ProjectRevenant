@@ -83,6 +83,10 @@ public abstract class Body implements DeserializationPostProcessable {
     BodyAttribute attackSpeedAttribute = getAttribute(BodyAttribute.ATTACK_SPEED);
     double mcAttackSpeed = attackSpeedAttribute.getCurrentValueModified();
     Optional.ofNullable(entity.getAttribute(Attribute.GENERIC_ATTACK_SPEED)).ifPresent(attr -> attr.setBaseValue(mcAttackSpeed));
+
+    BodyAttribute knockbackAttribute = getAttribute(BodyAttribute.MELEE_KNOCKBACK);
+    double mcKnockback = knockbackAttribute.getCurrentValueModified();
+    Optional.ofNullable(entity.getAttribute(Attribute.GENERIC_ATTACK_KNOCKBACK)).ifPresent(attr -> attr.setBaseValue(mcKnockback));
   }
 
   public void tick() {

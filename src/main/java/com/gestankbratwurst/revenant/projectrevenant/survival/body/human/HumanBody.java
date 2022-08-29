@@ -112,11 +112,17 @@ public class HumanBody extends Body {
     luck.setMinValue(-100.0);
     luck.setCurrentValue(1.5);
 
-    // Attacks/s (?)
+    // Attacks/s
     BodyAttribute attackSpeed = this.getAttribute(BodyAttribute.ATTACK_SPEED);
     attackSpeed.setMaxValue(2.5);
     attackSpeed.setMinValue(0.0);
     attackSpeed.setCurrentValue(1.0);
+
+    // Knockback
+    BodyAttribute knockback = this.getAttribute(BodyAttribute.MELEE_KNOCKBACK);
+    knockback.setMaxValue(10.0);
+    knockback.setMinValue(0.0);
+    knockback.setCurrentValue(1.0);
   }
 
   @Override

@@ -4,6 +4,7 @@ import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.weapons.melee.AttackSpeedEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.weapons.melee.WeaponDamageEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.weapons.melee.WeaponKnockbackEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -12,13 +13,14 @@ import java.util.List;
 public class WeaponDamageAbility extends Ability {
 
   public WeaponDamageAbility() {
-    this(0.0, 0.0);
+    this(0.0, 0.0, 0.0);
   }
 
-  public WeaponDamageAbility(double damage, double attackSpeed) {
+  public WeaponDamageAbility(double damage, double attackSpeed, double knockback) {
     super("weapon-damage-ability");
     this.addEffect(new WeaponDamageEffect(damage));
     this.addEffect(new AttackSpeedEffect(attackSpeed));
+    this.addEffect(new WeaponKnockbackEffect(knockback));
   }
 
   @Override

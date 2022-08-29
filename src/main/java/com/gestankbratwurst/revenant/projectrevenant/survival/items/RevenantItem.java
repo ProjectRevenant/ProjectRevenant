@@ -61,15 +61,15 @@ public class RevenantItem {
     return itemStack;
   }
 
-  private static ItemStack meleeWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double baseDmg, double baseAtkSpeed, Ability... abilities) {
+  private static ItemStack meleeWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double baseDmg, double baseAtkSpeed, double knockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
-    list.add(new WeaponDamageAbility(baseDmg, baseAtkSpeed));
+    list.add(new WeaponDamageAbility(baseDmg, baseAtkSpeed, knockback));
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, Ability... abilities){
+  private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities){
     List<Ability> list = new ArrayList<>(List.of(abilities));
-    list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed));
+    list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed, meleeKnockback));
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
@@ -102,7 +102,7 @@ public class RevenantItem {
   //Melee Weapons
 
   public static ItemStack dummySword() {
-    ItemStack base = meleeWeapon(TextureModel.RED_X, "Dummy-Sword", ItemRarity.DEBUG, 0.2, 5, 1.5);
+    ItemStack base = meleeWeapon(TextureModel.RED_X, "Dummy-Sword", ItemRarity.DEBUG, 0.2, 5, 1.5, 1.0);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
@@ -111,7 +111,7 @@ public class RevenantItem {
 
   //Ranged Weapons
   public static ItemStack dummyBow(){
-    ItemStack base = rangedWeapon(TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5);
+    ItemStack base = rangedWeapon(TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5, 1.0);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
