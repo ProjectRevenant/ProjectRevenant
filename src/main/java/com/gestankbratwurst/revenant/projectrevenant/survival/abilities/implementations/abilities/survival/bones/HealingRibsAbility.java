@@ -27,7 +27,7 @@ public class HealingRibsAbility extends Ability {
 
   @Override
   public Component getInfoTitle(Player viewer) {
-    return Component.text(TextureModel.HEALING_BONE_SMALL.getChar() + " §6Torsoschiene");
+    return Component.text(TextureModel.TORSO_HEALING_BONE_SMALL.getChar() + " §6Torsoschiene");
   }
 
   @Override
@@ -39,6 +39,6 @@ public class HealingRibsAbility extends Ability {
 
   @Override
   public TextureModel getModel() {
-    return TextureModel.HEALING_BONE;
+    return TextureModel.TORSO_HEALING_BONE;
   }
 }

@@ -89,13 +89,14 @@ public class WorldEnvironmentFetcher {
     double temp = baseTemp * 30.0;
     Biome biome = block.getBiome();
 
-    if(noRainBiomes.contains(biome)) {
+    if (noRainBiomes.contains(biome)) {
       temp -= (isDay(block.getWorld()) ? 0.0 : 40.0);
     } else {
-      temp -= (block.getWorld().hasStorm() ? 5.0 : 0.0) - (isDay(block.getWorld()) ? 0.0 : 7.5);
+      temp -= (block.getWorld().hasStorm() ? 5.0 : 0.0);
+      temp -= (isDay(block.getWorld()) ? 0.0 : 10.0);
     }
-    if(applyHeatSources && isNearHeatSource(location)) {
-      if(temp < 5) {
+    if (applyHeatSources && isNearHeatSource(location)) {
+      if (temp < 5) {
         temp += 15;
       } else {
         temp += 7.5;
@@ -106,11 +107,11 @@ public class WorldEnvironmentFetcher {
 
   public static boolean isDry(Location location, boolean applyHeatSources) {
     double temp = getTemperatureAt(location, applyHeatSources);
-    if(temp <= 12.5) {
+    if (temp <= 12.5) {
       return false;
     }
     World world = location.getWorld();
-    if(!isDay(world)) {
+    if (!isDay(world)) {
       return false;
     }
     return location.getBlock().getLightLevel() > 13 || location.getBlock().getRelative(BlockFace.DOWN).getLightLevel() > 13;
@@ -118,11 +119,11 @@ public class WorldEnvironmentFetcher {
 
   public static boolean isNearHeatSource(Location location) {
     Block base = location.getBlock();
-    for(int x = -2; x <= 2; x++) {
-      for(int z = -2; z <= 2; z++) {
-        for(int y = -1; y <= 1; y++) {
+    for (int x = -2; x <= 2; x++) {
+      for (int z = -2; z <= 2; z++) {
+        for (int y = -1; y <= 1; y++) {
           Block relative = base.getRelative(x, y, z);
-          if(hotBlocks.contains(relative.getType())) {
+          if (hotBlocks.contains(relative.getType())) {
             return true;
           }
         }
@@ -133,7 +134,7 @@ public class WorldEnvironmentFetcher {
 
   public static boolean isDay(World world) {
     long time = world.getTime();
-    return !(time < 12300 || time > 23850);
+    return time < 12300 || time > 23850;
   }
 
   public static double getHumidityAt(Location location) {

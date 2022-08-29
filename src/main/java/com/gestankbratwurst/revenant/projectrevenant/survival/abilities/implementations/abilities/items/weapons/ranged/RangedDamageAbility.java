@@ -12,39 +12,39 @@ import java.util.List;
 
 public class RangedDamageAbility extends Ability {
 
-    public RangedDamageAbility(){
-        this(0.0, 0.0, 1);
-    }
+  public RangedDamageAbility() {
+    this(0.0, 0.0, 1);
+  }
 
-    //ToDo Entscheiden ob Fernkampfwaffen Nahkampfschaden machen und wie Fernkampfwaffen abgefeuert werden
-    public RangedDamageAbility(double rangedDamage, double meleeDamage, double meleeAttackSpeed){
-        super("ranged-damage-ability");
-        this.addEffect(new RangedDamageEffect(rangedDamage));
-        this.addEffect(new WeaponDamageEffect(meleeDamage));
-        this.addEffect(new AttackSpeedEffect(meleeAttackSpeed));
-    }
+  //ToDo Entscheiden ob Fernkampfwaffen Nahkampfschaden machen und wie Fernkampfwaffen abgefeuert werden
+  public RangedDamageAbility(double rangedDamage, double meleeDamage, double meleeAttackSpeed) {
+    super("ranged-damage-ability");
+    this.addEffect(new RangedDamageEffect(rangedDamage));
+    this.addEffect(new WeaponDamageEffect(meleeDamage));
+    this.addEffect(new AttackSpeedEffect(meleeAttackSpeed));
+  }
 
-    @Override
-    public boolean shouldDisplayInTab() {
-        return false;
-    }
+  @Override
+  public boolean shouldDisplayInTab() {
+    return false;
+  }
 
-    @Override
-    public boolean shouldDisplayInActionbar() {
-        return false;
-    }
+  @Override
+  public boolean shouldDisplayInActionbar() {
+    return false;
+  }
 
-    public Component getInfoTitle(Player viewer) {
-        return Component.text("");
-    }
+  public Component getInfoTitle(Player viewer) {
+    return Component.text("");
+  }
 
-    @Override
-    public List<Component> getInfos(Player viewer) {
-        return List.of();
-    }
+  @Override
+  public List<Component> getInfos(Player viewer) {
+    return List.of();
+  }
 
-    @Override
-    public TextureModel getModel() {
-        return TextureModel.RED_X;
-    }
+  @Override
+  public TextureModel getModel() {
+    return TextureModel.RED_X;
+  }
 }
