@@ -21,7 +21,8 @@ public enum ItemRarity {
   RARE(TextColor.color(new Color(0, 112, 221).getRGB()), "Selten"),
   EPIC(TextColor.color(new Color(163, 53, 238).getRGB()), "Episch"),
   LEGENDARY(TextColor.color(new Color(255, 128, 0).getRGB()), "Legendär"),
-  ARTIFACT(TextColor.color(new Color(230, 204, 128).getRGB()), "Artefakt");
+  ARTIFACT(TextColor.color(new Color(230, 204, 128).getRGB()), "Artefakt"),
+  DEBUG(TextColor.color(new Color(255, 0, 0).getRGB()), "DEBUG");
 
   private static final NamespacedKey itemRarityKey = NamespaceFactory.provide("item-rarity");
 

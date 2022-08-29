@@ -9,6 +9,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.murkywaterbottle.MurkyBottleDrinkAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.saltywaterbottle.SaltyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.melee.WeaponDamageAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -33,6 +34,7 @@ public class RevenantItem {
             put("MURKY_WATER_BOTTLE", RevenantItem::murkyWaterBottle);
             put("SALT_WATER_BOTTLE", RevenantItem::saltyWaterBottle);
             put("DUMMY_SWORD", RevenantItem::dummySword);
+            put("DUMMY_BOW", RevenantItem::dummyBow);
           }}
   );
 
@@ -65,6 +67,12 @@ public class RevenantItem {
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
+  private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, Ability... abilities){
+    List<Ability> list = new ArrayList<>(List.of(abilities));
+    list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed));
+    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+  }
+
   private static ItemStack basicBottle(TextureModel model, String name, ItemRarity rarity, Ability... abilities) {
     ItemStack itemStack = basic(model, name, rarity, 1.1, abilities);
     PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
@@ -94,11 +102,22 @@ public class RevenantItem {
   //Melee Weapons
 
   public static ItemStack dummySword() {
-    ItemStack base = meleeWeapon(TextureModel.RED_X, "Dummy-Sword", ItemRarity.ARTIFACT, 0.2, 5, 1.5);
+    ItemStack base = meleeWeapon(TextureModel.RED_X, "Dummy-Sword", ItemRarity.DEBUG, 0.2, 5, 1.5);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
             .build();
   }
+
+  //Ranged Weapons
+  public static ItemStack dummyBow(){
+    ItemStack base = rangedWeapon(TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5);
+    return new ItemBuilder(base)
+            .lore("§6[Debug]")
+            .lore("§fNur zum testen!")
+            .build();
+
+  }
+
 
 }
