@@ -14,7 +14,7 @@ public class ItemCombatStat {
     PersistentDataContainer container = projectile.getPersistentDataContainer();
     double speed = projectile.getVelocity().length();
     double damage = container.getOrDefault(projectileDamageKey, PersistentDataType.DOUBLE, 10.0);
-    return speed * damage;
+    return speed * damage * 0.294;
   }
 
   public static void applyProjectileDamage(Projectile projectile, double damage) {
