@@ -47,6 +47,17 @@ public class BodyCommand extends BaseCommand {
     sender.sendMessage("§eGewichtsänderung: §f%.2f§9kg/min".formatted(weightShift.getCurrentValueModified() * 20 * 60));
   }
 
+  @Subcommand("listall")
+  @CommandPermission("admin")
+  @CommandCompletion("@players")
+  public void onAttribute(CommandSender sender, OnlinePlayer player) {
+    HumanBody body = RevenantPlayer.of(player.player).getBody();
+    for(String identifier : BodyAttribute.getValues()) {
+      BodyAttribute attribute = body.getAttribute(identifier);
+      sender.sendMessage("§7%s: §e%.1f §7[§f%.1f§7/§f%.1f§7]".formatted(identifier, attribute.getCurrentValueModified(), attribute.getMinValue(), attribute.getMaxValueModified()));
+    }
+  }
+
   @Subcommand("attribute change")
   @CommandPermission("admin")
   @CommandCompletion("@players @BodyAttribute @Nothing")

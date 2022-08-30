@@ -43,7 +43,7 @@ public class RevenantPlayer {
   private final UUID playerId;
   @Getter
   private final LevelContainer levelContainer;
-  private final Map<String, Ability> abilityMap;
+  private final Map<Class<? extends Ability>, Ability> abilityMap;
   private final transient BossBar experienceBossBar;
   private transient int levelBarCounter = 0;
 
@@ -61,7 +61,7 @@ public class RevenantPlayer {
 
   public void updateAbilities(List<Ability> abilityList) {
     abilityMap.clear();
-    abilityList.forEach(ability -> abilityMap.put(ability.getIdentifier(), ability));
+    abilityList.forEach(ability -> abilityMap.put(ability.getClass(), ability));
     Player player = Bukkit.getPlayer(playerId);
     if (player == null) {
       return;
@@ -69,16 +69,17 @@ public class RevenantPlayer {
     EntityAbilityCache.autoUpdate(player, Player.class);
   }
 
-  public boolean hasAbility(String identifier) {
+  public <T extends Ability> boolean hasAbility(Class<T> identifier) {
     return abilityMap.containsKey(identifier);
   }
 
   public boolean hasAbility(Ability ability) {
-    return hasAbility(ability.getIdentifier());
+    return hasAbility(ability.getClass());
   }
 
-  public Ability getAbility(String identifier) {
-    return abilityMap.get(identifier);
+  @SuppressWarnings("unchecked")
+  public <T extends Ability> T getAbility(Class<T> identifier) {
+    return (T) abilityMap.get(identifier);
   }
 
   public Collection<Ability> getActiveAbilities() {
@@ -88,9 +89,9 @@ public class RevenantPlayer {
   @SuppressWarnings("unchecked")
   public void addAbility(Ability ability) {
     if (ability instanceof Mergeable<?> && hasAbility(ability)) {
-      ((Mergeable<Ability>) getAbility(ability.getIdentifier())).merge(ability);
+      ((Mergeable<Ability>) getAbility(ability.getClass())).merge(ability);
     } else {
-      abilityMap.put(ability.getIdentifier(), ability);
+      abilityMap.put(ability.getClass(), ability);
     }
     Player player = Bukkit.getPlayer(playerId);
     if (player == null) {
@@ -99,7 +100,7 @@ public class RevenantPlayer {
     EntityAbilityCache.autoUpdate(player, Player.class);
   }
 
-  public void removeAbility(String identifier) {
+  public <T extends Ability> void removeAbility(Class<T> identifier) {
     abilityMap.remove(identifier);
     Player player = Bukkit.getPlayer(playerId);
     if (player == null) {
@@ -109,7 +110,7 @@ public class RevenantPlayer {
   }
 
   public void removeAbility(Ability ability) {
-    removeAbility(ability.getIdentifier());
+    removeAbility(ability.getClass());
   }
 
   public RevenantUserTablist getTabList() {

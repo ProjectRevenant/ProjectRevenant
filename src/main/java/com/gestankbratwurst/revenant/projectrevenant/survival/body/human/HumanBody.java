@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.body.human;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.hunger.HungerDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.overheating.OverheatingDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.thirst.ThirstDebuff;
@@ -123,6 +122,36 @@ public class HumanBody extends Body {
     knockback.setMaxValue(10.0);
     knockback.setMinValue(0.0);
     knockback.setCurrentValue(1.0);
+
+    // Armor
+    BodyAttribute armor = this.getAttribute(BodyAttribute.PHYSICAL_ARMOR);
+    armor.setMaxValue(2000.0);
+    armor.setMinValue(0.0);
+    armor.setCurrentValue(0.0);
+
+    // Range for melee attacks
+    BodyAttribute meleeRange = this.getAttribute(BodyAttribute.MELEE_RANGE);
+    meleeRange.setMaxValue(10.0);
+    meleeRange.setMinValue(0.25);
+    meleeRange.setCurrentValue(2.0);
+
+    // Radius for the hit detection
+    BodyAttribute meleeGirth = this.getAttribute(BodyAttribute.MELEE_GIRTH);
+    meleeGirth.setMaxValue(5.0);
+    meleeGirth.setMinValue(0.05);
+    meleeGirth.setCurrentValue(1.0);
+
+    // Critical strike chance
+    BodyAttribute critChance = this.getAttribute(BodyAttribute.CRITICAL_STRIKE_CHANCE);
+    critChance.setMaxValue(100.0);
+    critChance.setMinValue(0.0);
+    critChance.setCurrentValue(0.0);
+
+    // Critical strike damage
+    BodyAttribute critDamage = this.getAttribute(BodyAttribute.CRITICAL_STRIKE_DAMAGE);
+    critDamage.setMaxValue(1000.0);
+    critDamage.setMinValue(10.0);
+    critDamage.setCurrentValue(50.0);
   }
 
   @Override
@@ -150,20 +179,20 @@ public class HumanBody extends Body {
 
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
 
-    if(nutrition.getCurrentValue() <= 0.01) {
-      if(!revenantPlayer.hasAbility(RevenantAbility.HUNGER_DEBUFF)) {
+    if (nutrition.getCurrentValue() <= 0.01) {
+      if (!revenantPlayer.hasAbility(HungerDebuff.class)) {
         revenantPlayer.addAbility(new HungerDebuff());
       }
-    } else if(revenantPlayer.hasAbility(RevenantAbility.HUNGER_DEBUFF)) {
-      revenantPlayer.removeAbility(RevenantAbility.HUNGER_DEBUFF);
+    } else if (revenantPlayer.hasAbility(HungerDebuff.class)) {
+      revenantPlayer.removeAbility(HungerDebuff.class);
     }
 
-    if(water.getCurrentValue() <= 0.001) {
-      if(!revenantPlayer.hasAbility(RevenantAbility.THIRST_DEBUFF)) {
+    if (water.getCurrentValue() <= 0.001) {
+      if (!revenantPlayer.hasAbility(ThirstDebuff.class)) {
         revenantPlayer.addAbility(new ThirstDebuff());
       }
-    } else if(revenantPlayer.hasAbility(RevenantAbility.THIRST_DEBUFF)) {
-      revenantPlayer.removeAbility(RevenantAbility.THIRST_DEBUFF);
+    } else if (revenantPlayer.hasAbility(ThirstDebuff.class)) {
+      revenantPlayer.removeAbility(ThirstDebuff.class);
     }
 
   }
@@ -196,7 +225,7 @@ public class HumanBody extends Body {
       value = ((delta * delta) * 0.002) / 1200;
     }
     double resultingValue = value * scalar;
-    if(Math.abs(resultingValue) < 0.00001 && Math.abs(bodyTemp - 37) > 0.05) {
+    if (Math.abs(resultingValue) < 0.00001 && Math.abs(bodyTemp - 37) > 0.05) {
       resultingValue = bodyTemp < 37 ? 0.00015 : -0.00015;
     }
     BodyAttribute tempShiftAttribute = getAttribute(BodyAttribute.TEMPERATURE_SHIFT);
@@ -205,20 +234,20 @@ public class HumanBody extends Body {
     double afterTemp = tempAttribute.getCurrentValueModified();
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
 
-    if(afterTemp <= 34.5) {
-      if(!revenantPlayer.hasAbility(RevenantAbility.UNDERCOOLING_DEBUFF)) {
+    if (afterTemp <= 33) {
+      if (!revenantPlayer.hasAbility(UndercoolingDebuff.class)) {
         revenantPlayer.addAbility(new UndercoolingDebuff());
       }
-    } else if (revenantPlayer.hasAbility(RevenantAbility.UNDERCOOLING_DEBUFF)) {
-      revenantPlayer.removeAbility(RevenantAbility.UNDERCOOLING_DEBUFF);
+    } else if (revenantPlayer.hasAbility(UndercoolingDebuff.class)) {
+      revenantPlayer.removeAbility(UndercoolingDebuff.class);
     }
 
-    if(afterTemp >= 39.0) {
-      if(!revenantPlayer.hasAbility(RevenantAbility.OVERHEATING_DEBUFF)) {
+    if (afterTemp >= 40) {
+      if (!revenantPlayer.hasAbility(OverheatingDebuff.class)) {
         revenantPlayer.addAbility(new OverheatingDebuff());
       }
-    } else if (revenantPlayer.hasAbility(RevenantAbility.OVERHEATING_DEBUFF)) {
-      revenantPlayer.removeAbility(RevenantAbility.OVERHEATING_DEBUFF);
+    } else if (revenantPlayer.hasAbility(OverheatingDebuff.class)) {
+      revenantPlayer.removeAbility(OverheatingDebuff.class);
     }
   }
 

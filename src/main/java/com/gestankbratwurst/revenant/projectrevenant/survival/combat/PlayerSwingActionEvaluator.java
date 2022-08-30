@@ -26,6 +26,7 @@ public class PlayerSwingActionEvaluator {
     Location start = player.getEyeLocation();
     Vector direction = start.getDirection();
     RayTraceResult result = world.rayTrace(start, direction, range, FluidCollisionMode.NEVER, true, size, (entity) -> !entity.equals(player));
+
     if (result == null) {
       return;
     }

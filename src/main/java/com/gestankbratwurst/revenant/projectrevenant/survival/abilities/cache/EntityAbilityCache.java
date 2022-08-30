@@ -10,16 +10,18 @@ import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class EntityAbilityCache {
 
-  private static final Map<UUID, Map<String, Ability>> abilityCache = new HashMap<>();
+  private static final Map<UUID, Map<Class<? extends Ability>, Ability>> abilityCache = new HashMap<>();
 
   public static void uncache(UUID entityId) {
     abilityCache.remove(entityId);
@@ -29,14 +31,19 @@ public class EntityAbilityCache {
     abilityCache.put(entityId, new HashMap<>());
   }
 
+  @SuppressWarnings("unchecked")
+  public static <T extends Ability> T getAbility(UUID entityId, Class<T> identifier) {
+    return (T) Optional.ofNullable(abilityCache.get(entityId)).map(abilities -> abilities.get(identifier)).orElse(null);
+  }
+
   public static Collection<Ability> getAbilities(UUID entityId) {
-    return abilityCache.getOrDefault(entityId, Collections.emptyMap()).values();
+    return List.copyOf(abilityCache.getOrDefault(entityId, Collections.emptyMap()).values());
   }
 
   public static void updateAbilities(UUID entityId, List<Ability> abilityList) {
-    Map<String, Ability> map = abilityCache.computeIfAbsent(entityId, key -> new HashMap<>());
+    Map<Class<? extends Ability>, Ability> map = abilityCache.computeIfAbsent(entityId, key -> new HashMap<>());
     map.clear();
-    abilityList.forEach(ability -> map.put(ability.getIdentifier(), ability));
+    abilityList.forEach(ability -> map.put(ability.getClass(), ability));
   }
 
   public static <T extends Entity> void autoUpdate(T entity, Class<T> type) {

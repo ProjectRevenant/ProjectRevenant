@@ -35,7 +35,7 @@ public class AbilityHandle {
     itemStack.setItemMeta(meta);
   }
 
-  public static void removeFrom(ItemStack itemStack, String identifier) {
+  public static <T extends Ability> void removeFrom(ItemStack itemStack, Class<T> identifier) {
     ItemMeta meta = itemStack.getItemMeta();
     removeFrom(meta.getPersistentDataContainer(), identifier);
     itemStack.setItemMeta(meta);
@@ -64,10 +64,10 @@ public class AbilityHandle {
     container.set(ABILITY_KEY, PersistentDataType.STRING, MMCore.getGsonProvider().toJson(abilityList));
   }
 
-  public static void removeFrom(PersistentDataContainer container, String identifier) {
+  public static <T extends Ability> void removeFrom(PersistentDataContainer container, Class<T> identifier) {
     String data = container.get(ABILITY_KEY, PersistentDataType.STRING);
     List<Ability> abilityList = data == null ? new ArrayList<>() : MMCore.getGsonProvider().fromJson(data, abilityListType);
-    abilityList.removeIf(ability -> ability.getIdentifier().equals(identifier));
+    abilityList.removeIf(ability -> ability.getClass().equals(identifier));
     container.set(ABILITY_KEY, PersistentDataType.STRING, MMCore.getGsonProvider().toJson(abilityList));
   }
 

@@ -3,8 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.FoodPoisoningAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.FoodPoisoningDebuff;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.time.Duration;
@@ -19,11 +18,11 @@ public class MurkyBottleDrinkEffect extends AbilityEffect<PlayerItemConsumeEvent
   public void cast(PlayerItemConsumeEvent element) {
     if (ThreadLocalRandom.current().nextDouble() <= 0.4) {
       RevenantPlayer revenantPlayer = RevenantPlayer.of(element.getPlayer());
-      if (revenantPlayer.hasAbility(RevenantAbility.FOOD_POISONING)) {
-        FoodPoisoningAbility ability = (FoodPoisoningAbility) revenantPlayer.getAbility(RevenantAbility.FOOD_POISONING);
+      if (revenantPlayer.hasAbility(FoodPoisoningDebuff.class)) {
+        FoodPoisoningDebuff ability = revenantPlayer.getAbility(FoodPoisoningDebuff.class);
         ability.appendDuration(Duration.ofSeconds(120));
       } else {
-        FoodPoisoningAbility ability = new FoodPoisoningAbility();
+        FoodPoisoningDebuff ability = new FoodPoisoningDebuff();
         ability.setDurationFromNow(Duration.ofSeconds(90));
         revenantPlayer.addAbility(ability);
       }

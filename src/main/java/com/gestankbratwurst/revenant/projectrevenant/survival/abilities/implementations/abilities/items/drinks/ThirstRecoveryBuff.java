@@ -3,7 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.ThirstRecoveryEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -17,9 +16,7 @@ public class ThirstRecoveryAbility extends TimedAbility implements Mergeable<Thi
     this(0.0);
   }
 
-  public ThirstRecoveryAbility(double amount) {
-    super(RevenantAbility.THIRST_RECOVERY);
-
+  public ThirstRecoveryBuff(double amount) {
     Duration duration = Duration.ofSeconds((long) (amount / (ThirstRecoveryEffect.RATE * 20)));
 
     this.addEffect(new ThirstRecoveryEffect());

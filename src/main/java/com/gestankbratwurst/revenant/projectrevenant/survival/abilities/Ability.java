@@ -15,38 +15,35 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public abstract class Ability {
 
-  private final Map<AbilityTrigger<?>, Map<String, AbilityEffect<?>>> triggerMap;
-  @Getter
-  private final String identifier;
+  private final Map<AbilityTrigger<?>, Map<Class<? extends AbilityEffect<?>>, AbilityEffect<?>>> triggerMap;
 
-  public Ability(String identifier) {
+  public Ability() {
     triggerMap = new HashMap<>();
-    this.identifier = identifier;
   }
 
   public <T> void addEffect(AbilityEffect<T> abilityEffect) {
-    triggerMap.computeIfAbsent(abilityEffect.getTrigger(), key -> new HashMap<>()).put(abilityEffect.getIdentifier(), abilityEffect);
+    triggerMap.computeIfAbsent(abilityEffect.getTrigger(), key -> new HashMap<>()).put((Class<? extends AbilityEffect<?>>) abilityEffect.getClass(), abilityEffect);
   }
 
   public <T> void removeEffect(AbilityEffect<T> abilityEffect) {
-    triggerMap.computeIfAbsent(abilityEffect.getTrigger(), key -> new HashMap<>()).remove(abilityEffect.getIdentifier());
+    triggerMap.computeIfAbsent(abilityEffect.getTrigger(), key -> new HashMap<>()).remove(abilityEffect.getClass());
   }
 
-  public void removeEffect(String identifier) {
+  public <K, T extends AbilityEffect<K>> void removeEffect(Class<T> identifier) {
     triggerMap.values().forEach(map -> map.remove(identifier));
   }
 
-  public AbilityEffect<?> getEffect(String identifier) {
-    return triggerMap.values()
-            .stream()
-            .flatMap(map -> map.values().stream())
-            .filter(effect -> effect.getIdentifier().equals(identifier))
-            .findAny()
-            .orElse(null);
+  public <K, T extends AbilityEffect<K>> T getEffect(Class<T> identifier) {
+    for(Map<Class<? extends AbilityEffect<?>>, AbilityEffect<?>> map : triggerMap.values()) {
+      if(map.containsKey(identifier)) {
+        return (T) map.get(identifier);
+      }
+    }
+    return null;
   }
 
   public <C, T> void reactOn(C caster, AbilityTrigger<T> trigger, T target) {
-    Map<String, AbilityEffect<?>> effects = triggerMap.get(trigger);
+    Map<Class<? extends AbilityEffect<?>>, AbilityEffect<?>> effects = triggerMap.get(trigger);
     if (effects == null) {
       return;
     }
@@ -67,12 +64,12 @@ public abstract class Ability {
 
   @Override
   public int hashCode() {
-    return identifier.hashCode();
+    return this.getClass().hashCode();
   }
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof Ability other && identifier.equals(other.identifier);
+    return obj instanceof Ability other && this.getClass().equals(other.getClass());
   }
 
 }

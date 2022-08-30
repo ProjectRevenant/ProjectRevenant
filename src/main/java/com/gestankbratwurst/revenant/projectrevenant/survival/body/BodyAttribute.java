@@ -30,6 +30,8 @@ public class BodyAttribute {
   public static final String MELEE_KNOCKBACK = "melee_knockback";
   public static final String MELEE_RANGE = "melee_range";
   public static final String MELEE_GIRTH = "melee_girth";
+  public static final String CRITICAL_STRIKE_CHANCE = "critical_strike_chance";
+  public static final String CRITICAL_STRIKE_DAMAGE = "critical_strike_damage";
 
   @Getter
   private static final String[] values = {
@@ -53,7 +55,9 @@ public class BodyAttribute {
           ATTACK_SPEED,
           MELEE_KNOCKBACK,
           MELEE_RANGE,
-          MELEE_GIRTH
+          MELEE_GIRTH,
+          CRITICAL_STRIKE_CHANCE,
+          CRITICAL_STRIKE_DAMAGE
   };
 
   @Getter

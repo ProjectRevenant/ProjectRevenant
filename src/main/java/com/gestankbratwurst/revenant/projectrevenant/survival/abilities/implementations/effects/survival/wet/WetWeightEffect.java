@@ -3,7 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.wet.WetDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
@@ -18,10 +17,10 @@ public class WetWeightEffect extends AbilityEffect<Body> {
   @Override
   public void cast(Body element) {
     Player player = Bukkit.getPlayer(element.getEntityId());
-    if(player == null) {
+    if (player == null) {
       return;
     }
-    WetDebuff wetDebuff = (WetDebuff) RevenantPlayer.of(player).getAbility(RevenantAbility.WET_DEBUFF);
+    WetDebuff wetDebuff = RevenantPlayer.of(player).getAbility(WetDebuff.class);
     double kilos = wetDebuff.getLitres();
     BodyAttribute weightAttribute = element.getAttribute(BodyAttribute.WEIGHT);
     weightAttribute.setCurrentValueUnsafe(weightAttribute.getCurrentValue() + kilos);

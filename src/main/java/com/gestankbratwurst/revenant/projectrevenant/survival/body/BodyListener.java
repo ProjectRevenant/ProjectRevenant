@@ -6,7 +6,6 @@ import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.hunger.SprintingDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.LegBone;
@@ -68,13 +67,7 @@ public class BodyListener implements Listener {
       bodyManager.addBodyTo(player, new HumanBody());
     }
     bodyManager.loadBody(event.getPlayer());
-    TaskManager.getInstance().runBukkitSync(() -> {
-      bodyManager.getBody(player).recalculateAttributes();
-      if (MMCore.getTabListManager().getView(player).getTablist() instanceof RevenantUserTablist userTablist) {
-        userTablist.updateEffects();
-        userTablist.updateStatistics();
-      }
-    });
+    restoreDefaults(player);
   }
 
   @EventHandler(priority = EventPriority.HIGH)
@@ -87,7 +80,13 @@ public class BodyListener implements Listener {
     Player player = event.getPlayer();
     bodyManager.addBodyTo(player, new HumanBody());
     bodyManager.loadBody(player);
+    restoreDefaults(player);
+  }
+
+  private void restoreDefaults(Player player) {
     TaskManager.getInstance().runBukkitSync(() -> {
+      player.setFoodLevel(10);
+      player.setSaturation(10.0F);
       bodyManager.getBody(player).recalculateAttributes();
       if (MMCore.getTabListManager().getView(player).getTablist() instanceof RevenantUserTablist userTablist) {
         userTablist.updateEffects();
@@ -110,9 +109,9 @@ public class BodyListener implements Listener {
   private static void checkBoneBreaking(EntityDamageEvent event, Entity entity) {
     if (entity instanceof Player player) {
       RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
-      if(event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+      if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
         double chance = event.getDamage() < 4 ? 0 : event.getDamage() / 20;
-        if(ThreadLocalRandom.current().nextDouble() < chance) {
+        if (ThreadLocalRandom.current().nextDouble() < chance) {
           String boneType = ThreadLocalRandom.current().nextBoolean() ? LegBone.LEFT : LegBone.RIGHT;
           revenantPlayer.getBody().getSkeleton().getBone(boneType).breakBone();
           player.playSound(player.getLocation(), Sound.ENTITY_TURTLE_EGG_CRACK, 1.2F, 0.66F);
@@ -127,7 +126,7 @@ public class BodyListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onDamageCancel(EntityDamageEvent event) {
     event.setDamage(0);
-    if(event instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player) {
+    if (event instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player) {
       event.setCancelled(true);
     }
   }
@@ -202,7 +201,7 @@ public class BodyListener implements Listener {
     if (event.isSprinting()) {
       revenantPlayer.addAbility(new SprintingDebuff());
     } else {
-      revenantPlayer.removeAbility(RevenantAbility.SPRINTING_DEBUFF);
+      revenantPlayer.removeAbility(SprintingDebuff.class);
     }
     EntityAbilityCache.autoUpdate(event.getPlayer(), Player.class);
   }

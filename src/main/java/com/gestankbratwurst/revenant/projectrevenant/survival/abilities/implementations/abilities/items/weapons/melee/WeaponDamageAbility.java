@@ -17,7 +17,9 @@ public class WeaponDamageAbility extends Ability {
   }
 
   public WeaponDamageAbility(double damage, double attackSpeed, double knockback) {
-    super("weapon-damage-ability");
+    this.damage = damage;
+    this.attackSpeed = attackSpeed;
+    this.knockback = knockback;
     this.addEffect(new WeaponDamageEffect(damage));
     this.addEffect(new AttackSpeedEffect(attackSpeed));
     this.addEffect(new WeaponKnockbackEffect(knockback));

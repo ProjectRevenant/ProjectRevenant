@@ -9,7 +9,7 @@ import lombok.Getter;
 public class OverweightEffect extends AbilityEffect<Body> {
 
   public OverweightEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "overweight");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Getter

@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.overweight.OverweightEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -12,12 +11,11 @@ import java.util.List;
 public class OverweightDebuff extends Ability {
 
   public OverweightDebuff() {
-    super(RevenantAbility.OVERWEIGHT_DEBUFF);
     this.addEffect(new OverweightEffect());
   }
 
   private OverweightEffect getOverweightEffect() {
-    return  (OverweightEffect) this.getEffect("overweight");
+    return this.getEffect(OverweightEffect.class);
   }
 
   public boolean isCritical() {

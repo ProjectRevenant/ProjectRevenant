@@ -8,10 +8,6 @@ public abstract class TimedAbility extends Ability {
 
   private long endTime;
 
-  public TimedAbility(String identifier) {
-    super(identifier);
-  }
-
   public void setDurationFromNow(Duration duration) {
     endTime = System.currentTimeMillis() + duration.toMillis();
   }

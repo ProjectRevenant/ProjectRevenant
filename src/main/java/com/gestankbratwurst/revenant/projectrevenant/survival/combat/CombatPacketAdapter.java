@@ -3,10 +3,12 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.combat;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.world.InteractionHand;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CombatPacketAdapter extends PacketAdapter {
@@ -25,7 +27,12 @@ public class CombatPacketAdapter extends PacketAdapter {
     } else {
       ServerboundSwingPacket packet = (ServerboundSwingPacket) event.getPacket().getHandle();
       InteractionHand hand = packet.getHand();
-      PlayerSwingActionEvaluator.onSwing(event.getPlayer(), hand);
+      Runnable action = () -> PlayerSwingActionEvaluator.onSwing(event.getPlayer(), hand);
+      if(Bukkit.isPrimaryThread()) {
+        action.run();
+      } else {
+        TaskManager.getInstance().runBukkitSync(action);
+      }
     }
 
   }

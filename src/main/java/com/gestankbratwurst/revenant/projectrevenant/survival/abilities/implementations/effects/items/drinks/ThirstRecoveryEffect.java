@@ -7,12 +7,11 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
 
 public class ThirstRecoveryEffect extends AbilityEffect<Body> {
-  //0.001 pro Tick, 20/s
+  //0.001 pro Tick, 0.02 pro Sekunde
   public final static double RATE = 0.001;
 
-
-  public ThirstRecoveryEffect(){
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "thirst-recovery");
+  public ThirstRecoveryEffect() {
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

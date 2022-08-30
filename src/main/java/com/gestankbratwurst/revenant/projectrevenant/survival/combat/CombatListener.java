@@ -20,6 +20,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @RequiredArgsConstructor
 public class CombatListener implements Listener {
 
@@ -48,7 +50,14 @@ public class CombatListener implements Listener {
     if (!(event.getEntity() instanceof LivingEntity livingEntity)) {
       return;
     }
-    event.setDamage(CombatEvaluator.evaluateAttack(event.getDamager(), livingEntity, event.isCritical()));
+    double critChance = bodyManager.getBody(livingEntity).getAttribute(BodyAttribute.CRITICAL_STRIKE_CHANCE).getCurrentValueModified();
+    double modifier = 1.0;
+    if(ThreadLocalRandom.current().nextDouble() <= critChance) {
+      double critDamage = bodyManager.getBody(livingEntity).getAttribute(BodyAttribute.CRITICAL_STRIKE_DAMAGE).getCurrentValueModified();
+      modifier += critDamage / 100.0;
+    }
+
+    event.setDamage(CombatEvaluator.evaluateAttack(event.getDamager(), livingEntity, event.isCritical(), modifier));
   }
 
   @EventHandler

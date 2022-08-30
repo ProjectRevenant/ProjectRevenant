@@ -10,6 +10,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.SaltyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.melee.WeaponDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
@@ -50,15 +51,18 @@ public class RevenantItem {
     return TextureModel.RED_X.getItem();
   }
 
-  private static ItemStack basic(TextureModel model, String name, ItemRarity rarity, double weight, Ability... abilities) {
-    ItemStack itemStack = model.getItem();
-    AbilityHandle.addTo(itemStack, abilities);
-    ItemWeight.set(itemStack, weight);
-    rarity.applyTo(itemStack);
-    ItemMeta meta = itemStack.getItemMeta();
+  private static ItemStack basic(ItemStack baseItem, String name, ItemRarity rarity, double weight, Ability... abilities) {
+    AbilityHandle.addTo(baseItem, abilities);
+    ItemWeight.set(baseItem, weight);
+    rarity.applyTo(baseItem);
+    ItemMeta meta = baseItem.getItemMeta();
     meta.displayName(Component.text(name).style(Style.style(rarity.getColor())));
-    itemStack.setItemMeta(meta);
-    return itemStack;
+    baseItem.setItemMeta(meta);
+    return baseItem;
+  }
+
+  private static ItemStack basic(TextureModel model, String name, ItemRarity rarity, double weight, Ability... abilities) {
+    return basic(model.getItem(), name, rarity, weight, abilities);
   }
 
   private static ItemStack meleeWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double baseDmg, double baseAtkSpeed, double knockback, Ability... abilities) {
@@ -67,7 +71,7 @@ public class RevenantItem {
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities){
+  private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed, meleeKnockback));
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
@@ -110,8 +114,9 @@ public class RevenantItem {
   }
 
   //Ranged Weapons
-  public static ItemStack dummyBow(){
+  public static ItemStack dummyBow() {
     ItemStack base = rangedWeapon(TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5, 1.0);
+    ItemAttributeHandler.setAsTwoHanded(base);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")

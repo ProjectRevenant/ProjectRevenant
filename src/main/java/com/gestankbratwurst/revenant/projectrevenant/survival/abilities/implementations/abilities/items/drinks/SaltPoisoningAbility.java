@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.SaltyPoisoningEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -11,7 +10,6 @@ import java.util.List;
 
 public class SaltPoisoningAbility extends TimedAbility {
   public SaltPoisoningAbility() {
-    super(RevenantAbility.SALT_POISONING);
     this.addEffect(new SaltyPoisoningEffect());
   }
 
@@ -27,7 +25,7 @@ public class SaltPoisoningAbility extends TimedAbility {
 
   @Override
   public Component getInfoTitle(Player viewer) {
-    return Component.text( TextureModel.SALT_POISONING_SMALL.getChar() + " §cSalzvergiftung");
+    return Component.text(TextureModel.SALT_POISONING_SMALL.getChar() + " §cSalzvergiftung");
   }
 
   @Override

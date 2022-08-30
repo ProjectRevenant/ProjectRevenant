@@ -3,7 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.EmptyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.WaterType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.WorldEnvironmentFetcher;
@@ -41,7 +41,7 @@ public class EmptyBottleGatherEffect extends AbilityEffect<PlayerInteractEvent> 
     if (usedItem == null) {
       return;
     }
-    if (AbilityHandle.getFrom(usedItem).stream().noneMatch(ability -> ability.getIdentifier().equals(RevenantAbility.EMPTY_BOTTLE_FILL))) {
+    if (AbilityHandle.getFrom(usedItem).stream().noneMatch(ability -> ability.getClass().equals(EmptyBottleAbility.class))) {
       return;
     }
     if (block.getType() == Material.WATER_CAULDRON) {

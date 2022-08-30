@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.BrokenBoneDamageEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.ribs.BrokenRibsEffect;
 import net.kyori.adventure.text.Component;
@@ -12,7 +11,6 @@ import java.util.List;
 
 public class BrokenRibsAbility extends Ability {
   public BrokenRibsAbility() {
-    super(RevenantAbility.BROKEN_RIBS);
     this.addEffect(new BrokenRibsEffect());
     this.addEffect(new BrokenBoneDamageEffect("broken-ribs-damage-effect"));
   }

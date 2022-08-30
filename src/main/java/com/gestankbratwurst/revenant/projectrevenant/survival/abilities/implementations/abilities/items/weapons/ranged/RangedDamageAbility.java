@@ -13,39 +13,43 @@ import java.util.List;
 
 public class RangedDamageAbility extends Ability {
 
-    public RangedDamageAbility(){
-        this(0.0, 0.0, 1, 0.0);
-    }
+  private final double rangedDamage;
 
-    public RangedDamageAbility(double rangedDamage, double meleeDamage, double meleeAttackSpeed, double meleeKnockback){
-        super("ranged-damage-ability");
-        this.addEffect(new RangedDamageEffect(rangedDamage));
-        this.addEffect(new WeaponDamageEffect(meleeDamage));
-        this.addEffect(new AttackSpeedEffect(meleeAttackSpeed));
-        this.addEffect(new WeaponKnockbackEffect(meleeKnockback));
-    }
+  public RangedDamageAbility() {
+    this(0.0, 0.0, 1, 0.0);
+  }
 
-    @Override
-    public boolean shouldDisplayInTab() {
-        return false;
-    }
+  public RangedDamageAbility(double rangedDamage, double meleeDamage, double meleeAttackSpeed, double meleeKnockback) {
+    this.rangedDamage = rangedDamage;
+    this.addEffect(new RangedDamageEffect(rangedDamage));
+    this.addEffect(new WeaponDamageEffect(meleeDamage));
+    this.addEffect(new AttackSpeedEffect(meleeAttackSpeed));
+    this.addEffect(new WeaponKnockbackEffect(meleeKnockback));
+  }
 
-    @Override
-    public boolean shouldDisplayInActionbar() {
-        return false;
-    }
+  @Override
+  public boolean shouldDisplayInTab() {
+    return false;
+  }
 
-    public Component getInfoTitle(Player viewer) {
-        return Component.text("");
-    }
+  @Override
+  public boolean shouldDisplayInActionbar() {
+    return false;
+  }
 
-    @Override
-    public List<Component> getInfos(Player viewer) {
-        return List.of();
-    }
+  public Component getInfoTitle(Player viewer) {
+    return Component.text("§9Fernkampfwaffe");
+  }
 
-    @Override
-    public TextureModel getModel() {
-        return TextureModel.RED_X;
-    }
+  @Override
+  public List<Component> getInfos(Player viewer) {
+    return List.of(
+            Component.text(String.format("§e %.1f §7Fernkampfschaden", rangedDamage))
+    );
+  }
+
+  @Override
+  public TextureModel getModel() {
+    return TextureModel.RED_X;
+  }
 }

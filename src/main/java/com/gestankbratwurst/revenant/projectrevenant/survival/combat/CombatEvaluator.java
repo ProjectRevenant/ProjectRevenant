@@ -52,7 +52,7 @@ public class CombatEvaluator {
   private static final double maxPercentageDamageReduction = 0.9;
   private static final double curveAmplifier = 0.0075;
 
-  public static double evaluateAttack(Entity attacker, LivingEntity defender, boolean critical) {
+  public static double evaluateAttack(Entity attacker, LivingEntity defender, boolean vanillaCrit, double modifier) {
     double damage;
     if(attacker instanceof Projectile projectile) {
       damage = ItemCombatStat.fetchProjectileDamage(projectile);
@@ -64,10 +64,12 @@ public class CombatEvaluator {
     } else {
       throw new RuntimeException("Unhandled damage by " + attacker.getType());
     }
+
+    damage *= modifier;
     double defence = ProjectRevenant.getBodyManager().getBody(defender).getAttribute(BodyAttribute.PHYSICAL_ARMOR).getCurrentValueModified();
 
     double defenceScalar = maxPercentageDamageReduction * Math.tanh(-defence * curveAmplifier) + 1;
-    return damage * defenceScalar * (critical ? 1.15 : 1.0);
+    return damage * defenceScalar * (vanillaCrit ? 1.15 : 1.0);
   }
 
   public static double evaluateEnvironmentalDamage(LivingEntity defender, EntityDamageEvent.DamageCause damageCause, double initialDamage) {

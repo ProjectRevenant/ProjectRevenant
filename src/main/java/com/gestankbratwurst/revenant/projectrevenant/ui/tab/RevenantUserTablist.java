@@ -9,7 +9,7 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.dry.DryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.wet.WetDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -139,21 +140,8 @@ public class RevenantUserTablist extends AbstractTabList {
       this.updateDisplay(68, "§eEnv Temp: §f%.1f".formatted(WorldEnvironmentFetcher.getTemperatureAt(player.getLocation(), true)) + " §9°C");
       this.updateDisplay(69, "§eBody Temp: §f%.1f".formatted(tempAttr.getCurrentValue()) + " §9°C");
       this.updateDisplay(70, "§eTemp Gradient: §f%.1f".formatted(tempGradAttr.getCurrentValue() * 20 * 60) + " §9°C/min");
-      this.updateDisplay(71, "§eDrying: §f%s".formatted(
-              EntityAbilityCache.getAbilities(player.getUniqueId())
-                      .stream()
-                      .anyMatch(ability -> ability.getIdentifier().equals(RevenantAbility.DRY_BUFF)))
-      );
-      this.updateDisplay(72, "§eWetness: §f%.3f".formatted(
-                      EntityAbilityCache.getAbilities(player.getUniqueId())
-                              .stream()
-                              .filter(ability -> ability.getIdentifier().equals(RevenantAbility.WET_DEBUFF))
-                              .map(WetDebuff.class::cast)
-                              .findAny()
-                              .map(WetDebuff::getLitres)
-                              .orElse(0.0)
-              ) + " §9L"
-      );
+      this.updateDisplay(71, "§eDrying: §f%s".formatted(EntityAbilityCache.getAbility(userId, DryBuff.class) != null));
+      this.updateDisplay(72, "§eWetness: §f%.3f §9L".formatted(Optional.ofNullable(EntityAbilityCache.getAbility(userId, WetDebuff.class)).map(WetDebuff::getLitres).orElse(0.0)));
     }
   }
 

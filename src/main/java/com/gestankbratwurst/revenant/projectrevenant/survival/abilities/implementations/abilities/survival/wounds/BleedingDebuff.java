@@ -3,20 +3,16 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.common.UtilMath;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingInfectionEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.BleedingParticleEffect;
 import net.kyori.adventure.text.Component;
-import org.bukkit.GameRule;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class BleedingDebuff extends TimedAbility {
   public BleedingDebuff(int intensity) {
-    super(RevenantAbility.BLEEDING_DEBUFF);
     BleedingEffect effect = new BleedingEffect();
     effect.setIntensity(intensity);
     this.addEffect(effect);
@@ -29,11 +25,11 @@ public class BleedingDebuff extends TimedAbility {
   }
 
   public void setIntensity(int intensity) {
-    ((BleedingEffect) this.getEffect("bleeding-effect")).setIntensity(intensity);
+    this.getEffect(BleedingEffect.class).setIntensity(intensity);
   }
 
   private int getIntensity() {
-    return ((BleedingEffect) this.getEffect("bleeding-effect")).getIntensity();
+    return this.getEffect(BleedingEffect.class).getIntensity();
   }
 
   @Override

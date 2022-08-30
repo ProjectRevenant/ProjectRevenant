@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.undercooling.UndercoolingHealthEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.undercooling.UndercoolingNutritionEffect;
 import net.kyori.adventure.text.Component;
@@ -12,7 +11,6 @@ import java.util.List;
 
 public class UndercoolingDebuff extends Ability {
   public UndercoolingDebuff() {
-    super(RevenantAbility.UNDERCOOLING_DEBUFF);
     this.addEffect(new UndercoolingHealthEffect());
     this.addEffect(new UndercoolingNutritionEffect());
   }

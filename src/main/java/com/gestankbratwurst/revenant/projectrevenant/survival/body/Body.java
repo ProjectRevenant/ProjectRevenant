@@ -7,11 +7,10 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.campfire.CampfireBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.dry.DryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.wet.WetDebuff;
-import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttribute;
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
 import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.WorldEnvironmentFetcher;
 import lombok.Getter;
@@ -68,7 +67,7 @@ public abstract class Body implements DeserializationPostProcessable {
     if (equipment != null) {
       for (EquipmentSlot slot : EquipmentSlot.values()) {
         ItemStack itemStack = equipment.getItem(slot);
-        for (BodyAttributeModifier modifier : ItemAttribute.getAttributes(itemStack)) {
+        for (BodyAttributeModifier modifier : ItemAttributeHandler.getAttributes(itemStack)) {
           this.getAttribute(modifier.getBodyAttribute()).addModifier(modifier);
         }
       }
@@ -127,12 +126,12 @@ public abstract class Body implements DeserializationPostProcessable {
     Block block = player.getLocation().getBlock();
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
     if (block.getType() == Material.WATER) {
-      Ability wetAbility = revenantPlayer.getAbility(RevenantAbility.WET_DEBUFF);
+      WetDebuff wetAbility = revenantPlayer.getAbility(WetDebuff.class);
       if (wetAbility == null) {
         revenantPlayer.addAbility(new WetDebuff());
         EntityAbilityCache.autoUpdate(player, Player.class);
       } else {
-        ((WetDebuff) wetAbility).setLitres(2.0);
+        wetAbility.setLitres(2.0);
       }
       return;
     }
@@ -144,15 +143,14 @@ public abstract class Body implements DeserializationPostProcessable {
     if (roofY > player.getEyeLocation().getY()) {
       return;
     }
-    Ability wetAbility = revenantPlayer.getAbility(RevenantAbility.WET_DEBUFF);
+    WetDebuff wetAbility = revenantPlayer.getAbility(WetDebuff.class);
     if (wetAbility == null) {
       WetDebuff debuff = new WetDebuff();
       debuff.setLitres(0.05);
       revenantPlayer.addAbility(debuff);
       EntityAbilityCache.autoUpdate(player, Player.class);
     } else {
-      WetDebuff debuff = ((WetDebuff) wetAbility);
-      debuff.setLitres(Math.min(debuff.getLitres() + 0.05, 2.0));
+      wetAbility.setLitres(Math.min(wetAbility.getLitres() + 0.05, 2.0));
     }
   }
 
@@ -161,22 +159,22 @@ public abstract class Body implements DeserializationPostProcessable {
     boolean dry = WorldEnvironmentFetcher.isDry(player.getLocation(), false);
     boolean nearHeatSource = WorldEnvironmentFetcher.isNearHeatSource(player.getLocation());
     if (dry || nearHeatSource) {
-      Ability dryAbility = revenantPlayer.getAbility(RevenantAbility.DRY_BUFF);
+      DryBuff dryAbility = revenantPlayer.getAbility(DryBuff.class);
       if (dryAbility == null) {
         DryBuff buff = new DryBuff();
         buff.setDurationFromNow(Duration.ofSeconds(10));
         revenantPlayer.addAbility(buff);
         EntityAbilityCache.autoUpdate(player, Player.class);
       } else {
-        ((DryBuff) dryAbility).setDurationFromNow(Duration.ofSeconds(10));
+        dryAbility.setDurationFromNow(Duration.ofSeconds(10));
       }
     }
     if (nearHeatSource) {
-      if (!revenantPlayer.hasAbility(RevenantAbility.CAMPFIRE_BUFF)) {
+      if (!revenantPlayer.hasAbility(CampfireBuff.class)) {
         revenantPlayer.addAbility(new CampfireBuff());
       }
-    } else if (revenantPlayer.hasAbility(RevenantAbility.CAMPFIRE_BUFF)) {
-      revenantPlayer.removeAbility(RevenantAbility.CAMPFIRE_BUFF);
+    } else if (revenantPlayer.hasAbility(CampfireBuff.class)) {
+      revenantPlayer.removeAbility(CampfireBuff.class);
     }
   }
 

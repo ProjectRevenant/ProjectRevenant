@@ -3,7 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.common.UtilTime;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.InstantDeathEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wounds.WoundConsumtionEffect;
 import net.kyori.adventure.text.Component;
@@ -15,7 +14,6 @@ import java.util.List;
 
 public class WoundInfectionDebuff extends Ability {
   public WoundInfectionDebuff() {
-    super(RevenantAbility.INFECTION_DEBUFF);
     this.addEffect(new WoundConsumtionEffect());
     this.addEffect(new InstantDeathEffect(Instant.now().plus(Duration.ofMinutes(60)).toEpochMilli()));
   }
