@@ -36,6 +36,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.B
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.SkeletonCommand;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.combat.CombatListener;
+import com.gestankbratwurst.revenant.projectrevenant.survival.combat.CombatPacketAdapter;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import com.gestankbratwurst.revenant.projectrevenant.ui.actionbar.ActionBarListener;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
@@ -101,6 +102,8 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("@BoneType", Arrays.asList(BoneType.values()));
     MMCore.getPaperCommandManager().registerCommand(new SkeletonCommand());
     TaskManager.getInstance().runRepeatedBukkit(new BodyRunnable(bodyManager), 1, 1);
+
+    MMCore.getProtocolManager().addPacketListener(new CombatPacketAdapter());
 
     lootChestManager = LootChestManager.create();
     lootChestManager.initialize();

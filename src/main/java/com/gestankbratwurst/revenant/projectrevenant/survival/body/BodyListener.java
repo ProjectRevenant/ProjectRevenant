@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDropItemEvent;
@@ -103,6 +104,10 @@ public class BodyListener implements Listener {
     }
     Body body = bodyManager.getBody(livingEntity);
     body.getAttribute(BodyAttribute.HEALTH).applyToCurrentValue(current -> current - event.getDamage());
+    checkBoneBreaking(event, entity);
+  }
+
+  private static void checkBoneBreaking(EntityDamageEvent event, Entity entity) {
     if (entity instanceof Player player) {
       RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
       if(event.getCause() == EntityDamageEvent.DamageCause.FALL) {
@@ -122,6 +127,9 @@ public class BodyListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onDamageCancel(EntityDamageEvent event) {
     event.setDamage(0);
+    if(event instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player) {
+      event.setCancelled(true);
+    }
   }
 
   @EventHandler
