@@ -7,6 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import lombok.Getter;
@@ -84,8 +85,13 @@ public class RevenantPlayer {
     return abilityMap.values();
   }
 
+  @SuppressWarnings("unchecked")
   public void addAbility(Ability ability) {
-    abilityMap.put(ability.getIdentifier(), ability);
+    if (ability instanceof Mergeable<?> && hasAbility(ability)) {
+      ((Mergeable<Ability>) getAbility(ability.getIdentifier())).merge(ability);
+    } else {
+      abilityMap.put(ability.getIdentifier(), ability);
+    }
     Player player = Bukkit.getPlayer(playerId);
     if (player == null) {
       return;

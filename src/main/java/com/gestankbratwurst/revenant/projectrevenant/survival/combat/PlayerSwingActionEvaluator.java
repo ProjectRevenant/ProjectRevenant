@@ -10,8 +10,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -35,10 +33,10 @@ public class PlayerSwingActionEvaluator {
       return;
     }
     Entity entity = result.getHitEntity();
-    if(!(entity instanceof LivingEntity livingEntity)) {
+    if (!(entity instanceof LivingEntity livingEntity)) {
       return;
     }
-    new EntityDamageByEntityEvent(player, livingEntity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 1.0).callEvent();
+    player.attack(livingEntity);
   }
 
 }
