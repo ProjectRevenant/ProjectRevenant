@@ -48,6 +48,7 @@ public class AbilityListener implements Listener {
     EntityAbilityCache.getAbilities(defender.getUniqueId()).forEach(ability -> ability.reactOn(defender, AbilityTrigger.COMBAT_DEFEND, event));
   }
 
+  //ToDo only trigger abilities of consumed item
   @EventHandler
   public void onConsume(PlayerItemConsumeEvent event) {
     EntityAbilityCache.getAbilities(event.getPlayer().getUniqueId()).forEach(ability -> ability.reactOn(event.getPlayer(), AbilityTrigger.CONSUME_ITEM, event));

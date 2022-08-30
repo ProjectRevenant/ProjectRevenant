@@ -1,9 +1,9 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.foodpoisoning;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.murkywaterbottle.FoodPoisoningEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.FoodPoisoningEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 

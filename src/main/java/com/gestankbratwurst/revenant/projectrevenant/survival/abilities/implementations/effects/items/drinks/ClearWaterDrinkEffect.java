@@ -1,10 +1,10 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.clearwaterbottle;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.RevenantAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.thirstrecovery.ThirstRecoveryAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.ThirstRecoveryAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 

@@ -1,9 +1,9 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.saltybottle;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.saltpoisoning.SaltPoisoningAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.SaltPoisoningAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
