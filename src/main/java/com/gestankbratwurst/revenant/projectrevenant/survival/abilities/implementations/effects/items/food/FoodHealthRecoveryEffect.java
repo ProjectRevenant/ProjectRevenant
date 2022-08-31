@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.food;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
@@ -8,21 +8,28 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-public class ThirstRecoveryEffect extends AbilityEffect<Body> {
-  //0.001 pro Tick, 0.02 pro Sekunde
-  public final static double RATE = 0.001;
+public class FoodHealthRecoveryEffect extends AbilityEffect<Body> {
 
-  public ThirstRecoveryEffect() {
+
+  private final double rate;
+
+  public FoodHealthRecoveryEffect() {
+    this(0.0);
+  }
+
+  public FoodHealthRecoveryEffect(double rate){
     super(AbilityTrigger.PASSIVE_ATTRIBUTE);
+    this.rate = rate;
   }
 
   @Override
   public void cast(Body element) {
-    element.getAttribute(BodyAttribute.WATER_SHIFT).addModifier(new BodyAttributeModifier("thirst-recovery-mod", BodyAttribute.WATER_SHIFT) {
+    element.getAttribute(BodyAttribute.HEALTH).addModifier(new BodyAttributeModifier("food-health-recovery-mod", BodyAttribute.HEALTH) {
       @Override
       public double applyAsDouble(double operand) {
-        return operand + RATE;
+        return operand + rate;
       }
     });
   }
+
 }

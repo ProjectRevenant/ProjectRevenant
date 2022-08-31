@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class WetWeightEffect extends AbilityEffect<Body> {
   public WetWeightEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "wet-weight-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

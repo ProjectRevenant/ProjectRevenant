@@ -1,28 +1,34 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.armor;
 
-import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-public class ThirstRecoveryEffect extends AbilityEffect<Body> {
-  //0.001 pro Tick, 0.02 pro Sekunde
-  public final static double RATE = 0.001;
+public class ArmorEffect extends AbilityEffect<Body> {
 
-  public ThirstRecoveryEffect() {
+  private final double armor;
+  private final String sufix;
+
+  public ArmorEffect() {
+    this(0.0, "");
+  }
+
+  public ArmorEffect(double armor, String sufix){
     super(AbilityTrigger.PASSIVE_ATTRIBUTE);
+    this.armor = armor;
+    this.sufix = sufix;
   }
 
   @Override
   public void cast(Body element) {
-    element.getAttribute(BodyAttribute.WATER_SHIFT).addModifier(new BodyAttributeModifier("thirst-recovery-mod", BodyAttribute.WATER_SHIFT) {
+    element.getAttribute(BodyAttribute.PHYSICAL_ARMOR).addModifier(new BodyAttributeModifier("armor-mod-" + sufix, BodyAttribute.PHYSICAL_ARMOR) {
       @Override
       public double applyAsDouble(double operand) {
-        return operand + RATE;
+        return operand + armor;
       }
     });
   }
+
 }

@@ -7,11 +7,9 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-import java.time.Duration;
-
 public class ClearWaterDrinkEffect extends AbilityEffect<PlayerItemConsumeEvent> {
   public ClearWaterDrinkEffect() {
-    super(AbilityTrigger.CONSUME_ITEM, "clear-water-drink-effect");
+    super(AbilityTrigger.CONSUME_ITEM);
   }
 
   @Override

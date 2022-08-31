@@ -1,25 +1,20 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks.ThirstRecoveryEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.food.FoodHealthRecoveryEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
-public class ThirstRecoveryBuff extends TimedAbility implements Mergeable<ThirstRecoveryBuff> {
+public class FoodHealthRecoveryBuff extends TimedAbility implements Mergeable<FoodHealthRecoveryBuff> {
 
-  public ThirstRecoveryBuff() {
-    this(0.0);
-  }
-
-  public ThirstRecoveryBuff(double amount) {
-    Duration duration = Duration.ofSeconds((long) (amount / (ThirstRecoveryEffect.RATE * 20)));
-
-    this.addEffect(new ThirstRecoveryEffect());
+  public FoodHealthRecoveryBuff(double amount, Duration duration) {
+    this.addEffect(new FoodHealthRecoveryEffect());
     this.setDurationFromNow(duration);
   }
 
@@ -35,12 +30,12 @@ public class ThirstRecoveryBuff extends TimedAbility implements Mergeable<Thirst
 
   @Override
   public TextureModel getModel() {
-    return TextureModel.RED_X;
+    return TextureModel.HEALTH_ICON;
   }
 
   @Override
   public Component getInfoTitle(Player viewer) {
-    return Component.text(TextureModel.RED_X.getChar() + " §aWasser getrunken");
+    return Component.text(TextureModel.HEALTH_ICON.getChar() + " §aGut ernährt!");
   }
 
   @Override
@@ -48,8 +43,9 @@ public class ThirstRecoveryBuff extends TimedAbility implements Mergeable<Thirst
     return List.of();
   }
 
+
   @Override
-  public void merge(ThirstRecoveryBuff other) {
+  public void merge(FoodHealthRecoveryBuff other) {
     Duration timeLeft = other.getTimeLeft();
     this.setDurationFromNow(this.getTimeLeft().plus(timeLeft));
   }

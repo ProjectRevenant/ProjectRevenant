@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class BrokenSkullEffect extends AbilityEffect<Player> {
   public BrokenSkullEffect() {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "broken-skull-effect");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
   }
 
   @Override

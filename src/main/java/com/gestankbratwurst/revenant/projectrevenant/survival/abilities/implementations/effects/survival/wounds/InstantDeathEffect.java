@@ -14,7 +14,7 @@ public class InstantDeathEffect extends AbilityEffect<Player> {
   }
 
   public InstantDeathEffect(long deathTime) {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "instant-death-effect");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
     this.deathTime = deathTime;
   }
 

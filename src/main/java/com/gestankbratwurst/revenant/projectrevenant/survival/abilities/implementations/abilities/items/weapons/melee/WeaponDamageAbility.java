@@ -12,6 +12,10 @@ import java.util.List;
 
 public class WeaponDamageAbility extends Ability {
 
+  private final double damage;
+  private final double attackSpeed;
+  private final double knockback;
+
   public WeaponDamageAbility() {
     this(0.0, 0.0, 0.0);
   }
@@ -37,12 +41,16 @@ public class WeaponDamageAbility extends Ability {
 
   @Override
   public Component getInfoTitle(Player viewer) {
-    return Component.text("");
+    return Component.text("§9Nahkampfwaffe");
   }
 
   @Override
   public List<Component> getInfos(Player viewer) {
-    return List.of();
+    return List.of(
+            Component.text(String.format("§e%.1f §7Schaden", damage)),
+            Component.text(String.format("§e%.1f §7Angriffsgeschwindigkeit", attackSpeed)),
+            Component.text(String.format("§e%.1f §7Knockback", knockback))
+    );
   }
 
   @Override

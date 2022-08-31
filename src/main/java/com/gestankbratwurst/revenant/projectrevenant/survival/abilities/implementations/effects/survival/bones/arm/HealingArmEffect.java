@@ -8,7 +8,7 @@ import net.kyori.adventure.text.Component;
 
 public class HealingArmEffect extends AbilityEffect<Body> {
   public HealingArmEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "healing-arm-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

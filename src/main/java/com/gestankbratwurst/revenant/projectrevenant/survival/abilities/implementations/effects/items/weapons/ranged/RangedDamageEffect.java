@@ -15,7 +15,7 @@ public class RangedDamageEffect extends AbilityEffect<Body> {
   }
 
   public RangedDamageEffect(double damage) {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "ranged-damage-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
     this.damage = damage;
   }
 

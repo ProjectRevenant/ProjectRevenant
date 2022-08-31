@@ -7,7 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 
 public class WetEffect extends AbilityEffect<Body> {
   public WetEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "wet");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

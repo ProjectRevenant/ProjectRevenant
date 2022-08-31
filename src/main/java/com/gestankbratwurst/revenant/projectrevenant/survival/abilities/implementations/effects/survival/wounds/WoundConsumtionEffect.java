@@ -7,7 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 
 public class WoundConsumtionEffect extends AbilityEffect<Body> {
   public WoundConsumtionEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "wound-consumption-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

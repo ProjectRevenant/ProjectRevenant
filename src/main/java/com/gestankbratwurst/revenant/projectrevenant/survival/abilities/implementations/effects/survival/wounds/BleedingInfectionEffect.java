@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BleedingInfectionEffect extends AbilityEffect<Player> {
   public BleedingInfectionEffect() {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "bleeding-infection-effect");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
   }
 
   @Override

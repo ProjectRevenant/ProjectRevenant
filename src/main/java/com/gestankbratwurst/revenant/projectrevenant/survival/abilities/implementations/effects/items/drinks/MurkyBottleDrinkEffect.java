@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MurkyBottleDrinkEffect extends AbilityEffect<PlayerItemConsumeEvent> {
   public MurkyBottleDrinkEffect() {
-    super(AbilityTrigger.CONSUME_ITEM, "murky-bottle-drink");
+    super(AbilityTrigger.CONSUME_ITEM);
   }
 
   @Override

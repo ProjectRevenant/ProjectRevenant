@@ -7,7 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 
 public class HealingLegEffect extends AbilityEffect<Body> {
   public HealingLegEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "healing-leg-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

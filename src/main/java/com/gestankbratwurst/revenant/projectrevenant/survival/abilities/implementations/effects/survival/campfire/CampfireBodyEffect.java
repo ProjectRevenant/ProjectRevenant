@@ -7,7 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 
 public class CampfireBodyEffect extends AbilityEffect<Body> {
   public CampfireBodyEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "campfire");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

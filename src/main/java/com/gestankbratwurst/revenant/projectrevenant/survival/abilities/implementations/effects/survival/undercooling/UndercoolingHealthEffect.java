@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class UndercoolingHealthEffect extends AbilityEffect<Player> {
   public UndercoolingHealthEffect() {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "undercooling-debuff-damage");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
   }
 
 

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class ThirstHealthEffect extends AbilityEffect<Player> {
   public ThirstHealthEffect() {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "thirst-debuff-damage");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
   }
 
   @Override

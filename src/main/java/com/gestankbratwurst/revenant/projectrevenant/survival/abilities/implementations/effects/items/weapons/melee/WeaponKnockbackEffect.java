@@ -14,7 +14,7 @@ public class WeaponKnockbackEffect extends AbilityEffect<Body> {
     }
 
     public WeaponKnockbackEffect(double knockback){
-        super(AbilityTrigger.PASSIVE_ATTRIBUTE, "weapon-knockback-effect");
+        super(AbilityTrigger.PASSIVE_ATTRIBUTE);
         this.knockback = knockback;
     }
 

@@ -9,7 +9,7 @@ import lombok.Setter;
 
 public class BleedingEffect extends AbilityEffect<Body> {
   public BleedingEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "bleeding-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Getter

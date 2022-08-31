@@ -18,8 +18,9 @@ public class WoundInfectionDebuff extends Ability {
     this.addEffect(new InstantDeathEffect(Instant.now().plus(Duration.ofMinutes(60)).toEpochMilli()));
   }
 
+
   private long getDeathTime() {
-    return ((InstantDeathEffect) getEffect("instant-death-effect")).getDeathTime();
+    return (getEffect(InstantDeathEffect.class)).getDeathTime();
   }
 
   @Override

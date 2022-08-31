@@ -4,10 +4,14 @@ import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.items.ItemBuilder;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.ArmorAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.ChestplateAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.HelmetAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.ClearBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.EmptyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.MurkyBottleDrinkAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.SaltyBottleAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food.FoodEatenAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.melee.WeaponDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
@@ -15,10 +19,12 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +42,9 @@ public class RevenantItem {
             put("SALT_WATER_BOTTLE", RevenantItem::saltyWaterBottle);
             put("DUMMY_SWORD", RevenantItem::dummySword);
             put("DUMMY_BOW", RevenantItem::dummyBow);
+            put("DUMMY_FOOD", RevenantItem::dummyFood);
+            put("DUMMY_HELMET", RevenantItem::dummyHelmet);
+            put("DUMMY_CHESTPLATE", RevenantItem::dummyChestplate);
           }}
   );
 
@@ -74,6 +83,18 @@ public class RevenantItem {
   private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed, meleeKnockback));
+    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+  }
+
+  private static ItemStack food(TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
+    List<Ability> list = new ArrayList<>(List.of(abilities));
+    list.add(new FoodEatenAbility(nutrition, water, 0, Duration.ZERO));
+    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+  }
+
+  private static ItemStack healingFood(TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, double health, Duration healthDuration, Ability... abilities) {
+    List<Ability> list = new ArrayList<>(List.of(abilities));
+    list.add(new FoodEatenAbility(nutrition, water, health, healthDuration));
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
@@ -124,5 +145,29 @@ public class RevenantItem {
 
   }
 
+  //Food
+  public static ItemStack dummyFood() {
+    ItemStack base = healingFood(TextureModel.RED_X_BREAD, "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 500, 50, Duration.ofSeconds(10));
+    return new ItemBuilder(base)
+            .lore("§6[Debug]")
+            .lore("§fNur zum testen!")
+            .build();
+  }
 
+  //Armor
+  public static ItemStack dummyHelmet() {
+    ItemStack base = basic(new ItemStack(Material.LEATHER_HELMET), "Dummy-Helmet", ItemRarity.DEBUG, 1.5, new HelmetAbility(5));
+    return new ItemBuilder(base)
+            .lore("§6[Debug]")
+            .lore("§fNur zum testen!")
+            .build();
+  }
+
+  public static ItemStack dummyChestplate() {
+    ItemStack base = basic(new ItemStack(Material.LEATHER_CHESTPLATE), "Dummy-Chestplate", ItemRarity.DEBUG, 3, new ChestplateAbility(10));
+    return new ItemBuilder(base)
+            .lore("§6[Debug]")
+            .lore("§fNur zum testen!")
+            .build();
+  }
 }

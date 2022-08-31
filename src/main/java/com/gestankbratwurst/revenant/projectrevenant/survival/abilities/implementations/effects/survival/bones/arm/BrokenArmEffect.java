@@ -7,7 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 
 public class BrokenArmEffect extends AbilityEffect<Body> {
   public BrokenArmEffect() {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "broken-arm-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
   }
 
   @Override

@@ -21,7 +21,7 @@ import org.bukkit.util.RayTraceResult;
 
 public class EmptyBottleGatherEffect extends AbilityEffect<PlayerInteractEvent> {
   public EmptyBottleGatherEffect() {
-    super(AbilityTrigger.PLAYER_INTERACT, "fill-bottle-effect");
+    super(AbilityTrigger.PLAYER_INTERACT);
   }
 
   @Override

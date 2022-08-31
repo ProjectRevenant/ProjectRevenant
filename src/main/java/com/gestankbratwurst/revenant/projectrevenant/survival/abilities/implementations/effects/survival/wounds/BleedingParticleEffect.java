@@ -13,10 +13,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BleedingParticleEffect extends AbilityEffect<Player> {
 
-  private static final transient BlockData REDSTONE_BLOCK_DATA = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
+  private static final BlockData redstoneBlockData = Bukkit.createBlockData(Material.REDSTONE_BLOCK);
 
   public BleedingParticleEffect() {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "bleeding-particles");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
   }
 
   @Override
@@ -28,7 +28,7 @@ public class BleedingParticleEffect extends AbilityEffect<Player> {
 
   private void playBleedingEffect(Player player) {
     Location location = player.getLocation().add(0, 0.5, 0);
-    player.getWorld().spawnParticle(Particle.BLOCK_DUST, location, 8, 0.5, 0.5, 0.5, REDSTONE_BLOCK_DATA);
+    player.getWorld().spawnParticle(Particle.BLOCK_DUST, location, 8, 0.5, 0.5, 0.5, redstoneBlockData);
   }
 
 }

@@ -15,7 +15,7 @@ public class WeaponDamageEffect extends AbilityEffect<Body> {
   }
 
   public WeaponDamageEffect(double damage) {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "weapon-damage-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
     this.damage = damage;
   }
 

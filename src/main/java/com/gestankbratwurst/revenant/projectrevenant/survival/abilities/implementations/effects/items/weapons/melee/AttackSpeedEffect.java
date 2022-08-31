@@ -14,7 +14,7 @@ public class AttackSpeedEffect extends AbilityEffect<Body> {
   }
 
   public AttackSpeedEffect(double attackSpeed) {
-    super(AbilityTrigger.PASSIVE_ATTRIBUTE, "weapon-attack-speed-effect");
+    super(AbilityTrigger.PASSIVE_ATTRIBUTE);
     this.attackSpeed = attackSpeed;
   }
 

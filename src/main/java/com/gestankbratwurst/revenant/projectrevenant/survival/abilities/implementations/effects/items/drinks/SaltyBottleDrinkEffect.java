@@ -11,7 +11,7 @@ import java.time.Duration;
 
 public class SaltyBottleDrinkEffect extends AbilityEffect<PlayerItemConsumeEvent> {
   public SaltyBottleDrinkEffect() {
-    super(AbilityTrigger.CONSUME_ITEM, "salty-bottle-drink");
+    super(AbilityTrigger.CONSUME_ITEM);
   }
 
   @Override

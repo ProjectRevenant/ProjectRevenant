@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class DryEffect extends AbilityEffect<Player> {
   public DryEffect() {
-    super(AbilityTrigger.PLAYER_EVERY_SECOND, "dry-effect");
+    super(AbilityTrigger.PLAYER_EVERY_SECOND);
   }
 
   @Override
