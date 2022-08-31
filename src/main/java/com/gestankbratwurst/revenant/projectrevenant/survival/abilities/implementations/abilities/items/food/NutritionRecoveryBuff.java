@@ -45,6 +45,11 @@ public class NutritionRecoveryBuff extends TimedAbility implements Mergeable<Nut
     return List.of();
   }
 
+  @Override
+  public String getPlainTextName() {
+    return "Nahrung gegessen";
+  }
+
 
   @Override
   public void merge(NutritionRecoveryBuff other) {

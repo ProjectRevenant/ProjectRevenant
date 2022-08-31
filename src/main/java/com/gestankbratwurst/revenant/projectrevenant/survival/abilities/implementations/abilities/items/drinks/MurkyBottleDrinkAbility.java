@@ -38,6 +38,11 @@ public class MurkyBottleDrinkAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Trinkbar";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }

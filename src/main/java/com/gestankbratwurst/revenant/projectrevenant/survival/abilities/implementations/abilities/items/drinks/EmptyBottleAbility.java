@@ -37,6 +37,11 @@ public class EmptyBottleAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Auffüllbar";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }

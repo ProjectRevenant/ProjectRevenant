@@ -38,10 +38,10 @@ public abstract class ConsumablePotionBuff extends TimedAbility implements Merge
     public Component getInfoTitle(Player viewer) {
         Duration timeLeft = this.getTimeLeft();
         if(timeLeft.getSeconds() <= 60){
-            return Component.text("§9Potion-Effekt (" + timeLeft.getSeconds() + "s verbleibend)");
+            return Component.text("§9Potion-Effekt (" + timeLeft.getSeconds() + "s)");
         }
 
-        return Component.text("§9Potion-Effekt (" + this.getTimeLeft() + "min verbleibend)");
+        return Component.text("§9Potion-Effekt (" + this.getTimeLeft() + "m)");
     }
 
     @Override
@@ -60,4 +60,6 @@ public abstract class ConsumablePotionBuff extends TimedAbility implements Merge
         Duration timeLeft = other.getTimeLeft();
         this.setDurationFromNow(this.getTimeLeft().plus(timeLeft));
     }
+
+
 }

@@ -39,6 +39,11 @@ public class BrokenArmAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Armbruch";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.BROKEN_BONE;
   }

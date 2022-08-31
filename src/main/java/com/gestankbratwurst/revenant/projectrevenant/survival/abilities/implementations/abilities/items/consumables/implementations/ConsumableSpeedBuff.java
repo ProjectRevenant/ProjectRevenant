@@ -7,4 +7,9 @@ public class ConsumableSpeedBuff extends ConsumablePotionBuff {
     public ConsumableSpeedBuff(PotionEffect effect) {
         super(effect);
     }
+
+    @Override
+    public String getPlainTextName() {
+        return "Geschwindigkeit";
+    }
 }

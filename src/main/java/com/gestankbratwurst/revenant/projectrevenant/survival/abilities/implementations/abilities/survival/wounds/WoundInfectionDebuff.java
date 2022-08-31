@@ -50,6 +50,11 @@ public class WoundInfectionDebuff extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Infizierte Wunde";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.WOUND_INFECTION;
   }

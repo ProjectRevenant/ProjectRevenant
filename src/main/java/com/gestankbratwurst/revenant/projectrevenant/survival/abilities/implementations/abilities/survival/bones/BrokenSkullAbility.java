@@ -39,6 +39,11 @@ public class BrokenSkullAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Schädelbruch";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.HEAD_BROKEN_BONE;
   }

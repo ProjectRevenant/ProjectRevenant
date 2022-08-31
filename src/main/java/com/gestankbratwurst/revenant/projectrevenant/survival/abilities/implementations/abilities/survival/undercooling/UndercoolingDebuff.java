@@ -39,6 +39,11 @@ public class UndercoolingDebuff extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Hypothermie";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.UNDERCOOL_DEBUFF;
   }

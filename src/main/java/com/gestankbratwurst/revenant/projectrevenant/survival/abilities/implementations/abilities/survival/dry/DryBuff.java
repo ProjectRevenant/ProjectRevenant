@@ -38,4 +38,9 @@ public class DryBuff extends TimedAbility {
   public List<Component> getInfos(Player viewer) {
     return Collections.emptyList();
   }
+
+  @Override
+  public String getPlainTextName() {
+    return "Trocknen";
+  }
 }

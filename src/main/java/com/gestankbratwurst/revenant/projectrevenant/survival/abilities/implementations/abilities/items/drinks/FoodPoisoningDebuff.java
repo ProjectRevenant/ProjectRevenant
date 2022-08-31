@@ -38,6 +38,11 @@ public class FoodPoisoningDebuff extends TimedAbility {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Lebensmittelvergiftung";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.FOOD_POISONING;
   }

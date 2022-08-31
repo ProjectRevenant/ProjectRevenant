@@ -58,6 +58,11 @@ public class FoodEatenAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Essbar";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }

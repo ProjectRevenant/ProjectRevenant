@@ -42,6 +42,11 @@ public class ConsumeableHealthRecoveryBuff extends TimedAbility implements Merge
     return List.of();
   }
 
+  @Override
+  public String getPlainTextName() {
+    return "Gut ernährt";
+  }
+
 
   @Override
   public void merge(ConsumeableHealthRecoveryBuff other) {

@@ -39,6 +39,11 @@ public class BrokenRibsAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Rippenbruch";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.TORSO_BROKEN_BONE;
   }

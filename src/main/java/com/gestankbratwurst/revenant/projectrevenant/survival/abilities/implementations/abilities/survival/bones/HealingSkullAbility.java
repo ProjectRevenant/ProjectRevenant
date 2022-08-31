@@ -36,6 +36,11 @@ public class HealingSkullAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Kopfschiene";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.HEALING_HEAD_BONE;
   }

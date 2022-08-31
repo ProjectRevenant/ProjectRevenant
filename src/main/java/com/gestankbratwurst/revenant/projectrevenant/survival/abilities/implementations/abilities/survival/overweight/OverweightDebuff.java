@@ -48,6 +48,11 @@ public class OverweightDebuff extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return isCritical() ? "Übergewicht II" : "Übergewicht I";
+  }
+
+  @Override
   public TextureModel getModel() {
     return isCritical() ? TextureModel.OVERWEIGHT_DEBUFF_II : TextureModel.OVERWEIGHT_DEBUFF_I;
   }

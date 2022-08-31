@@ -36,6 +36,11 @@ public class HealingArmAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Armschiene";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.HEALING_BONE;
   }

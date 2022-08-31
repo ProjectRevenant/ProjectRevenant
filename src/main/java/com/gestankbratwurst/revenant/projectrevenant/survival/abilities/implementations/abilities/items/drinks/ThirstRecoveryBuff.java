@@ -49,6 +49,11 @@ public class ThirstRecoveryBuff extends TimedAbility implements Mergeable<Thirst
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Wasser getrunken";
+  }
+
+  @Override
   public void merge(ThirstRecoveryBuff other) {
     Duration timeLeft = other.getTimeLeft();
     this.setDurationFromNow(this.getTimeLeft().plus(timeLeft));

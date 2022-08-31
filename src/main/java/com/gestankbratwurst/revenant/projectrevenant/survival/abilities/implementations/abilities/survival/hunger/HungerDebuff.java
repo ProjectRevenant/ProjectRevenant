@@ -40,4 +40,9 @@ public class HungerDebuff extends Ability {
             Component.text("§7kannst weniger tragen.")
     );
   }
+
+  @Override
+  public String getPlainTextName() {
+    return "Verhungern";
+  }
 }

@@ -54,6 +54,11 @@ public class WeaponDamageAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Nahkampfwaffe";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }

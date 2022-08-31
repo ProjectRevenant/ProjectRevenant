@@ -39,6 +39,11 @@ public class OverheatingDebuff extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Hyperthermie";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.OVERHEAT_DEBUFF;
   }

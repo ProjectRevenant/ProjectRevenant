@@ -38,6 +38,11 @@ public class SaltPoisoningAbility extends TimedAbility {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Salzvergiftung";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.SALT_POISONING;
   }

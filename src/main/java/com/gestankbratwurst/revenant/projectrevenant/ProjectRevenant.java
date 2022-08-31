@@ -24,6 +24,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluato
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.LivingEntityAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.PersistentDataContainerAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.PlayerAbilityEvaluator;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumablePotionBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
@@ -82,6 +83,7 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Ability.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(ConsumablePotionBuff.class);
     MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());

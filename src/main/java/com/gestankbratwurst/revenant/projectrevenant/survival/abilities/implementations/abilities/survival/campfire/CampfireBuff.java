@@ -42,4 +42,9 @@ public class CampfireBuff extends Ability {
             Component.text("§7und erwärmst dich ein wenig.")
     );
   }
+
+  @Override
+  public String getPlainTextName() {
+    return "Lagerfeuer";
+  }
 }

@@ -40,6 +40,11 @@ public class BrokenLegAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Beinbruch";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.BROKEN_BONE;
   }

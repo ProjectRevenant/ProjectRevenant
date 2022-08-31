@@ -36,6 +36,11 @@ public class HealingLegAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Beinschiene";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.HEALING_BONE;
   }

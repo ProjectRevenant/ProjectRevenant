@@ -38,6 +38,11 @@ public class SprintingDebuff extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Sprint Erschöpfung";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }

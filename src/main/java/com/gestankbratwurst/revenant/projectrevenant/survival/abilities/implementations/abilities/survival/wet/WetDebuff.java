@@ -58,4 +58,9 @@ public class WetDebuff extends Ability {
             Component.text("§7langsam aus.")
     );
   }
+
+  @Override
+  public String getPlainTextName() {
+    return "Durchnässt";
+  }
 }

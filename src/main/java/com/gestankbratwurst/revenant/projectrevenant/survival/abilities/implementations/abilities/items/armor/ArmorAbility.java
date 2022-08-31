@@ -61,4 +61,8 @@ public abstract class ArmorAbility extends Ability {
     return output;
   }
 
+  @Override
+  public String getPlainTextName() {
+    return "Rüstung";
+  }
 }

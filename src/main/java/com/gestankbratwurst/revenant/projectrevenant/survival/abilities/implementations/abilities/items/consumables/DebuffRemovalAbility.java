@@ -12,13 +12,16 @@ import java.util.List;
 
 public class DebuffRemovalAbility extends Ability {
 
-    private final Ability[] remove;
+    private final List<String> componentStrings;
 
-    public DebuffRemovalAbility(Ability[] remove){
+    public DebuffRemovalAbility(List<Ability> remove){
+        this.componentStrings = new ArrayList<>();
+
         for(Ability toRemove : remove) {
             this.addEffect(new DebuffRemovalEffect(toRemove));
+            componentStrings.add(String.format("§7Entfernt den §e%s § Effekt", toRemove.getPlainTextName()));
         }
-        this.remove = remove;
+
     }
 
     @Override
@@ -36,15 +39,21 @@ public class DebuffRemovalAbility extends Ability {
         return Component.text("§9Heilt");
     }
 
+
     @Override
     public List<Component> getInfos(Player viewer) {
         List<Component> output = new ArrayList<>();
 
-        for (Ability ability : remove){
-            output.add(Component.text(String.format("§7Entfernt den §e%s § Effekt", ability.getInfoTitle(viewer))));
+        for(String effect : componentStrings){
+            output.add(Component.text(effect));
         }
-        
+
         return output;
+    }
+
+    @Override
+    public String getPlainTextName() {
+        return "Debuff Entfernung";
     }
 
     @Override

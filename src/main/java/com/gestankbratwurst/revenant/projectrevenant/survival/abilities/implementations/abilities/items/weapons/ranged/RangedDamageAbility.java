@@ -49,6 +49,11 @@ public class RangedDamageAbility extends Ability {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Fernkampfwaffe";
+  }
+
+  @Override
   public TextureModel getModel() {
     return TextureModel.RED_X;
   }

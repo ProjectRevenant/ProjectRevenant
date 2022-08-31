@@ -39,4 +39,9 @@ public class ThirstDebuff extends Ability {
             Component.text("§7Du verdurstest und verlierst leben.")
     );
   }
+
+  @Override
+  public String getPlainTextName() {
+    return "Verdursten";
+  }
 }

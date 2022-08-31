@@ -65,6 +65,11 @@ public class BleedingDebuff extends TimedAbility {
   }
 
   @Override
+  public String getPlainTextName() {
+    return "Blutung";
+  }
+
+  @Override
   public TextureModel getModel() {
     return switch (getIntensity()) {
       case 1 -> TextureModel.BLEEDING_1;

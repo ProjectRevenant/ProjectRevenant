@@ -7,6 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityH
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.ChestplateAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.HelmetAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumablePotionAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.DebuffRemovalAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.implementations.ConsumableSpeedBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.ClearBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.EmptyBottleAbility;
@@ -16,6 +17,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumeableHealthRecoveryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.melee.WeaponDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.bones.BrokenLegAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
 import net.kyori.adventure.text.Component;
@@ -29,10 +31,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class RevenantItem {
@@ -179,7 +178,9 @@ public class RevenantItem {
     //Consumable
     public static ItemStack dummySpeedConsumable(){
         PotionEffect potionEffect = new PotionEffect(PotionEffectType.SPEED, (30*20), 2, false, false, true);
-        ItemStack base = basic(new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, new ConsumablePotionAbility(new ConsumableSpeedBuff(potionEffect)));
+        ConsumablePotionAbility speedAbility = new ConsumablePotionAbility(new ConsumableSpeedBuff(potionEffect));
+        DebuffRemovalAbility brokenLegRemoval = new DebuffRemovalAbility(List.of(new BrokenLegAbility()));
+        ItemStack base = basic(new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, speedAbility, brokenLegRemoval);
         return new ItemBuilder(base)
                 .lore("§6[Debug]")
                 .lore("§fNur zum testen!")

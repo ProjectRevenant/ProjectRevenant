@@ -60,6 +60,8 @@ public abstract class Ability {
 
   public abstract List<Component> getInfos(Player viewer);
 
+  public abstract String getPlainTextName();
+
   public abstract TextureModel getModel();
 
   @Override
