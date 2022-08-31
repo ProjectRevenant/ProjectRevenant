@@ -50,6 +50,7 @@ public class CombatListener implements Listener {
     if (!(event.getEntity() instanceof LivingEntity livingEntity)) {
       return;
     }
+
     double critChance = bodyManager.getBody(livingEntity).getAttribute(BodyAttribute.CRITICAL_STRIKE_CHANCE).getCurrentValueModified();
     double modifier = 1.0;
     if(ThreadLocalRandom.current().nextDouble() <= critChance) {

@@ -57,7 +57,8 @@ public class CombatEvaluator {
     if(attacker instanceof Projectile projectile) {
       damage = ItemCombatStat.fetchProjectileDamage(projectile);
     } else if(attacker instanceof LivingEntity livingAttacker) {
-      float cooldownMod = attacker instanceof Player player ? player.getAttackCooldown() : 1.0F;
+      float cooldownMod = attacker instanceof Player player ? PlayerSwingActionEvaluator.getCd(player) : 1.0F;
+
       cooldownMod = cooldownMod * cooldownMod * cooldownMod * cooldownMod;
       Body attackerBody = ProjectRevenant.getBodyManager().getBody(livingAttacker);
       damage = attackerBody.getAttribute(BodyAttribute.MELEE_DAMAGE).getCurrentValueModified() * cooldownMod;

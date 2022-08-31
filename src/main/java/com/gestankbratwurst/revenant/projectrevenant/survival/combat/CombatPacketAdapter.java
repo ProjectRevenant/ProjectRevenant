@@ -9,9 +9,15 @@ import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.world.InteractionHand;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class CombatPacketAdapter extends PacketAdapter {
+
   public CombatPacketAdapter() {
     super(JavaPlugin.getPlugin(ProjectRevenant.class), PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION);
   }
@@ -27,6 +33,7 @@ public class CombatPacketAdapter extends PacketAdapter {
     } else {
       ServerboundSwingPacket packet = (ServerboundSwingPacket) event.getPacket().getHandle();
       InteractionHand hand = packet.getHand();
+      PlayerSwingActionEvaluator.setCd(event.getPlayer());
       Runnable action = () -> PlayerSwingActionEvaluator.onSwing(event.getPlayer(), hand);
       if(Bukkit.isPrimaryThread()) {
         action.run();

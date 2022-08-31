@@ -13,7 +13,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class PlayerSwingActionEvaluator {
+
+  private static final Map<UUID, Float> playerAttackCooldowns = new ConcurrentHashMap<>();
+
+  public static float getCd(Player player) {
+    return playerAttackCooldowns.computeIfAbsent(player.getUniqueId(), key -> 1.0F);
+  }
+
+  public static void setCd(Player player) {
+    playerAttackCooldowns.put(player.getUniqueId(), player.getAttackCooldown());
+  }
 
   public static void onSwing(Player player, InteractionHand hand) {
     if (hand == InteractionHand.OFF_HAND) {
@@ -37,6 +51,7 @@ public class PlayerSwingActionEvaluator {
     if (!(entity instanceof LivingEntity livingEntity)) {
       return;
     }
+
     player.attack(livingEntity);
   }
 
