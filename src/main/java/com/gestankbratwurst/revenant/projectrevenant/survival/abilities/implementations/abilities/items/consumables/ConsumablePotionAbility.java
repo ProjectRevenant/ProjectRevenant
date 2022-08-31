@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.implementations.ConsumableSpeedBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.consumables.ConsumablePotionTriggerEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -14,7 +15,9 @@ import java.util.List;
 public class ConsumablePotionAbility extends Ability {
 
     private final ConsumablePotionBuff buff;
-
+    public ConsumablePotionAbility(){
+        this(new ConsumableSpeedBuff());
+    }
     public ConsumablePotionAbility(ConsumablePotionBuff buff){
         this.addEffect(new ConsumablePotionTriggerEffect(buff));
         this.buff = buff;

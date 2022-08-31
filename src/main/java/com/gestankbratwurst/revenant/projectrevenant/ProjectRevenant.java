@@ -83,7 +83,6 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Ability.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(ConsumablePotionBuff.class);
     MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());

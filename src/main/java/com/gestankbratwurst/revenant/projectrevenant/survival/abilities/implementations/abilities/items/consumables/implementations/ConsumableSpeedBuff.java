@@ -4,6 +4,10 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import org.bukkit.potion.PotionEffect;
 
 public class ConsumableSpeedBuff extends ConsumablePotionBuff {
+
+    public ConsumableSpeedBuff(){
+        super();
+    }
     public ConsumableSpeedBuff(PotionEffect effect) {
         super(effect);
     }

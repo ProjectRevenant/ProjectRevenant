@@ -14,6 +14,10 @@ public class DebuffRemovalAbility extends Ability {
 
     private final List<String> componentStrings;
 
+    public DebuffRemovalAbility(){
+        this(List.of());
+    }
+
     public DebuffRemovalAbility(List<Ability> remove){
         this.componentStrings = new ArrayList<>();
 

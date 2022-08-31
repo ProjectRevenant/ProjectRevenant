@@ -12,6 +12,9 @@ import java.util.List;
 
 public class ConsumeableHealthRecoveryBuff extends TimedAbility implements Mergeable<ConsumeableHealthRecoveryBuff> {
 
+  public ConsumeableHealthRecoveryBuff(){
+    this(0, Duration.ZERO);
+  }
   public ConsumeableHealthRecoveryBuff(double amount, Duration duration) {
     this.addEffect(new ConsumableHealthRecoveryEffect());
     this.setDurationFromNow(duration);

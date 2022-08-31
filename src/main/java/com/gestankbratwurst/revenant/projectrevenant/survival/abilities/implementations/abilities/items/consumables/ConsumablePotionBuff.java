@@ -8,6 +8,7 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
 import java.util.List;
@@ -17,7 +18,11 @@ public abstract class ConsumablePotionBuff extends TimedAbility implements Merge
     @Getter
     private final PotionEffect potionEffect;
 
-    public ConsumablePotionBuff(PotionEffect effect){
+    public ConsumablePotionBuff() {
+        this(new PotionEffect(PotionEffectType.SPEED, 0, 1, false, false, false));
+    }
+
+    public ConsumablePotionBuff(PotionEffect effect) {
         this.potionEffect = effect;
         Duration duration = Duration.ofSeconds(effect.getDuration() / 20);
         this.addEffect(new ConsumablePotionEffect(effect));
@@ -37,7 +42,7 @@ public abstract class ConsumablePotionBuff extends TimedAbility implements Merge
     @Override
     public Component getInfoTitle(Player viewer) {
         Duration timeLeft = this.getTimeLeft();
-        if(timeLeft.getSeconds() <= 60){
+        if (timeLeft.getSeconds() <= 60) {
             return Component.text("§9Potion-Effekt (" + timeLeft.getSeconds() + "s)");
         }
 
