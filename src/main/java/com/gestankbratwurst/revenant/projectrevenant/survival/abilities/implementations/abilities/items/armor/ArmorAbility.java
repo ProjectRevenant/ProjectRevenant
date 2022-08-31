@@ -13,17 +13,22 @@ import java.util.List;
 
 public abstract class ArmorAbility extends Ability {
 
-  private final double armor;
-  private final double heatInsulation;
-  private final double coldInsulation;
-
   public ArmorAbility(double armor, double heatInsulation, double coldInsulation, String sufix) {
-    this.armor = armor;
-    this.heatInsulation = heatInsulation;
-    this.coldInsulation = coldInsulation;
     this.addEffect(new ArmorEffect(armor, sufix));
     this.addEffect(new HeatInsulationEffect(heatInsulation, sufix));
     this.addEffect(new ColdInsulationEffect(coldInsulation, sufix));
+  }
+
+  public double getArmor(){
+    return getEffect(ArmorEffect.class).getArmor();
+  }
+
+  public double getHeatInsulation(){
+    return getEffect(HeatInsulationEffect.class).getAmount();
+  }
+
+  public double getColdInsulation(){
+    return getEffect(ColdInsulationEffect.class).getAmount();
   }
 
   @Override
@@ -49,13 +54,13 @@ public abstract class ArmorAbility extends Ability {
   @Override
   public List<Component> getInfos(Player viewer) {
     List<Component> output = new ArrayList<>();
-    output.add(Component.text(String.format("§7Hat §e%.1f §7Physische Rüstung", armor)));
+    output.add(Component.text(String.format("§7Hat §e%.1f §7Physische Rüstung", getArmor())));
 
-    if(heatInsulation > 0){
-      output.add(Component.text(String.format("§7Hitzeschutz von §e%.1f§7°C", heatInsulation)));
+    if(getHeatInsulation() > 0){
+      output.add(Component.text(String.format("§7Hitzeschutz von §e%.1f§7°C", getHeatInsulation())));
     }
-    if(coldInsulation > 0){
-      output.add(Component.text(String.format("§7Kälteschutz von §e%.1f§7°C", coldInsulation)));
+    if(getColdInsulation() > 0){
+      output.add(Component.text(String.format("§7Kälteschutz von §e%.1f§7°C", getColdInsulation())));
     }
 
     return output;

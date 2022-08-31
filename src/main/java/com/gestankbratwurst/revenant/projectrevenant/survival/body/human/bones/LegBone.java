@@ -14,7 +14,7 @@ public class LegBone extends Bone {
   public static final String RIGHT = "RIGHT_LEG";
 
   public LegBone(String boneType) {
-    super(boneType, "Bein Knochen");
+    super(boneType, "Beinknochen");
   }
 
   @Override

@@ -5,10 +5,11 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityT
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
+import lombok.Getter;
 
 public class HeatInsulationEffect extends AbilityEffect<Body> {
 
-
+  @Getter
   private final double amount;
   private final String sufix;
 
