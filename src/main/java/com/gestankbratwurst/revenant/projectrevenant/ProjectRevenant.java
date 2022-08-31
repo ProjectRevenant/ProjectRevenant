@@ -45,10 +45,12 @@ import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListTask;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.AbilityTriggerSerializer;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.BlockDataSerializer;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.DurationSerializer;
+import com.gestankbratwurst.revenant.projectrevenant.util.gson.PotionEffectSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -82,6 +84,7 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
     MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
+    MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());
 
     revenantPlayerManager = new RevenantPlayerManager();
     Bukkit.getPluginManager().registerEvents(new ReventantPlayerListener(revenantPlayerManager), this);
