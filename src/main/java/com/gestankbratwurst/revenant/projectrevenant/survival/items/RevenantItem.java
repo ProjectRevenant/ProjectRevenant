@@ -6,12 +6,14 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.ChestplateAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.HelmetAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumablePotionAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.implementations.ConsumableSpeedBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.ClearBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.EmptyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.MurkyBottleDrinkAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.SaltyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food.FoodEatenAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food.FoodHealthRecoveryBuff;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumeableHealthRecoveryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.melee.WeaponDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
@@ -23,6 +25,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -45,6 +49,7 @@ public class RevenantItem {
                 put("DUMMY_FOOD", RevenantItem::dummyFood);
                 put("DUMMY_HELMET", RevenantItem::dummyHelmet);
                 put("DUMMY_CHESTPLATE", RevenantItem::dummyChestplate);
+                put("DUMMY_SPEED_POTION", RevenantItem::dummySpeedConsumable);
             }}
     );
 
@@ -147,7 +152,7 @@ public class RevenantItem {
 
     //Food
     public static ItemStack dummyFood() {
-        ItemStack base = food(new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 500, new FoodHealthRecoveryBuff(50, Duration.ofSeconds(30)));
+        ItemStack base = food(new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 500, new ConsumeableHealthRecoveryBuff(50, Duration.ofSeconds(30)));
         return new ItemBuilder(base)
                 .lore("§6[Debug]")
                 .lore("§fNur zum testen!")
@@ -165,6 +170,16 @@ public class RevenantItem {
 
     public static ItemStack dummyChestplate() {
         ItemStack base = basic(new ItemStack(Material.LEATHER_CHESTPLATE), "Dummy-Chestplate", ItemRarity.DEBUG, 3, new ChestplateAbility(10, 5, 5));
+        return new ItemBuilder(base)
+                .lore("§6[Debug]")
+                .lore("§fNur zum testen!")
+                .build();
+    }
+
+    //Consumable
+    public static ItemStack dummySpeedConsumable(){
+        PotionEffect potionEffect = new PotionEffect(PotionEffectType.SPEED, (30*20), 2, false, false, true);
+        ItemStack base = basic(new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, new ConsumablePotionAbility(new ConsumableSpeedBuff(potionEffect)));
         return new ItemBuilder(base)
                 .lore("§6[Debug]")
                 .lore("§fNur zum testen!")

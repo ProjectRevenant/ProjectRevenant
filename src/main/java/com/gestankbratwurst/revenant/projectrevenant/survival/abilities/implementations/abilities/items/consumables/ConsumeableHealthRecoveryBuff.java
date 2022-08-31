@@ -1,20 +1,19 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food;
+package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.food.FoodHealthRecoveryEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.consumables.ConsumableHealthRecoveryEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 
-public class FoodHealthRecoveryBuff extends TimedAbility implements Mergeable<FoodHealthRecoveryBuff> {
+public class ConsumeableHealthRecoveryBuff extends TimedAbility implements Mergeable<ConsumeableHealthRecoveryBuff> {
 
-  public FoodHealthRecoveryBuff(double amount, Duration duration) {
-    this.addEffect(new FoodHealthRecoveryEffect());
+  public ConsumeableHealthRecoveryBuff(double amount, Duration duration) {
+    this.addEffect(new ConsumableHealthRecoveryEffect());
     this.setDurationFromNow(duration);
   }
 
@@ -45,7 +44,7 @@ public class FoodHealthRecoveryBuff extends TimedAbility implements Mergeable<Fo
 
 
   @Override
-  public void merge(FoodHealthRecoveryBuff other) {
+  public void merge(ConsumeableHealthRecoveryBuff other) {
     Duration timeLeft = other.getTimeLeft();
     this.setDurationFromNow(this.getTimeLeft().plus(timeLeft));
   }
