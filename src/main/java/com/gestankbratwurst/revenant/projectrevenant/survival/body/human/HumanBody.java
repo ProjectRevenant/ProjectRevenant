@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.body.human;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.NaturalRegenerationAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.hunger.HungerDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.overheating.OverheatingDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.thirst.ThirstDebuff;
@@ -195,6 +196,16 @@ public class HumanBody extends Body {
       revenantPlayer.removeAbility(ThirstDebuff.class);
     }
 
+    if (water.getCurrentValue() >= water.getMaxValue() * 0.75 && nutrition.getCurrentValue() >= nutrition.getMaxValue() * 0.75) {
+      BodyAttribute health = getAttribute(BodyAttribute.HEALTH);
+      if (health.getCurrentValue() < health.getMaxValue() * 0.6) {
+        revenantPlayer.addAbility(new NaturalRegenerationAbility());
+      } else {
+        revenantPlayer.removeAbility(NaturalRegenerationAbility.class);
+      }
+    } else {
+      revenantPlayer.removeAbility(NaturalRegenerationAbility.class);
+    }
   }
 
   private void temperatureCheckup(Player player) {

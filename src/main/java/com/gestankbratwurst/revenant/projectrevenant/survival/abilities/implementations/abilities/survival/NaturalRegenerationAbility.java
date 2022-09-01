@@ -2,12 +2,18 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.NaturalRegenerationEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class NaturalRegenerationAbility extends Ability {
+
+  public NaturalRegenerationAbility(){
+    this.addEffect(new NaturalRegenerationEffect());
+  }
+
   @Override
   public boolean shouldDisplayInTab() {
     return true;

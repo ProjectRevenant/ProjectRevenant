@@ -12,28 +12,29 @@ import java.util.List;
 
 public class ConsumableHealthBuff extends TimedAbility implements Mergeable<ConsumableHealthBuff> {
 
-  public ConsumableHealthBuff(){
+  public ConsumableHealthBuff() {
     this(0, Duration.ZERO);
   }
+
   public ConsumableHealthBuff(double amount, Duration duration) {
     super(false);
     this.addEffect(new ConsumableHealthRecoveryEffect(amount, duration));
   }
 
-  public void startEffect(){
+  public void startEffect() {
     this.setDurationFromNow(getDuration());
     start();
   }
 
-  public Duration getDuration(){
+  public Duration getDuration() {
     return getEffect(ConsumableHealthRecoveryEffect.class).getDuration();
   }
 
-  public double getAmount(){
+  public double getAmount() {
     return getEffect(ConsumableHealthRecoveryEffect.class).getAmount();
   }
 
-  public void setAmount(double amount, Duration newDuration){
+  public void setAmount(double amount, Duration newDuration) {
     getEffect(ConsumableHealthRecoveryEffect.class).setAmount(amount, newDuration);
   }
 
@@ -55,7 +56,7 @@ public class ConsumableHealthBuff extends TimedAbility implements Mergeable<Cons
   @Override
   public Component getInfoTitle(Player viewer) {
     Duration timeLeft = getTimeLeft();
-    if(timeLeft.getSeconds() < 60){
+    if (timeLeft.getSeconds() < 60) {
       return Component.text(TextureModel.HEALTH_ICON.getChar() + " §aGut ernährt! (" + timeLeft.getSeconds() + "s)");
     } else {
       return Component.text(TextureModel.HEALTH_ICON.getChar() + " §aGut ernährt! (" + (timeLeft.getSeconds() / 60) + "min)");

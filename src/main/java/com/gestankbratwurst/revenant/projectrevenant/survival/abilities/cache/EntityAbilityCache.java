@@ -48,7 +48,10 @@ public class EntityAbilityCache {
   public static <T extends Entity> void autoUpdate(T entity, Class<T> type) {
     List<Ability> abilityList = AbilityEvaluationRegistry.getTyped(type).orElseThrow().evaluate(entity).stream().filter(ability -> {
       if(ability instanceof TimedAbility timedAbility) {
-        return !timedAbility.isDone() || !timedAbility.hasStarted();
+        if(!timedAbility.hasStarted()) {
+          return true;
+        }
+        return !timedAbility.isDone();
       }
       return true;
     }).toList();

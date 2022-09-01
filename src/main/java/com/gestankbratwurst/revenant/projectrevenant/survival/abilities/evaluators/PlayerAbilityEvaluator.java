@@ -27,7 +27,9 @@ public class PlayerAbilityEvaluator extends AbilityEvaluator<Player> {
     for (EquipmentSlot slot : EquipmentSlot.values()) {
       abilities.addAll(itemEvaluator.evaluate(equipment.getItem(slot)));
     }
+
     RevenantPlayer revenantPlayer = RevenantPlayer.of(target);
+    revenantPlayer.cleanTimedOutAbilities();
     abilities.addAll(revenantPlayer.getActiveAbilities());
 
     HumanBody body = revenantPlayer.getBody();

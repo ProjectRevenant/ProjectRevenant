@@ -8,6 +8,7 @@ import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import lombok.Getter;
@@ -59,6 +60,14 @@ public class RevenantPlayer {
     this(null);
   }
 
+  public void pauseAbilities() {
+    getActiveAbilities().stream().filter(TimedAbility.class::isInstance).map(TimedAbility.class::cast).forEach(TimedAbility::pause);
+  }
+
+  public void unpauseAbilities() {
+    getActiveAbilities().stream().filter(TimedAbility.class::isInstance).map(TimedAbility.class::cast).forEach(TimedAbility::unpause);
+  }
+
   public void updateAbilities(List<Ability> abilityList) {
     abilityMap.clear();
     abilityList.forEach(ability -> abilityMap.put(ability.getClass(), ability));
@@ -84,6 +93,10 @@ public class RevenantPlayer {
 
   public Collection<Ability> getActiveAbilities() {
     return abilityMap.values();
+  }
+
+  public void cleanTimedOutAbilities() {
+    abilityMap.values().removeIf(ability -> ability instanceof TimedAbility timed && timed.isDone() && timed.hasStarted());
   }
 
   @SuppressWarnings("unchecked")

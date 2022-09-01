@@ -2,6 +2,8 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
+import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Entity;
@@ -22,10 +24,12 @@ public class AbilityListener implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
     abilitySecondTask.add(event.getPlayer());
+    TaskManager.getInstance().runBukkitSync(() -> RevenantPlayer.of(event.getPlayer()).unpauseAbilities());
   }
 
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
+    RevenantPlayer.of(event.getPlayer()).pauseAbilities();
     abilitySecondTask.remove(event.getPlayer());
   }
 

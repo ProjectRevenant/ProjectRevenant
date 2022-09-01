@@ -7,16 +7,27 @@ import java.time.Duration;
 public abstract class TimedAbility extends Ability {
 
   private long endTime;
-
+  private long pauseBuffer;
   private boolean started;
 
-  public TimedAbility(){
+  public TimedAbility() {
     this(true);
   }
 
-  public TimedAbility(boolean start){
+  public TimedAbility(boolean start) {
     this.started = start;
   }
+
+  public void pause() {
+    started = false;
+    pauseBuffer = getTimeLeft().toMillis();
+  }
+
+  public void unpause() {
+    this.setDurationFromNow(Duration.ofMillis(pauseBuffer));
+    started = true;
+  }
+
   public void setDurationFromNow(Duration duration) {
     endTime = System.currentTimeMillis() + duration.toMillis();
   }
@@ -33,11 +44,11 @@ public abstract class TimedAbility extends Ability {
     return getTimeLeft().isNegative();
   }
 
-  public void start(){
+  public void start() {
     started = true;
   }
 
-  public boolean hasStarted(){
+  public boolean hasStarted() {
     return started;
   }
 
