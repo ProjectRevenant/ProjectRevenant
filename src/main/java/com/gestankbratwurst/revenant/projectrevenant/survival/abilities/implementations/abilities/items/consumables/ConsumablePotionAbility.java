@@ -50,9 +50,9 @@ public class ConsumablePotionAbility extends Ability {
     int amplifier = effect.getAmplifier();
 
     if (timeLeft < 60) {
-      output.add(Component.text(String.format("§e%s %s Effekt für %ds", getBuffToApply().getPlainTextName(), UtilMath.toRomanNumeral(amplifier), timeLeft)));
+      output.add(Component.text(String.format("§e%s %s §7Effekt für §e%ds", getBuffToApply().getPlainTextName(), UtilMath.toRomanNumeral(amplifier), timeLeft)));
     } else {
-      output.add(Component.text(String.format("§e%s %s Effekt für %dmin", typeName, UtilMath.toRomanNumeral(amplifier+1), (timeLeft / 60))));
+      output.add(Component.text(String.format("§e%s %s §7Effekt für §e%dmin", typeName, UtilMath.toRomanNumeral(amplifier+1), (timeLeft / 60))));
     }
 
     return output;

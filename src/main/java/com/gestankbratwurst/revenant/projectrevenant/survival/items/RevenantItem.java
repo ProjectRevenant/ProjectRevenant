@@ -6,19 +6,19 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.ChestplateAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.HelmetAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumableHealthAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumablePotionAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumeableHealthRecoveryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.DebuffRemovalAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.SkeletonHealAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.implementations.ConsumableSpeedBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.ClearBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.EmptyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.MurkyBottleDrinkAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.SaltPoisoningAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.SaltyBottleAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food.FoodEatenAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.melee.WeaponDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.bones.BrokenLegAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.LegBone;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
@@ -95,13 +95,13 @@ public class RevenantItem {
 
   private static ItemStack food(TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
-    list.add(new FoodEatenAbility(nutrition, water, 0, Duration.ZERO));
+    list.add(new FoodEatenAbility(nutrition, water));
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
   private static ItemStack food(ItemStack model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
-    list.add(new FoodEatenAbility(nutrition, water, 0, Duration.ZERO));
+    list.add(new FoodEatenAbility(nutrition, water));
     return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
@@ -154,7 +154,7 @@ public class RevenantItem {
 
   //Food
   public static ItemStack dummyFood() {
-    ItemStack base = food(new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 500, new ConsumeableHealthRecoveryBuff(50, Duration.ofSeconds(30)));
+    ItemStack base = food(new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 0.5, new ConsumableHealthAbility(30, Duration.ofSeconds(30)));
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
@@ -182,7 +182,9 @@ public class RevenantItem {
   public static ItemStack dummySpeedConsumable() {
     ConsumablePotionAbility speedAbility = new ConsumablePotionAbility(new ConsumableSpeedBuff(600, 2));
     SkeletonHealAbility healLegAbility = new SkeletonHealAbility(List.of(LegBone.LEFT, LegBone.RIGHT), false);
-    ItemStack base = basic(new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, speedAbility, healLegAbility);
+    DebuffRemovalAbility removeSalt = new DebuffRemovalAbility(List.of(SaltPoisoningAbility.class));
+    ConsumableHealthAbility healthBuff = new ConsumableHealthAbility(30, Duration.ofSeconds(30));
+    ItemStack base = basic(new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, healLegAbility, speedAbility, removeSalt, healthBuff);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")

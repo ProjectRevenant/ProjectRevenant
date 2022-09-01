@@ -4,17 +4,14 @@ import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.consumables.SkeletonHealEffect;
-import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.Bone;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.Skeleton;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SkeletonHealAbility extends Ability {
 
@@ -58,15 +55,15 @@ public class SkeletonHealAbility extends Ability {
 
     Skeleton skeleton = RevenantPlayer.of(viewer).getBody().getSkeleton();
 
-    //ToDo fix display
-    List<String> bones = affected.keySet().stream().map(skeleton::getBone).map(Bone::getBoneDisplayName).toList();
+    //List<String> bones = affected.keySet().stream().map(skeleton::getBone).map(Bone::getBoneDisplayName).toList();
+
+    //ToDo @Flo die Foreach benötigt den BONE, die Anzeige möchte den DISPLAYNAME, aber ohne Duplikate. Viel Spaß...
 
     for (String bone : affected.keySet()) {
-      String boneName = skeleton.getBone(bone).getBoneDisplayName();
       if (affected.get(bone)) {
-        output.add(Component.text(String.format("§7Heilt einen §e%s-Bruch", boneName)));
+        output.add(Component.text(String.format("§7Heilt einen §e%s-Bruch", bone)));
       } else {
-        output.add(Component.text(String.format("§7Bandagiert einen §e%s-Bruch", boneName)));
+        output.add(Component.text(String.format("§7Bandagiert einen §e%s-Bruch", bone)));
       }
     }
 

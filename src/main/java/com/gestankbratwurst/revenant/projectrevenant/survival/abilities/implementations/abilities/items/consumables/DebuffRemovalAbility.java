@@ -7,7 +7,6 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 

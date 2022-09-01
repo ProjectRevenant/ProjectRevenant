@@ -6,23 +6,17 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class FoodEatenAbility extends Ability {
   private final double nutrition;
   private final double water;
-  private final double health;
-  private final Duration healthDuration;
 
-  public FoodEatenAbility(double nutrition, double water, double health, Duration healthDuration){
+  public FoodEatenAbility(double nutrition, double water){
     this.nutrition = nutrition;
     this.water = water;
-    this.health = health;
-    this.healthDuration = healthDuration;
-    this.addEffect(new FoodEatenEffect(nutrition, water, health, healthDuration));
+    this.addEffect(new FoodEatenEffect(nutrition, water));
   }
 
   @Override
@@ -48,10 +42,7 @@ public class FoodEatenAbility extends Ability {
       output.add(Component.text(String.format("§7Enthält §e%d§7kCal.", (int) nutrition)));
     }
     if(water > 0){
-      output.add(Component.text(String.format("§7Enthält §e%d§7ml Wasser.", (int) water)));
-    }
-    if(health > 0){
-      output.add(Component.text(String.format("§7Heilt §e%.1f §7Leben über §e%.2f Minuten", water, (healthDuration.getSeconds() / 60d))));
+      output.add(Component.text(String.format("§7Enthält §e%.1f§7l Wasser.", water * 1000)));
     }
 
     return output;

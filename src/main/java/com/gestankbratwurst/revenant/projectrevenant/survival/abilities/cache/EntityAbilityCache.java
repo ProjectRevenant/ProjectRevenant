@@ -10,7 +10,6 @@ import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,7 +48,7 @@ public class EntityAbilityCache {
   public static <T extends Entity> void autoUpdate(T entity, Class<T> type) {
     List<Ability> abilityList = AbilityEvaluationRegistry.getTyped(type).orElseThrow().evaluate(entity).stream().filter(ability -> {
       if(ability instanceof TimedAbility timedAbility) {
-        return !timedAbility.isDone();
+        return !timedAbility.isDone() || !timedAbility.hasStarted();
       }
       return true;
     }).toList();

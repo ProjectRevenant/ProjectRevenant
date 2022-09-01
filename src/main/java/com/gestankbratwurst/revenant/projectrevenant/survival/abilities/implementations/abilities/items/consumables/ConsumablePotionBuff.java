@@ -19,13 +19,14 @@ public abstract class ConsumablePotionBuff extends TimedAbility implements Merge
   }
 
   public ConsumablePotionBuff(PotionEffect effect) {
+    super(false);
     this.addEffect(new ConsumablePotionEffect(effect));
-    this.setDurationFromNow(Duration.ofDays(36500));
   }
 
   public void startEffect() {
     Duration duration = Duration.ofSeconds(getEffect().getDuration() / 20);
     this.setDurationFromNow(duration);
+    start();
   }
 
   public PotionEffect getEffect() {

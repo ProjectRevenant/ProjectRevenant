@@ -4,25 +4,18 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.drinks.ThirstRecoveryBuff;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumeableHealthRecoveryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.food.NutritionRecoveryBuff;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-
-import java.time.Duration;
 
 public class FoodEatenEffect extends AbilityEffect<PlayerItemConsumeEvent> {
 
   private final double nutrition;
   private final double water;
-  private final double health;
-  private final Duration healthDuration;
 
-  public FoodEatenEffect(double nutrition, double water, double health, Duration healthDuration) {
+  public FoodEatenEffect(double nutrition, double water) {
     super(AbilityTrigger.CONSUME_ITEM);
     this.nutrition = nutrition;
     this.water = water;
-    this.health = health;
-    this.healthDuration = healthDuration;
   }
 
   @Override
@@ -30,11 +23,9 @@ public class FoodEatenEffect extends AbilityEffect<PlayerItemConsumeEvent> {
     RevenantPlayer revenantPlayer = RevenantPlayer.of(element.getPlayer());
 
     NutritionRecoveryBuff nutritionRecovery = new NutritionRecoveryBuff(nutrition);
-    ConsumeableHealthRecoveryBuff healthRecovery = new ConsumeableHealthRecoveryBuff(health, healthDuration);
     ThirstRecoveryBuff thirstRecovery = new ThirstRecoveryBuff(water);
 
     revenantPlayer.addAbility(nutritionRecovery);
-    revenantPlayer.addAbility(healthRecovery);
     revenantPlayer.addAbility(thirstRecovery);
   }
 

@@ -18,7 +18,6 @@ public class ThirstRecoveryBuff extends TimedAbility implements Mergeable<Thirst
 
   public ThirstRecoveryBuff(double amount) {
     Duration duration = Duration.ofSeconds((long) (amount / (ThirstRecoveryEffect.RATE * 20)));
-
     this.addEffect(new ThirstRecoveryEffect());
     this.setDurationFromNow(duration);
   }
