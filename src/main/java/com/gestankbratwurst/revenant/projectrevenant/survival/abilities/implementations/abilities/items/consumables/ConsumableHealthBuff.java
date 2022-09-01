@@ -77,8 +77,8 @@ public class ConsumableHealthBuff extends TimedAbility implements Mergeable<Cons
   @Override
   public void merge(ConsumableHealthBuff other) {
     Duration otherTimeLeft = other.getTimeLeft();
-    double otherHealingLeft = other.getAmount() - ((other.getAmount() / other.getDuration().getSeconds()) * otherTimeLeft.getSeconds());
-    double thisHealingLeft = getAmount() - ((getAmount() / getDuration().getSeconds()) * getDuration().getSeconds());
+    double otherHealingLeft = other.getAmount();
+    double thisHealingLeft = (getAmount() / getDuration().getSeconds()) * (getTimeLeft().getSeconds());
     this.setDurationFromNow(this.getTimeLeft().plus(otherTimeLeft));
     this.setAmount((thisHealingLeft + otherHealingLeft), (getTimeLeft().plus(otherTimeLeft)));
   }

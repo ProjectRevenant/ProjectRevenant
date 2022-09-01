@@ -42,7 +42,7 @@ public class FoodEatenAbility extends Ability {
       output.add(Component.text(String.format("§7Enthält §e%d§7kCal.", (int) nutrition)));
     }
     if(water > 0){
-      output.add(Component.text(String.format("§7Enthält §e%.1f§7l Wasser.", water * 1000)));
+      output.add(Component.text(String.format("§7Enthält §e%.1f§7ml Wasser.", water * 1000)));
     }
 
     return output;
