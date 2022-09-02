@@ -80,8 +80,6 @@ public class RevenantItem {
   }
 
   private static ItemStack basic(ItemStack baseItem, String name, ItemRarity rarity, double weight, Ability... abilities) {
-    String[] arr = {"", "", ""};
-    String all = Arrays.toString(arr);
     AbilityHandle.addTo(baseItem, abilities);
     setUnique(baseItem);
     ItemWeight.set(baseItem, weight);
