@@ -13,6 +13,8 @@ import com.gestankbratwurst.revenant.projectrevenant.levelsystem.MinecraftExpLis
 import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluationRegistry;
@@ -72,6 +74,11 @@ public final class ProjectRevenant extends JavaPlugin {
 
   public static LootChestManager getLootChestManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).lootChestManager;
+  }
+
+  @Override
+  public void onLoad() {
+    CustomEntityType.touch();
   }
 
   @Override
@@ -136,6 +143,8 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantItem", RevenantItem.getInternalNames());
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("LootType", Arrays.stream(LootType.values()).map(Enum::toString).toList());
     MMCore.getPaperCommandManager().registerCommand(new DebugCommand());
+
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("CustomMobType", Arrays.stream(CustomMobType.values()).map(Enum::toString).toList());
 
     MMCore.getTabListManager().setDefaultTabListProvider(player -> new RevenantUserTablist(player.getUniqueId()));
     TabListTask tabListTask = new TabListTask();

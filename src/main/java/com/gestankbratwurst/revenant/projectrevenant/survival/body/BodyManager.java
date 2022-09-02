@@ -2,13 +2,17 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.body;
 
 import com.gestankbratwurst.core.mmcore.data.json.GsonProvider;
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
+import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.WorldEnvironmentFetcher;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,9 +38,21 @@ public class BodyManager {
   public void loadBody(LivingEntity entity) {
     PersistentDataContainer container = entity.getPersistentDataContainer();
     String data = container.get(bodyDataKey, PersistentDataType.STRING);
-    Body body = data == null ? new DummyBody() : GsonProvider.INSTANCE.fromJson(data, Body.class);
+    Body body;
+    if(data == null) {
+      if(((CraftLivingEntity) entity).getHandle() instanceof RevenantMob<?> revenantMob) {
+        body = revenantMob.createDefaultBody();
+      } else {
+        body = new DummyBody();
+        JavaPlugin.getPlugin(ProjectRevenant.class).getLogger().warning("! Created dummy body for %s!".formatted(entity.getType()));
+      }
+    } else {
+      body = GsonProvider.INSTANCE.fromJson(data, Body.class);
+    }
+
     body.setEntityId(entity.getUniqueId());
     loadedBodyMap.put(entity.getUniqueId(), body);
+    body.recalculateAttributes();
   }
 
   public boolean hasBody(LivingEntity entity) {

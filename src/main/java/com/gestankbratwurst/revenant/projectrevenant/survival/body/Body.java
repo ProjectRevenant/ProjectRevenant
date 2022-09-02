@@ -56,13 +56,17 @@ public abstract class Body implements DeserializationPostProcessable {
 
   public void recalculateAttributes() {
     LivingEntity entity = (LivingEntity) Bukkit.getEntity(entityId);
+
     if (entity == null) {
       return;
     }
+
     recalculateWeight();
+
     for (String attributeId : BodyAttribute.getValues()) {
       getAttribute(attributeId).clearModifiers();
     }
+
     EntityEquipment equipment = entity.getEquipment();
     if (equipment != null) {
       for (EquipmentSlot slot : EquipmentSlot.values()) {
@@ -72,9 +76,11 @@ public abstract class Body implements DeserializationPostProcessable {
         }
       }
     }
+
     for (Ability ability : EntityAbilityCache.getAbilities(entityId)) {
       ability.reactOn(entity, AbilityTrigger.PASSIVE_ATTRIBUTE, this);
     }
+
     BodyAttribute speedAttribute = getAttribute(BodyAttribute.SPEED);
     double mcSpeed = speedAttribute.getCurrentValueModified() / (23.0 * 5);
     Objects.requireNonNull(entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(mcSpeed);

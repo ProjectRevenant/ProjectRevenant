@@ -8,6 +8,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityE
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -56,8 +57,10 @@ public class EntityAbilityCache {
       return true;
     }).toList();
     EntityAbilityCache.updateAbilities(entity.getUniqueId(), abilityList);
+    if(entity instanceof LivingEntity livingEntity) {
+      ProjectRevenant.getBodyManager().getBody(livingEntity).recalculateAttributes();
+    }
     if(entity instanceof Player player) {
-      ProjectRevenant.getBodyManager().getBody(player).recalculateAttributes();
       AbstractTabList tabList = MMCore.getTabListManager().getView(player).getTablist();
       if(tabList instanceof RevenantUserTablist userTablist) {
         userTablist.updateEffects();

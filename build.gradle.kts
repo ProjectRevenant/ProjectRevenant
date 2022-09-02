@@ -19,6 +19,7 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://redempt.dev")
+    maven("https://mvn.lumine.io/repository/maven-public/")
 }
 
 dependencies {
@@ -27,6 +28,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.24")
     compileOnly("com.gestankbratwurst.core:MMCore:1.2.0-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
+    compileOnly("com.ticxo.modelengine:api:B3.0.0")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     implementation("com.github.Redempt:Crunch:1.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")

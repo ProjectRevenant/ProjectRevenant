@@ -1,8 +1,10 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators;
 
+import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluationRegistry;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluator;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -27,6 +29,9 @@ public class LivingEntityAbilityEvaluator extends AbilityEvaluator<LivingEntity>
     }
     for (EquipmentSlot slot : EquipmentSlot.values()) {
       abilities.addAll(itemEvaluator.evaluate(equipment.getItem(slot)));
+    }
+    if (((CraftLivingEntity) target).getHandle() instanceof RevenantMob<?> revenantMob) {
+      abilities.addAll(revenantMob.getActiveAbilities());
     }
     return abilities;
   }

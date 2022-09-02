@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Values;
 import com.destroystokyo.paper.block.TargetBlockInfo;
@@ -12,15 +13,16 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
+import net.minecraft.world.entity.EntityType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockDamageAbortEvent;
 
 import java.util.UUID;
 
@@ -33,6 +35,15 @@ public class DebugCommand extends BaseCommand {
   public void onAbilityItem(Player sender, @Values("@RevenantItem") String internalName) {
     sender.getInventory().addItem(RevenantItem.getItemByInternalName(internalName));
     Msg.sendInfo(sender, "Du hast das " + internalName + " item erhalten.");
+  }
+
+  @Subcommand("custommob")
+  @CommandCompletion("@CustomMobType")
+  public void onCustomMob(Player sender, @Values("@CustomMobType") CustomMobType type, @Default("1") int amount) {
+    for (int i = 0; i < amount; i++) {
+      type.spawnAsNms(sender.getLocation());
+    }
+    Msg.sendInfo(sender, "Du hast {} entities gespawnt. ({})", type, "x" + amount);
   }
 
   @Subcommand("droploot")
