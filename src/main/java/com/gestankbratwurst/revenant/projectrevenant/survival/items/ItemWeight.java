@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.weight;
+package com.gestankbratwurst.revenant.projectrevenant.survival.items;
 
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import org.bukkit.NamespacedKey;

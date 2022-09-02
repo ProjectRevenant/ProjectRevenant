@@ -19,12 +19,11 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityE
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilitySecondTask;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.RevenantDisplayCompiler;
+import com.gestankbratwurst.revenant.projectrevenant.ui.RevenantDisplayCompiler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.ItemStackAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.LivingEntityAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.PersistentDataContainerAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.PlayerAbilityEvaluator;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.consumables.ConsumablePotionBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;

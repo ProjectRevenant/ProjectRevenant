@@ -1,14 +1,13 @@
-package com.gestankbratwurst.revenant.projectrevenant.survival.abilities;
+package com.gestankbratwurst.revenant.projectrevenant.ui;
 
 import com.gestankbratwurst.core.mmcore.util.items.display.DisplayConverter;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
-import com.gestankbratwurst.revenant.projectrevenant.survival.items.ItemRarity;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minecraft.world.item.Rarity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,7 +29,7 @@ public class RevenantDisplayCompiler implements DisplayConverter {
   public ItemStack compileInfo(Player player, ItemStack itemStack) {
     Collection<Ability> abilities = AbilityHandle.getFrom(itemStack);
 
-    if(abilities.isEmpty()) {
+    if (abilities.isEmpty()) {
       return itemStack;
     }
 
@@ -40,12 +39,11 @@ public class RevenantDisplayCompiler implements DisplayConverter {
 
     assert lore != null;
 
-    if(!abilities.isEmpty()) {
-      lore.add(Component.text(""));
-      lore.add(Component.text("Effekte").style(Style.style(TextColor.color(153, 204, 255))));
-      for(Ability ability : abilities) {
+    if (!abilities.isEmpty()) {
+      lore.add(Component.text("Effekte").style(Style.style(TextColor.color(145, 197, 255), TextDecoration.ITALIC.withState(false))));
+      for (Ability ability : abilities) {
         lore.add(Component.text("- ").color(NamedTextColor.WHITE).append(ability.getInfoTitle(player)));
-        for(Component loreComp : ability.getInfos(player)) {
+        for (Component loreComp : ability.getInfos(player)) {
           lore.add(Component.text("   ").append(loreComp));
         }
       }

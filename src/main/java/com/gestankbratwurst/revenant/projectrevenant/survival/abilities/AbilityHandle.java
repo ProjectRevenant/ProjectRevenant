@@ -3,6 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities;
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import com.gestankbratwurst.core.mmcore.util.items.display.ItemDisplayCompiler;
+import com.gestankbratwurst.revenant.projectrevenant.ui.RevenantDisplayCompiler;
 import io.leangen.geantyref.TypeToken;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;

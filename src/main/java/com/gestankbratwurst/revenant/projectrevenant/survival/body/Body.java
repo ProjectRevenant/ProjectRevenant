@@ -11,7 +11,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.dry.DryBuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.wet.WetDebuff;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
-import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
+import com.gestankbratwurst.revenant.projectrevenant.survival.items.ItemWeight;
 import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.WorldEnvironmentFetcher;
 import lombok.Getter;
 import lombok.Setter;

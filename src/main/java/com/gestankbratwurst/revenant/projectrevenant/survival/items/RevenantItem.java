@@ -1,6 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.items;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
+import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import com.gestankbratwurst.core.mmcore.util.items.ItemBuilder;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityHandle;
@@ -21,24 +22,29 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.weapons.ranged.RangedDamageAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.LegBone;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAttributeHandler;
-import com.gestankbratwurst.revenant.projectrevenant.survival.weight.ItemWeight;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class RevenantItem {
 
+  private static final NamespacedKey randomIdKey = NamespaceFactory.provide("unique-id");
   private static final Map<String, Supplier<ItemStack>> namedCreationMap = Map.copyOf(
           new HashMap<>() {{
             put("TEST", RevenantItem::testItem);
@@ -55,6 +61,12 @@ public class RevenantItem {
           }}
   );
 
+  public static void setUnique(ItemStack itemStack) {
+    ItemMeta meta = itemStack.getItemMeta();
+    meta.getPersistentDataContainer().set(randomIdKey, PersistentDataType.STRING, UUID.randomUUID().toString());
+    itemStack.setItemMeta(meta);
+  }
+
   public static List<String> getInternalNames() {
     return List.copyOf(namedCreationMap.keySet());
   }
@@ -68,11 +80,14 @@ public class RevenantItem {
   }
 
   private static ItemStack basic(ItemStack baseItem, String name, ItemRarity rarity, double weight, Ability... abilities) {
+    String[] arr = {"", "", ""};
+    String all = Arrays.toString(arr);
     AbilityHandle.addTo(baseItem, abilities);
+    setUnique(baseItem);
     ItemWeight.set(baseItem, weight);
     rarity.applyTo(baseItem);
     ItemMeta meta = baseItem.getItemMeta();
-    meta.displayName(Component.text(name).style(Style.style(rarity.getColor())));
+    meta.displayName(Component.text(name).style(Style.style(rarity.getColor(), TextDecoration.ITALIC.withState(false))));
     baseItem.setItemMeta(meta);
     return baseItem;
   }
