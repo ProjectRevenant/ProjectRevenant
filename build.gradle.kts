@@ -28,7 +28,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.24")
     compileOnly("com.gestankbratwurst.core:MMCore:1.2.0-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
-    compileOnly("com.ticxo.modelengine:api:B3.0.0")
+
+    compileOnly(files("dependencies/Model-Engine-B3.0.0-0d5d6e6.jar"))
+
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     implementation("com.github.Redempt:Crunch:1.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")

@@ -80,7 +80,7 @@ public class CustomChicken extends Chicken implements RevenantMob<CustomChicken>
   @Override
   protected boolean damageEntity0(DamageSource damagesource, float f) {
     int type = ThreadLocalRandom.current().nextInt(3);
-    model.getAnimationHandler().playAnimation("attack_" + type, 1, 1, 1, false);
+    model.getAnimationHandler().playAnimation("attack_" + type, 1, 1, 1);
     return super.damageEntity0(damagesource, f);
   }
 
