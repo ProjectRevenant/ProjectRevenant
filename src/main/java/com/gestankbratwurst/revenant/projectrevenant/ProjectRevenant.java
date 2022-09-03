@@ -14,6 +14,8 @@ import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobListener;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
@@ -129,6 +131,8 @@ public final class ProjectRevenant extends JavaPlugin {
     Bukkit.getPluginManager().registerEvents(new MinecraftExpListener(), this);
     Bukkit.getPluginManager().registerEvents(new LootListener(lootChestManager), this);
 
+    CustomMobManager.setupLiveEntities();
+    Bukkit.getPluginManager().registerEvents(new CustomMobListener(), this);
     MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));
 
     AbilitySecondTask abilitySecondTask = new AbilitySecondTask();

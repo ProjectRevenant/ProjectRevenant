@@ -17,4 +17,6 @@ public interface RevenantMob<T extends Entity> {
 
   T getSelf();
 
+  void postSpawnSetup();
+
 }
