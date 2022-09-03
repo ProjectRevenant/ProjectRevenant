@@ -1,5 +1,6 @@
 package com.gestankbratwurst.revenant.projectrevenant.mobs.implementations;
 
+import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
@@ -10,6 +11,7 @@ import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -26,13 +28,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomChicken extends Chicken implements RevenantMob<CustomChicken> {
 
-  private ActiveModel model;
+  private final ActiveModel model;
 
   public CustomChicken(EntityType<? extends Chicken> type, Level world) {
     super(EntityType.CHICKEN, world);
     AttributeMap attributes = this.getAttributes();
     attributes.registerAttribute(Attributes.ATTACK_DAMAGE);
     this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(1);
+    this.model = ModelEngineAPI.createActiveModel("stoneball");
   }
 
   @Override
@@ -43,12 +46,25 @@ public class CustomChicken extends Chicken implements RevenantMob<CustomChicken>
   }
 
   @Override
+  public void swing(InteractionHand hand) {
+    int type = ThreadLocalRandom.current().nextInt(3);
+    model.getAnimationHandler().playAnimation("attack_" + type, 1, 1, 1);
+    super.swing(hand);
+  }
+
+  @Override
   public boolean save(CompoundTag nbt) {
     boolean saved = super.save(nbt);
     if (saved) {
       nbt.putString("id", CustomEntityType.CUSTOM_CHICKEN.id);
     }
     return saved;
+  }
+
+  @Override
+  public void load(CompoundTag nbt) {
+    super.load(nbt);
+    this.postSpawnSetup();
   }
 
   @Override
@@ -78,15 +94,7 @@ public class CustomChicken extends Chicken implements RevenantMob<CustomChicken>
   }
 
   @Override
-  protected boolean damageEntity0(DamageSource damagesource, float f) {
-    int type = ThreadLocalRandom.current().nextInt(3);
-    model.getAnimationHandler().playAnimation("attack_" + type, 1, 1, 1);
-    return super.damageEntity0(damagesource, f);
-  }
-
-  @Override
   public void postSpawnSetup() {
-    this.model = ModelEngineAPI.createActiveModel("stoneball");
     ModeledEntity modeledEntity = ModelEngineAPI.createModeledEntity(this.getBukkitEntity());
     modeledEntity.addModel(model, true);
     modeledEntity.setBaseEntityVisible(false);
