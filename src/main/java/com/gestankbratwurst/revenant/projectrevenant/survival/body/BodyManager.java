@@ -63,6 +63,10 @@ public class BodyManager {
     return loadedBodyMap.get(entity.getUniqueId());
   }
 
+  public Body getBody(UUID uuid){
+    return loadedBodyMap.get(uuid);
+  }
+
   public void unloadBody(LivingEntity entity) {
     Optional.ofNullable(loadedBodyMap.remove(entity.getUniqueId())).ifPresent(body -> addBodyTo(entity, body));
   }

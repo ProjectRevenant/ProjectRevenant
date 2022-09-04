@@ -1,5 +1,6 @@
 package com.gestankbratwurst.revenant.projectrevenant.mobs;
 
+import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import net.minecraft.world.entity.Entity;
@@ -10,6 +11,10 @@ import java.util.UUID;
 public interface RevenantMob<T extends Entity> {
 
   Body createDefaultBody();
+
+  default Body getActiveBody(){
+    return ProjectRevenant.getBodyManager().getBody(getMobId());
+  }
 
   List<Ability> getActiveAbilities();
 

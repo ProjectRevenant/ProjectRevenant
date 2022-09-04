@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.mobs;
 
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.implementations.CustomChicken;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.implementations.RevenantZombie;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
@@ -46,10 +47,12 @@ public class CustomEntityType {
   static {
     setFrozen(false);
     CUSTOM_CHICKEN = register("custom-chicken", EntityType.Builder.<CustomChicken>of(CustomChicken::new, MobCategory.CREATURE).sized(0.4F, 0.7F).clientTrackingRange(10));
+    REVENANT_ZOMBIE = register("revenant-zombie", EntityType.Builder.<RevenantZombie>of(RevenantZombie::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(8));;
     setFrozen(true);
   }
 
   public static final EntityType<CustomChicken> CUSTOM_CHICKEN;
+  public static final EntityType<RevenantZombie> REVENANT_ZOMBIE;
 
   private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> type) {
     return Registry.register(Registry.ENTITY_TYPE, id, type.build(id));

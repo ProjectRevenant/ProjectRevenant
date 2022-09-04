@@ -8,7 +8,8 @@ import org.bukkit.Location;
 @AllArgsConstructor
 public enum CustomMobType {
 
-  CUSTOM_CHICKEN(CustomEntityType.CUSTOM_CHICKEN);
+  CUSTOM_CHICKEN(CustomEntityType.CUSTOM_CHICKEN),
+  REVENANT_ZOMBIE(CustomEntityType.REVENANT_ZOMBIE);
 
   private final EntityType<?> nmsType;
 
