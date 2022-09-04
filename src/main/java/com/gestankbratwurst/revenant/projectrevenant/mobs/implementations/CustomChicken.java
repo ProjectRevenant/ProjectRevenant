@@ -1,6 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.mobs.implementations;
 
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -25,8 +27,11 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
 public class CustomChicken extends Chicken implements RevenantMob<CustomChicken> {
+
+  private static final double minNoise = 20;
 
   private final ActiveModel model;
 
@@ -41,8 +46,15 @@ public class CustomChicken extends Chicken implements RevenantMob<CustomChicken>
   @Override
   protected void registerGoals() {
     super.registerGoals();
+    Predicate<LivingEntity> noiseCondition = target -> {
+      if(!(target instanceof Player player)) {
+        return false;
+      }
+      return RevenantPlayer.of(player.getUUID()).getNoiseLevelAt(this.getBukkitEntity().getLocation()) > minNoise;
+    };
     this.goalSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-    this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 2, true));
+    this.goalSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, false, noiseCondition));
+    this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 2, true));
   }
 
   @Override

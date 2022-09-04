@@ -153,6 +153,12 @@ public class HumanBody extends Body {
     critDamage.setMaxValue(1000.0);
     critDamage.setMinValue(10.0);
     critDamage.setCurrentValue(50.0);
+
+    // Noise
+    BodyAttribute noise = this.getAttribute(BodyAttribute.NOISE);
+    noise.setMaxValue(100);
+    noise.setMinValue(0);
+    noise.setCurrentValue(25);
   }
 
   @Override

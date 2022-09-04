@@ -164,6 +164,17 @@ public abstract class Body implements DeserializationPostProcessable {
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
     boolean dry = WorldEnvironmentFetcher.isDry(player.getLocation(), false);
     boolean nearHeatSource = WorldEnvironmentFetcher.isNearHeatSource(player.getLocation());
+    WetDebuff wetDebuff = revenantPlayer.getAbility(WetDebuff.class);
+    if(wetDebuff != null) {
+      if(wetDebuff.isDry()) {
+        revenantPlayer.removeAbility(WetDebuff.class);
+        revenantPlayer.removeAbility(DryBuff.class);
+        return;
+      }
+    } else {
+      revenantPlayer.removeAbility(DryBuff.class);
+      return;
+    }
     if (dry || nearHeatSource) {
       DryBuff dryAbility = revenantPlayer.getAbility(DryBuff.class);
       if (dryAbility == null) {

@@ -7,6 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,6 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 @RequiredArgsConstructor
 public class AbilityListener implements Listener {
@@ -41,6 +44,18 @@ public class AbilityListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onRemove(EntityRemoveFromWorldEvent event) {
     EntityAbilityCache.uncache(event.getEntity().getUniqueId());
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void onSneak(PlayerToggleSneakEvent event) {
+    Player player = event.getPlayer();
+    EntityAbilityCache.getAbilities(player.getUniqueId()).forEach(ability -> ability.reactOn(player, AbilityTrigger.PLAYER_SNEAK, event));
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void onSprint(PlayerToggleSprintEvent event) {
+    Player player = event.getPlayer();
+    EntityAbilityCache.getAbilities(player.getUniqueId()).forEach(ability -> ability.reactOn(player, AbilityTrigger.PLAYER_SPRINT, event));
   }
 
   @EventHandler

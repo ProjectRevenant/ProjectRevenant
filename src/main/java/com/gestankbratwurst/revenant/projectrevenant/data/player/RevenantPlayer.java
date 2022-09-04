@@ -9,12 +9,14 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
+import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -40,6 +42,8 @@ public class RevenantPlayer {
     return ProjectRevenant.getRevenantPlayerManager().getOnline(playerId);
   }
 
+  private static final double sprintingNoiseMod = 2;
+  private static final double sneakingNoiseMod = 0.5;
   @Identity
   private final UUID playerId;
   @Getter
@@ -47,7 +51,6 @@ public class RevenantPlayer {
   private final Map<Class<? extends Ability>, Ability> abilityMap;
   private final transient BossBar experienceBossBar;
   private transient int levelBarCounter = 0;
-
 
   public RevenantPlayer(UUID playerId) {
     this.playerId = playerId;
@@ -58,6 +61,40 @@ public class RevenantPlayer {
 
   protected RevenantPlayer() {
     this(null);
+  }
+
+  public double getNoiseLevel() {
+    Player player = getBukkitPlayer();
+    double base = getBody().getAttribute(BodyAttribute.NOISE).getCurrentValueModified();
+
+    if (player.isSprinting()) {
+      return base * sprintingNoiseMod;
+    }
+
+    if (player.isSneaking()) {
+      return base * sneakingNoiseMod;
+    }
+
+    return base;
+  }
+
+  public double getNoiseLevelAt(Location location) {
+    Player player = getBukkitPlayer();
+    double distanceSq = Math.max(location.distanceSquared(player.getLocation()), 1.0);
+    double playerNoise = getNoiseLevel();
+
+    double distNoiseScalar = (1.0016 - Math.tanh(distanceSq * 0.001)) / (Math.exp(distanceSq * 0.0005));
+
+    return playerNoise * distNoiseScalar;
+  }
+
+  public Player getBukkitPlayer() {
+    Player player = Bukkit.getPlayer(this.playerId);
+
+    if (player == null) {
+      throw new RuntimeException("Tried to create null-player from RevenantPlayer UUID");
+    }
+    return player;
   }
 
   public void pauseAbilities() {
@@ -127,10 +164,7 @@ public class RevenantPlayer {
   }
 
   public RevenantUserTablist getTabList() {
-    Player player = Bukkit.getPlayer(playerId);
-    if (player == null) {
-      return null;
-    }
+    Player player = getBukkitPlayer();
     AbstractTabList tabList = MMCore.getTabListManager().getView(player).getTablist();
     if (!(tabList instanceof RevenantUserTablist userTablist)) {
       return null;
@@ -139,7 +173,7 @@ public class RevenantPlayer {
   }
 
   public HumanBody getBody() {
-    return Optional.ofNullable(Bukkit.getPlayer(playerId))
+    return Optional.ofNullable(getBukkitPlayer())
             .map(ProjectRevenant.getBodyManager()::getBody)
             .map(HumanBody.class::cast)
             .orElse(null);

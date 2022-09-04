@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -45,6 +47,8 @@ public class AbilityTrigger<T> {
   public static final AbilityTrigger<Body> PASSIVE_ATTRIBUTE = new AbilityTrigger<>(Body.class, "PASSIVE_ATTRIBUTE");
   public static final AbilityTrigger<Player> PLAYER_EVERY_SECOND = new AbilityTrigger<>(Player.class, "PLAYER_EVERY_SECOND");
   public static final AbilityTrigger<PlayerInteractEvent> PLAYER_INTERACT = new AbilityTrigger<>(PlayerInteractEvent.class, "PLAYER_INTERACT");
+  public static final AbilityTrigger<PlayerToggleSneakEvent> PLAYER_SNEAK = new AbilityTrigger<>(PlayerToggleSneakEvent.class, "PLAYER_SNEAK");
+  public static final AbilityTrigger<PlayerToggleSprintEvent> PLAYER_SPRINT = new AbilityTrigger<>(PlayerToggleSprintEvent.class, "PLAYER_SPRINT");
 
   private static final Map<String, AbilityTrigger<?>> triggerMap = new ConcurrentHashMap<>();
 

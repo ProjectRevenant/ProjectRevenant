@@ -12,6 +12,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.L
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -110,7 +111,7 @@ public class BodyListener implements Listener {
     if (entity instanceof Player player) {
       RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
       if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-        double chance = event.getDamage() < 4 ? 0 : event.getDamage() / 20;
+        double chance = event.getDamage() < 4 ? 0 : (event.getDamage() / 45);
         if (ThreadLocalRandom.current().nextDouble() < chance) {
           String boneType = ThreadLocalRandom.current().nextBoolean() ? LegBone.LEFT : LegBone.RIGHT;
           revenantPlayer.getBody().getSkeleton().getBone(boneType).breakBone();
