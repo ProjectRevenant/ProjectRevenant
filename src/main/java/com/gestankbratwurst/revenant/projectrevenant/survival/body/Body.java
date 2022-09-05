@@ -35,6 +35,17 @@ import java.util.UUID;
 
 public abstract class Body implements DeserializationPostProcessable {
 
+  // Increase to make speed slower
+  private static final double SPEED_CONVERSION_CONSTANT = 23.0 * 5;
+
+  public static double revenantSpeedToNms(double revenant) {
+    return revenant / SPEED_CONVERSION_CONSTANT;
+  }
+
+  public static double nmsSpeedToRevenant(double nms) {
+    return nms * SPEED_CONVERSION_CONSTANT;
+  }
+
   protected final Map<String, BodyAttribute> attributeMap;
   @Getter
   @Setter
@@ -82,7 +93,7 @@ public abstract class Body implements DeserializationPostProcessable {
     }
 
     BodyAttribute speedAttribute = getAttribute(BodyAttribute.SPEED);
-    double mcSpeed = speedAttribute.getCurrentValueModified() / (23.0 * 5);
+    double mcSpeed = revenantSpeedToNms(speedAttribute.getCurrentValueModified());
     Objects.requireNonNull(entity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(mcSpeed);
 
     BodyAttribute attackSpeedAttribute = getAttribute(BodyAttribute.ATTACK_SPEED);

@@ -1,22 +1,17 @@
 package com.gestankbratwurst.revenant.projectrevenant.mobs.implementations;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
-import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyManager;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.entity.LivingEntityBody;
-import com.ticxo.modelengine.api.ModelEngineAPI;
-import com.ticxo.modelengine.api.model.ActiveModel;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.ZombieAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -32,11 +27,13 @@ public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie
   private static final double meleeDamage = 10;
   private static final double baseHealth = 50;
   private static final double meleeKnockback = 1.0;
-  private static final double speed = 1.5;
+  private static final double speed = 20;
+  private static final double chargeSpeedScalar = 1.1;
 
   public RevenantZombie(EntityType<? extends Zombie> type, Level world) {
     super(EntityType.ZOMBIE, world);
   }
+
   @Override
   public Body createDefaultBody() {
     return LivingEntityBody.builder()
@@ -47,17 +44,20 @@ public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie
             .base(BodyAttribute.SPEED, 0, 20, speed)
             .create();
   }
+
   @Override
   protected void registerGoals() {
-    Predicate<LivingEntity> noiseCondition = target -> {
-      if(!(target instanceof Player player)) {
-        return false;
-      }
-      return RevenantPlayer.of(player.getUUID()).getNoiseLevelAt(this.getBukkitEntity().getLocation()) > minAttractionNoise;
-    };
-    this.goalSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-    this.goalSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, false, noiseCondition));
-    this.goalSelector.addGoal(4, new ZombieAttackGoal(this, getActiveBody().getAttribute(BodyAttribute.SPEED).getCurrentValueModified(), true));
+    this.goalSelector.addGoal(3, new SmartNoiseTargetGoal<>(this, false, 20));
+    this.goalSelector.addGoal(4, new ZombieAttackGoal(this, chargeSpeedScalar, true));
+  }
+
+  @Override
+  public boolean save(CompoundTag nbt) {
+    boolean saved = super.save(nbt);
+    if (saved) {
+      nbt.putString("id", CustomEntityType.REVENANT_ZOMBIE.id);
+    }
+    return saved;
   }
 
   @Override
