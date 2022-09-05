@@ -24,7 +24,6 @@ public class SmartNoiseTargetGoal<Zombie> extends TargetGoal {
       }
 
       double noise = RevenantPlayer.of(player.getUUID()).getNoiseLevelAt(mob.getBukkitEntity().getLocation());
-      System.out.println("[DEBUG] Target player " + player.getName() + " has noise level: " + noise);
 
       if (noise >= minAttractionNoise) {
         return true;
@@ -49,7 +48,6 @@ public class SmartNoiseTargetGoal<Zombie> extends TargetGoal {
 
   private void findTarget() {
     this.target = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
-    System.out.println("[DEBUG] Set current target to: " + target);
   }
 
   @Override

@@ -11,8 +11,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.ZombieAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -47,8 +49,8 @@ public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie
 
   @Override
   protected void registerGoals() {
-    this.goalSelector.addGoal(3, new SmartNoiseTargetGoal<>(this, false, 20));
-    this.goalSelector.addGoal(4, new ZombieAttackGoal(this, chargeSpeedScalar, true));
+    this.goalSelector.addGoal(2, new SmartNoiseTargetGoal<>(this, false, 20));
+    this.goalSelector.addGoal(3, new ZombieAttackGoal(this, chargeSpeedScalar, false));
   }
 
   @Override

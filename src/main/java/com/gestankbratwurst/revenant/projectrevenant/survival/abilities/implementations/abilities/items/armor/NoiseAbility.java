@@ -1,22 +1,33 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.armor.NoiseEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoiseAbility extends Ability {
+public class NoiseAbility extends TimedAbility {
+
+  private final Duration duration;
 
   public NoiseAbility(){
-    this(0.0, "NULL");
+    this(0.0, Duration.ZERO, "NULL");
   }
 
-  public NoiseAbility(double amount, String sufix){
+  public NoiseAbility(double amount, Duration duration, String sufix){
+    super(false);
     this.addEffect(new NoiseEffect(amount, sufix));
+    this.duration = duration;
+  }
+
+  @Override
+  public void start() {
+    super.setDurationFromNow(duration);
+    super.start();
   }
 
   private double getAmount(){
