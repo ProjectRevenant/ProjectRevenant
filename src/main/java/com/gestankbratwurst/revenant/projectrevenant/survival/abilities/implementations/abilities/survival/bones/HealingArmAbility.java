@@ -2,7 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.arm.HealingArmEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.PercentageMeleeDamageEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class HealingArmAbility extends Ability {
   public HealingArmAbility() {
-    this.addEffect(new HealingArmEffect());
+    this.addEffect(new PercentageMeleeDamageEffect(0.85, "healing-arm"));
   }
 
   @Override

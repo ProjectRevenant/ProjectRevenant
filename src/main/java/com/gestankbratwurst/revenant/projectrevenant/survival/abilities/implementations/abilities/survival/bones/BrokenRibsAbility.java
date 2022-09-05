@@ -2,8 +2,8 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.BrokenBoneDamageEffect;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.ribs.BrokenRibsEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.HealthLossEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.PercentageMaxWeightEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -11,8 +11,8 @@ import java.util.List;
 
 public class BrokenRibsAbility extends Ability {
   public BrokenRibsAbility() {
-    this.addEffect(new BrokenRibsEffect());
-    this.addEffect(new BrokenBoneDamageEffect("broken-ribs-damage-effect"));
+    this.addEffect(new PercentageMaxWeightEffect(0.6, "broken-ribs"));
+    this.addEffect(new HealthLossEffect(0.00025, "broken-rib"));
   }
 
   @Override

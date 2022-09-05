@@ -2,7 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wet.WetEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.TemperatureShiftEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.wet.WetWeightEffect;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class WetDebuff extends Ability {
   public WetDebuff() {
-    this.addEffect(new WetEffect());
+    this.addEffect(new TemperatureShiftEffect(-0.0001, "wet"));
     this.addEffect(new WetWeightEffect());
   }
 

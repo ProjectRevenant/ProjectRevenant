@@ -2,7 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.campfire.CampfireBodyEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.armor.ColdInsulationEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class CampfireBuff extends Ability {
 
   public CampfireBuff() {
-    this.addEffect(new CampfireBodyEffect());
+    this.addEffect(new ColdInsulationEffect(7.5, "campfire"));
   }
 
   @Override

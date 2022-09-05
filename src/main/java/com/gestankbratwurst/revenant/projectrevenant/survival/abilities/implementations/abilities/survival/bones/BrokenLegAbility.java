@@ -2,8 +2,8 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.BrokenBoneDamageEffect;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.leg.BrokenLegEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.HealthLossEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.PercentageSpeedEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -11,8 +11,8 @@ import java.util.List;
 
 public class BrokenLegAbility extends Ability {
   public BrokenLegAbility() {
-    this.addEffect(new BrokenLegEffect());
-    this.addEffect(new BrokenBoneDamageEffect("broken-leg-damage-effect"));
+    this.addEffect(new PercentageSpeedEffect(0.85, "broken-leg"));
+    this.addEffect(new HealthLossEffect(0.00025, "broken-leg"));
   }
 
   @Override

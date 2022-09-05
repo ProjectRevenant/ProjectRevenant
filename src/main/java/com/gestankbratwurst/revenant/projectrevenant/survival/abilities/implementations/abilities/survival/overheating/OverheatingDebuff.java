@@ -2,7 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.overheating.OverheatingHealthEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.HealthLossEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.overheating.OverheatingWaterEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import java.util.List;
 public class OverheatingDebuff extends Ability {
   public OverheatingDebuff() {
     this.addEffect(new OverheatingWaterEffect());
-    this.addEffect(new OverheatingHealthEffect());
+    this.addEffect(new HealthLossEffect(0.002, "overheating"));
   }
 
   @Override

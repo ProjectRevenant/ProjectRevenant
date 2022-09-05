@@ -2,7 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.bones.leg.HealingLegEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.PercentageSpeedEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class HealingLegAbility extends Ability {
   public HealingLegAbility() {
-    this.addEffect(new HealingLegEffect());
+    this.addEffect(new PercentageSpeedEffect(0.9, "healing-leg"));
   }
 
   @Override

@@ -2,7 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.impleme
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.thirst.ThirstHealthEffect;
+import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.survival.HealthLossEffect;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ThirstDebuff extends Ability {
   public ThirstDebuff() {
-    this.addEffect(new ThirstHealthEffect());
+    this.addEffect(new HealthLossEffect(0.008, "thirst"));
   }
 
   @Override
