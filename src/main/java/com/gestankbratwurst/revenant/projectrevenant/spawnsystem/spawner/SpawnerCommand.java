@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 @RequiredArgsConstructor
 @CommandAlias("spawner")
@@ -31,7 +34,7 @@ public class SpawnerCommand extends BaseCommand {
       String name = world == null ? "[OFFLINE]" : "[" + world.getName() + "]";
       line.append(name);
       int max = spawner.getMaxAmountSpawned();
-      int current = spawner.getCurrentAmountSpawned();
+      int current = spawner.getCurrentAmountFilled();
       line.append(" §f[§7").append(current).append("§f/§7").append(max).append("§f]");
       sender.sendMessage(line.toString());
     });
@@ -61,7 +64,7 @@ public class SpawnerCommand extends BaseCommand {
   @CommandCompletion("@RevenantSpawner")
   public void onInfo(Player sender, @Values("@RevenantSpawner") RevenantSpawner revenantSpawner) {
     sender.sendMessage("§6Spawner: §f" + revenantSpawner.getInternalName());
-    sender.sendMessage("§e Active: §f[§7" + revenantSpawner.getCurrentAmountSpawned() + "§f/§7" + revenantSpawner.getMaxAmountSpawned() + "§f]");
+    sender.sendMessage("§e Active: §f[§7" + revenantSpawner.getCurrentAmountFilled() + "§f/§7" + revenantSpawner.getMaxAmountSpawned() + "§f]");
     sender.sendMessage("§e Cooldown: §f" + revenantSpawner.getSpawnCooldown() + "ms");
     sender.sendMessage("§e Time left: §f" + revenantSpawner.getTimeLeft() + "ms");
     sender.sendMessage("§e Type: §f" + revenantSpawner.getSpawnerType());
@@ -110,6 +113,26 @@ public class SpawnerCommand extends BaseCommand {
     }
     revenantSpawner.setMaxAmountSpawned(max);
     Msg.sendInfo(sender, "The max amount for the {} spawner is now {}.", revenantSpawner.getInternalName(), max);
+  }
+
+  @Subcommand("edit setwarmup")
+  @CommandCompletion("@RevenantSpawner")
+  public void onWarmup(Player sender, @Values("@RevenantSpawner") RevenantSpawner revenantSpawner, long warmup) {
+    if(warmup < 0) {
+      Msg.sendError(sender, "Negative warmups are not allowed.");
+      return;
+    }
+    revenantSpawner.setWarmupTime(warmup);
+    String secondInfo = "%.1fs".formatted(warmup / 1000.0);
+    Msg.sendInfo(sender, "The warmup for the {} spawner is now {}.", revenantSpawner.getInternalName(), secondInfo);
+  }
+
+  @Subcommand("killmobs")
+  @CommandCompletion("@RevenantSpawner")
+  public void onKillMobs(Player sender, @Values("@RevenantSpawner") RevenantSpawner revenantSpawner) {
+    Set<Entity> entitySet = revenantSpawner.getActiveEntities();
+    entitySet.forEach(Entity::remove);
+    Msg.sendInfo(sender, "Killed {} mobs from {} spawner.", entitySet.size(), revenantSpawner.getInternalName());
   }
 
 }

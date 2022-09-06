@@ -65,7 +65,6 @@ import org.bukkit.GameRule;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.checkerframework.checker.units.qual.N;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -92,7 +91,7 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).noisePolutionManager;
   }
 
-  public static GlobalSpawnManager getGlobalSpawnManager(){
+  public static GlobalSpawnManager getGlobalSpawnManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).globalSpawnManager;
   }
 
@@ -171,7 +170,7 @@ public final class ProjectRevenant extends JavaPlugin {
     this.noisePolutionManager = new NoisePolutionManager();
     this.globalSpawnManager = new GlobalSpawnManager();
     this.spawnerManager = SpawnerManager.create();
-    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, globalSpawnManager), this);
+    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, spawnerManager, globalSpawnManager), this);
     TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
     TaskManager.getInstance().runRepeatedBukkit(new GlobalSpawnTask(globalSpawnManager), 60, 40);
     TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);

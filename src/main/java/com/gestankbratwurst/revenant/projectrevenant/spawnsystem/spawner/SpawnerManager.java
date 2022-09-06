@@ -2,9 +2,11 @@ package com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.data.json.DeserializationPostProcessable;
+import com.gestankbratwurst.core.mmcore.util.container.CustomPersistentDataType;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import lombok.SneakyThrows;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -21,6 +23,11 @@ public class SpawnerManager implements DeserializationPostProcessable, Flushable
   private static final int maxSpawnersPerTick = 20;
   private final transient ArrayDeque<UUID> spawnerTickQueue = new ArrayDeque<>();
   private final Map<UUID, RevenantSpawner> spawnerMap = new HashMap<>();
+
+  public RevenantSpawner getSpawnerOfMob(Entity entity) {
+    UUID spawnerId = entity.getPersistentDataContainer().get(RevenantSpawner.SPAWNER_ID_KEY, CustomPersistentDataType.UUIDType);
+    return spawnerId == null ? null : getSpawner(spawnerId);
+  }
 
   public RevenantSpawner getSpawner(UUID spawnerId) {
     return spawnerMap.get(spawnerId);
