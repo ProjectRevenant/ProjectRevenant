@@ -19,6 +19,7 @@ import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.SpawnSystemListener;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
@@ -172,6 +173,7 @@ public final class ProjectRevenant extends JavaPlugin {
     this.spawnerManager = SpawnerManager.create();
     Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, globalSpawnManager), this);
     TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
+    TaskManager.getInstance().runRepeatedBukkit(new GlobalSpawnTask(globalSpawnManager), 60, 40);
     TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);
     MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("RevenantSpawner", context -> spawnerManager.getAllSpawnerNames());
     MMCore.getPaperCommandManager().getCommandContexts().registerContext(RevenantSpawner.class, context -> spawnerManager.getSpawnerByName(context.popFirstArg()));

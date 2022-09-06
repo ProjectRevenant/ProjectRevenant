@@ -1,28 +1,36 @@
 package com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global;
 
+import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import net.minecraft.world.entity.Entity;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 
 public class GlobalSpawnManager {
 
-  private static final int maxMonstersPerPlayer = 50;
+  private static final int maxMonstersPerPlayer = 25;
   private static final int spawnLocationIterations = 5;
   private static final int minDistance = 20;
-  private static final int maxDistance = 96;
-  private static final int maxYDif = 15;
+  private static final int maxDistance = 50;
+  private static final int maxYDif = 10;
   private static final double highestVsOffsetChance = 0.4;
   static final double discardHighestBlock = 0.25;
+
   private final Map<Player, Integer> playerMonsterCount = new HashMap<>();
-  private final Map<UUID, Player> monsterPlayerAssignment = new HashMap<>();
+  private final Map<UUID, Player> monsterPlayerAssignment = new ConcurrentHashMap<>(2048);
 
   /**
    * @param player target player
@@ -46,6 +54,12 @@ public class GlobalSpawnManager {
     playerMonsterCount.compute(player, (player1, amount) -> amount == null ? 0 : amount - 1);
 
     monsterPlayerAssignment.remove(uuid);
+  }
+
+  public void spawnForNext(){
+    for(Player player : Bukkit.getOnlinePlayers()){
+      spawnMonsters(player);
+    }
   }
 
   public void spawnMonsters(Player target) {
@@ -78,7 +92,7 @@ public class GlobalSpawnManager {
 
       Location spawnableLocation = null;
 
-      if (highestBlock.isSolid() && threadLocalRandom.nextDouble() <= discardHighestBlock) {
+      if (spawnPossible(highestBlock) && threadLocalRandom.nextDouble() <= discardHighestBlock) {
         //spawnableLocation = the highest Block
         spawnableLocation = highestBlock.getLocation();
       } else {
@@ -136,7 +150,13 @@ public class GlobalSpawnManager {
         continue;
       }
 
-      Entity spawned = type.spawnAsNms(spawnableLocation);
+      Location finalSpawnableLocation = spawnableLocation.add(0.5, 1, 0.5);
+
+      Entity spawned = computeMonsterForLocation(finalSpawnableLocation).spawnAsNms(finalSpawnableLocation);
+
+      monsterPlayerAssignment.put(spawned.getUUID(), target);
+
+      System.out.println("[DEBUG] Spawned at " + spawnableLocation.getBlockX() + "/" + spawnableLocation.getBlockY() + "/" + spawnableLocation.getBlockZ());
 
       playerMonsterCount.compute(target, (player, currentValue) -> currentValue == null ? 0 : currentValue + 1);
 
@@ -150,11 +170,11 @@ public class GlobalSpawnManager {
   }
 
   public boolean spawnPossible(Block block) {
-    if (!block.isSolid()) {
+    if (!block.isSolid() || !block.getType().isOccluding()) {
       return false;
     }
 
-    if (!block.getRelative(0, 1, 0).isSolid() || !block.getRelative(0, 1, 0).isSolid()) {
+    if (!block.getRelative(0, 1, 0).getType().equals(Material.AIR) || !block.getRelative(0, 1, 0).getType().equals(Material.AIR)) {
       return false;
     }
 

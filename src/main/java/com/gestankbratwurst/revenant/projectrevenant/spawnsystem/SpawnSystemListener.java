@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -21,12 +22,12 @@ public class SpawnSystemListener implements Listener {
   }
 
   @EventHandler
-  public void onChunkUnload(ChunkUnloadEvent event){
+  public void onChunkUnload(ChunkUnloadEvent event) {
     noisePolutionManager.removeChunk(event.getChunk());
   }
 
   @EventHandler
-  public void onEntityRemove(EntityRemoveFromWorldEvent event){
+  public void onEntityRemove(EntityRemoveFromWorldEvent event) {
     globalSpawnManager.removeMonsterAssignment(event.getEntity().getUniqueId());
   }
 
