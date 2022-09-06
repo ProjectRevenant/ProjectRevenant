@@ -3,6 +3,8 @@ package com.gestankbratwurst.revenant.projectrevenant.spawnsystem;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerManager;
@@ -18,6 +20,7 @@ public class SpawnSystemListener implements Listener {
 
   private final NoisePolutionManager noisePolutionManager;
   private final SpawnerManager spawnerManager;
+  private final GlobalSpawnManager globalSpawnManager;
 
   @EventHandler
   public void onChunkLoad(ChunkLoadEvent event) {
@@ -44,6 +47,7 @@ public class SpawnSystemListener implements Listener {
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void onRemoveFromWorld(EntityRemoveFromWorldEvent event) {
+    globalSpawnManager.removeMonsterAssignment(event.getEntity().getUniqueId());
     RevenantSpawner revenantSpawner = spawnerManager.getSpawnerOfMob(event.getEntity());
     if(revenantSpawner != null) {
       if(event.getEntity().isDead()) {

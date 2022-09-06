@@ -18,6 +18,7 @@ import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobListener;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.SpawnSystemListener;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
@@ -63,7 +64,6 @@ import org.bukkit.GameRule;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.checkerframework.checker.units.qual.N;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -75,6 +75,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private BodyManager bodyManager;
   private LootChestManager lootChestManager;
   private NoisePolutionManager noisePolutionManager;
+  private GlobalSpawnManager globalSpawnManager;
   private SpawnerManager spawnerManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
@@ -87,6 +88,10 @@ public final class ProjectRevenant extends JavaPlugin {
 
   public static NoisePolutionManager getNoisePolutionManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).noisePolutionManager;
+  }
+
+  public static GlobalSpawnManager getGlobalSpawnManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).globalSpawnManager;
   }
 
   public static BodyManager getBodyManager() {
@@ -162,8 +167,9 @@ public final class ProjectRevenant extends JavaPlugin {
 
   private void setupSpawnerManager() {
     this.noisePolutionManager = new NoisePolutionManager();
+    this.globalSpawnManager = new GlobalSpawnManager();
     this.spawnerManager = SpawnerManager.create();
-    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, spawnerManager), this);
+    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, spawnerManager, globalSpawnManager), this);
     TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
     TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);
     MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("RevenantSpawner", context -> spawnerManager.getAllSpawnerNames());
