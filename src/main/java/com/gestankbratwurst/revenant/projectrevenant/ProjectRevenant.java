@@ -17,13 +17,20 @@ import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobListener;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.SpawnSystemListener;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionTask;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerCommand;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerManager;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerRunnable;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEvaluationRegistry;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilitySecondTask;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
-import com.gestankbratwurst.revenant.projectrevenant.ui.RevenantDisplayCompiler;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.ItemStackAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.LivingEntityAbilityEvaluator;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.evaluators.PersistentDataContainerAbilityEvaluator;
@@ -42,6 +49,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.items.ItemAtt
 import com.gestankbratwurst.revenant.projectrevenant.survival.combat.CombatListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.combat.CombatPacketAdapter;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
+import com.gestankbratwurst.revenant.projectrevenant.ui.RevenantDisplayCompiler;
 import com.gestankbratwurst.revenant.projectrevenant.ui.actionbar.ActionBarListener;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListListener;
@@ -55,6 +63,7 @@ import org.bukkit.GameRule;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
+import org.checkerframework.checker.units.qual.N;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -65,9 +74,19 @@ public final class ProjectRevenant extends JavaPlugin {
   private RevenantPlayerManager revenantPlayerManager;
   private BodyManager bodyManager;
   private LootChestManager lootChestManager;
+  private NoisePolutionManager noisePolutionManager;
+  private SpawnerManager spawnerManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
+  }
+
+  public static SpawnerManager getSpawnerManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).spawnerManager;
+  }
+
+  public static NoisePolutionManager getNoisePolutionManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).noisePolutionManager;
   }
 
   public static BodyManager getBodyManager() {
@@ -85,22 +104,100 @@ public final class ProjectRevenant extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    MMCore.getGsonProvider().registerTypeHierarchyAdapter(BlockData.class, new BlockDataSerializer());
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(Body.class);
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(BodyAttributeModifier.class);
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(Ability.class);
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
-    MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
-    MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
-    MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());
+    setupGsonTypeAdapters();
 
-    revenantPlayerManager = new RevenantPlayerManager();
-    Bukkit.getPluginManager().registerEvents(new ReventantPlayerListener(revenantPlayerManager), this);
-    long flushDelay = RevenantPlayerDataFlushTask.TICKS_BETWEEN_SAVES;
-    TaskManager.getInstance().runRepeatedBukkitAsync(new RevenantPlayerDataFlushTask(revenantPlayerManager), flushDelay, flushDelay);
-    TaskManager.getInstance().runRepeatedBukkit(new RevenantPlayerTickTask(revenantPlayerManager), 1, 1);
+    setupRevenantPlayerManager();
 
+    setupBodyManager();
+
+    MMCore.getProtocolManager().addPacketListener(new CombatPacketAdapter());
+
+    setupLootManager();
+
+    Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
+    Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
+    Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+    Bukkit.getPluginManager().registerEvents(new MinecraftExpListener(), this);
+    Bukkit.getPluginManager().registerEvents(new LootListener(lootChestManager), this);
+
+    setupCustomMobManager();
+
+    setupAbilityManager();
+
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantItem", RevenantItem.getInternalNames());
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("LootType", Arrays.stream(LootType.values()).map(Enum::toString).toList());
+    MMCore.getPaperCommandManager().registerCommand(new DebugCommand());
+
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("CustomMobType", Arrays.stream(CustomMobType.values()).map(Enum::toString).toList());
+
+    setupSpawnerManager();
+
+    setupUI();
+
+    setupGamerules();
+  }
+
+  private static void setupGamerules() {
+    TaskManager.getInstance().runBukkitSync(() -> Bukkit.getWorlds().forEach(world -> {
+      world.setGameRule(GameRule.NATURAL_REGENERATION, false);
+      world.setGameRule(GameRule.DISABLE_RAIDS, true);
+      world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+      world.setGameRule(GameRule.DO_INSOMNIA, false);
+      world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+      world.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
+      world.setGameRule(GameRule.DO_WARDEN_SPAWNING, false);
+      world.setGameRule(GameRule.MOB_GRIEFING, false);
+      world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+    }));
+  }
+
+  private void setupUI() {
+    MMCore.getTabListManager().setDefaultTabListProvider(player -> new RevenantUserTablist(player.getUniqueId()));
+    TabListTask tabListTask = new TabListTask();
+    TabListListener tabListListener = new TabListListener(tabListTask);
+    TaskManager.getInstance().runRepeatedBukkit(tabListTask, 40, 1);
+    Bukkit.getPluginManager().registerEvents(tabListListener, this);
+    Bukkit.getPluginManager().registerEvents(new ActionBarListener(bodyManager), this);
+  }
+
+  private void setupSpawnerManager() {
+    this.noisePolutionManager = new NoisePolutionManager();
+    this.spawnerManager = SpawnerManager.create();
+    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager), this);
+    TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
+    TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);
+    MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("RevenantSpawner", context -> spawnerManager.getAllSpawnerNames());
+    MMCore.getPaperCommandManager().getCommandContexts().registerContext(RevenantSpawner.class, context -> spawnerManager.getSpawnerByName(context.popLastArg()));
+    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantSpawnerType", Arrays.stream(SpawnerType.values()).map(Enum::toString).toList());
+    MMCore.getPaperCommandManager().registerCommand(new SpawnerCommand(spawnerManager));
+  }
+
+  private void setupAbilityManager() {
+    AbilitySecondTask abilitySecondTask = new AbilitySecondTask();
+    Bukkit.getPluginManager().registerEvents(new AbilityListener(abilitySecondTask), this);
+    AbilityEvaluationRegistry.register(new PlayerAbilityEvaluator());
+    AbilityEvaluationRegistry.register(new LivingEntityAbilityEvaluator());
+    AbilityEvaluationRegistry.register(new ItemStackAbilityEvaluator());
+    AbilityEvaluationRegistry.register(new PersistentDataContainerAbilityEvaluator());
+    MMCore.getDisplayCompiler().registerConverter(new RevenantDisplayCompiler());
+    TaskManager.getInstance().runRepeatedBukkit(abilitySecondTask, 1, 1);
+  }
+
+  private void setupCustomMobManager() {
+    CustomMobManager.setupLiveEntities();
+    Bukkit.getPluginManager().registerEvents(new CustomMobListener(), this);
+    MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));
+  }
+
+  private void setupLootManager() {
+    lootChestManager = LootChestManager.create();
+    lootChestManager.initialize();
+    long lootManagerFlushDelay = Duration.ofMinutes(15).toSeconds() * 20;
+    TaskManager.getInstance().runRepeatedBukkitAsync(() -> lootChestManager.flush(), lootManagerFlushDelay, lootManagerFlushDelay);
+    TaskManager.getInstance().runRepeatedBukkit(() -> lootChestManager.checkRespawnQueue(), 0, 10);
+  }
+
+  private void setupBodyManager() {
     bodyManager = new BodyManager();
     Bukkit.getPluginManager().registerEvents(new BodyListener(bodyManager), this);
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("BodyAttribute", Arrays.asList(BodyAttribute.getValues()));
@@ -116,62 +213,33 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("@BoneType", Arrays.asList(BoneType.values()));
     MMCore.getPaperCommandManager().registerCommand(new SkeletonCommand());
     TaskManager.getInstance().runRepeatedBukkit(new BodyRunnable(bodyManager), 1, 1);
+  }
 
-    MMCore.getProtocolManager().addPacketListener(new CombatPacketAdapter());
+  private void setupRevenantPlayerManager() {
+    revenantPlayerManager = new RevenantPlayerManager();
+    Bukkit.getPluginManager().registerEvents(new ReventantPlayerListener(revenantPlayerManager), this);
+    long flushDelay = RevenantPlayerDataFlushTask.TICKS_BETWEEN_SAVES;
+    TaskManager.getInstance().runRepeatedBukkitAsync(new RevenantPlayerDataFlushTask(revenantPlayerManager), flushDelay, flushDelay);
+    TaskManager.getInstance().runRepeatedBukkit(new RevenantPlayerTickTask(revenantPlayerManager), 1, 1);
+  }
 
-    lootChestManager = LootChestManager.create();
-    lootChestManager.initialize();
-    long lootManagerFlushDelay = Duration.ofMinutes(15).toSeconds() * 20;
-    TaskManager.getInstance().runRepeatedBukkitAsync(() -> lootChestManager.flush(), lootManagerFlushDelay, lootManagerFlushDelay);
-    TaskManager.getInstance().runRepeatedBukkit(() -> lootChestManager.checkRespawnQueue(), 0, 10);
-
-    Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
-    Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
-    Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
-    Bukkit.getPluginManager().registerEvents(new MinecraftExpListener(), this);
-    Bukkit.getPluginManager().registerEvents(new LootListener(lootChestManager), this);
-
-    CustomMobManager.setupLiveEntities();
-    Bukkit.getPluginManager().registerEvents(new CustomMobListener(), this);
-    MMCore.getPaperCommandManager().registerCommand(new ExperienceCommand(revenantPlayerManager));
-
-    AbilitySecondTask abilitySecondTask = new AbilitySecondTask();
-    Bukkit.getPluginManager().registerEvents(new AbilityListener(abilitySecondTask), this);
-    AbilityEvaluationRegistry.register(new PlayerAbilityEvaluator());
-    AbilityEvaluationRegistry.register(new LivingEntityAbilityEvaluator());
-    AbilityEvaluationRegistry.register(new ItemStackAbilityEvaluator());
-    AbilityEvaluationRegistry.register(new PersistentDataContainerAbilityEvaluator());
-    MMCore.getDisplayCompiler().registerConverter(new RevenantDisplayCompiler());
-    TaskManager.getInstance().runRepeatedBukkit(abilitySecondTask, 1, 1);
-
-    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantItem", RevenantItem.getInternalNames());
-    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("LootType", Arrays.stream(LootType.values()).map(Enum::toString).toList());
-    MMCore.getPaperCommandManager().registerCommand(new DebugCommand());
-
-    MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("CustomMobType", Arrays.stream(CustomMobType.values()).map(Enum::toString).toList());
-
-    MMCore.getTabListManager().setDefaultTabListProvider(player -> new RevenantUserTablist(player.getUniqueId()));
-    TabListTask tabListTask = new TabListTask();
-    TabListListener tabListListener = new TabListListener(tabListTask);
-    TaskManager.getInstance().runRepeatedBukkit(tabListTask, 1, 1);
-    Bukkit.getPluginManager().registerEvents(tabListListener, this);
-    Bukkit.getPluginManager().registerEvents(new ActionBarListener(bodyManager), this);
-
-    TaskManager.getInstance().runBukkitSync(() -> Bukkit.getWorlds().forEach(world -> {
-      world.setGameRule(GameRule.NATURAL_REGENERATION, false);
-      world.setGameRule(GameRule.DISABLE_RAIDS, true);
-      world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-      world.setGameRule(GameRule.DO_INSOMNIA, false);
-      world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
-      world.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
-      world.setGameRule(GameRule.DO_WARDEN_SPAWNING, false);
-      world.setGameRule(GameRule.MOB_GRIEFING, false);
-    }));
+  private void setupGsonTypeAdapters() {
+    MMCore.getGsonProvider().registerTypeHierarchyAdapter(BlockData.class, new BlockDataSerializer());
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(Body.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(BodyAttributeModifier.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(Ability.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(RevenantSpawner.class);
+    MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
+    MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
+    MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());
   }
 
   @Override
   public void onDisable() {
     revenantPlayerManager.flush();
     lootChestManager.flush();
+    spawnerManager.flush();
   }
 }

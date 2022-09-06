@@ -188,7 +188,7 @@ public class LootChestManager implements Flushable {
 
   @SneakyThrows
   public void save() {
-    String json = MMCore.getGsonProvider().toJson(this);
+    String json = MMCore.getGsonProvider().toJsonPretty(this);
     File pluginFolder = JavaPlugin.getPlugin(ProjectRevenant.class).getDataFolder();
     if (!pluginFolder.exists()) {
       pluginFolder.mkdirs();

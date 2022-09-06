@@ -83,7 +83,7 @@ public class RevenantPlayer {
     double distanceSq = Math.max(location.distanceSquared(player.getLocation()), 1.0);
     double playerNoise = getNoiseLevel();
 
-    double distNoiseScalar = (1.0016 - Math.tanh(distanceSq * 0.001)) / (Math.exp(distanceSq * 0.0005));
+    double distNoiseScalar = (1.0010005) / Math.exp(Math.tanh(distanceSq * 0.0008) * distanceSq * 0.00015);
 
     return playerNoise * distNoiseScalar;
   }
