@@ -99,12 +99,13 @@ public abstract class RevenantSpawner {
 
     SpawnerPosition position = getRandomSpawnPosition();
 
-    if(!world.isChunkLoaded(position.getX() << 4, position.getZ() << 4)) {
+    if(!world.isChunkLoaded(position.getX() >> 4, position.getZ() >> 4)) {
       return;
     }
 
     lastSpawnTimestamp = System.currentTimeMillis();
     this.spawnMob(position);
+    incrementCurrentAmountSpawned();
   }
 
   protected abstract void spawnMob(SpawnerPosition position);

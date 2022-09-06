@@ -167,7 +167,7 @@ public final class ProjectRevenant extends JavaPlugin {
     TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
     TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);
     MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("RevenantSpawner", context -> spawnerManager.getAllSpawnerNames());
-    MMCore.getPaperCommandManager().getCommandContexts().registerContext(RevenantSpawner.class, context -> spawnerManager.getSpawnerByName(context.popLastArg()));
+    MMCore.getPaperCommandManager().getCommandContexts().registerContext(RevenantSpawner.class, context -> spawnerManager.getSpawnerByName(context.popFirstArg()));
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantSpawnerType", Arrays.stream(SpawnerType.values()).map(Enum::toString).toList());
     MMCore.getPaperCommandManager().registerCommand(new SpawnerCommand(spawnerManager));
   }

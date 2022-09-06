@@ -51,12 +51,17 @@ public class SpawnerManager implements DeserializationPostProcessable, Flushable
   }
 
   public void tickSpawners() {
-    UUID firstId = spawnerTickQueue.peek();
+    UUID lastId = spawnerTickQueue.peekLast();
+    if(lastId == null) {
+      return;
+    }
     UUID currentId = null;
     int counter = 0;
-    while (currentId != firstId) {
+    while (currentId != lastId) {
       currentId = spawnerTickQueue.poll();
       getSpawner(currentId).tick();
+      assert currentId != null;
+      spawnerTickQueue.add(currentId);
       if (++counter == maxSpawnersPerTick) {
         break;
       }

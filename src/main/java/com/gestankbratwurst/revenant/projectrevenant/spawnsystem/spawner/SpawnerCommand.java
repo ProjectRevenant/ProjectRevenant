@@ -61,13 +61,13 @@ public class SpawnerCommand extends BaseCommand {
   @CommandCompletion("@RevenantSpawner")
   public void onInfo(Player sender, @Values("@RevenantSpawner") RevenantSpawner revenantSpawner) {
     sender.sendMessage("§6Spawner: §f" + revenantSpawner.getInternalName());
-    sender.sendMessage("§e Active: §f" + revenantSpawner.getCurrentAmountSpawned() + " / " + revenantSpawner.getMaxAmountSpawned());
+    sender.sendMessage("§e Active: §f[§7" + revenantSpawner.getCurrentAmountSpawned() + "§f/§7" + revenantSpawner.getMaxAmountSpawned() + "§f]");
     sender.sendMessage("§e Cooldown: §f" + revenantSpawner.getSpawnCooldown() + "ms");
     sender.sendMessage("§e Time left: §f" + revenantSpawner.getTimeLeft() + "ms");
     sender.sendMessage("§e Type: §f" + revenantSpawner.getSpawnerType());
     sender.sendMessage("§e Spawn positions: §f(§7" + revenantSpawner.getAllPositions().size() + ")");
     revenantSpawner.getAllPositions().forEach(position -> {
-      sender.sendMessage(" §f- [§7" + position.getX() + "§f, §7" + position.getZ() + "§f, §7" + position.getZ() + "§f]");
+      sender.sendMessage("  §f- [§7" + position.getX() + "§f, §7" + position.getY() + "§f, §7" + position.getZ() + "§f]");
     });
   }
 

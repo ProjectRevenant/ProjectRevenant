@@ -68,8 +68,8 @@ public class NoisePolutionManager {
 
       for (Player player : Bukkit.getOnlinePlayers()) {
         Location playerLoc = player.getLocation();
-        int chunkX = playerLoc.getBlockX() << 4;
-        int chunkZ = playerLoc.getBlockZ() << 4;
+        int chunkX = playerLoc.getBlockX() >> 4;
+        int chunkZ = playerLoc.getBlockZ() >> 4;
 
         double distanceSquared = (chunkX - chunkPos[0]) * (chunkZ - chunkPos[1]);
 
