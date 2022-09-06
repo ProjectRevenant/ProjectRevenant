@@ -163,7 +163,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private void setupSpawnerManager() {
     this.noisePolutionManager = new NoisePolutionManager();
     this.spawnerManager = SpawnerManager.create();
-    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager), this);
+    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, spawnerManager), this);
     TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
     TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);
     MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("RevenantSpawner", context -> spawnerManager.getAllSpawnerNames());

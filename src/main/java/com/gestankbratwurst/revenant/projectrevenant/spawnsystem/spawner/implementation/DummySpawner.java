@@ -7,6 +7,7 @@ import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.Spawner
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 import java.util.UUID;
 
@@ -17,10 +18,10 @@ public class DummySpawner extends RevenantSpawner {
   }
 
   @Override
-  protected void spawnMob(SpawnerPosition position) {
+  protected Entity spawnMob(SpawnerPosition position) {
     World world = Bukkit.getWorld(this.getWorldId());
     Location location = new Location(world, position.getX(), position.getY(), position.getZ());
-    CustomMobType.REVENANT_ZOMBIE.spawnAsNms(location);
+    return CustomMobType.REVENANT_ZOMBIE.spawnAsNms(location).getBukkitEntity();
   }
 
 }
