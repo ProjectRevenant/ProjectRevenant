@@ -1,6 +1,5 @@
 package com.gestankbratwurst.revenant.projectrevenant.mobs.implementations;
 
-import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
@@ -9,18 +8,12 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.entity.LivingEntityBody;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.ZombieAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Zombie;
-import net.minecraft.world.entity.monster.ZombifiedPiglin;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie> {
 
@@ -34,6 +27,7 @@ public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie
 
   public RevenantZombie(EntityType<? extends Zombie> type, Level world) {
     super(EntityType.ZOMBIE, world);
+    this.setShouldBurnInDay(false);
   }
 
   @Override
@@ -49,7 +43,7 @@ public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie
 
   @Override
   protected void registerGoals() {
-    this.goalSelector.addGoal(2, new SmartNoiseTargetGoal<>(this, false, 20));
+    this.goalSelector.addGoal(2, new SmartNoiseTargetGoal<>(this, false, minAttractionNoise));
     this.goalSelector.addGoal(3, new ZombieAttackGoal(this, chargeSpeedScalar, false));
   }
 

@@ -1,14 +1,13 @@
 package com.gestankbratwurst.revenant.projectrevenant.crafting.implementation;
 
-import com.gestankbratwurst.core.mmcore.util.Msg;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.RevenantRecipe;
-import com.gestankbratwurst.revenant.projectrevenant.loot.drops.ItemLoot;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.SimpleItemLoot;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class DummyRecipe implements RevenantRecipe {
@@ -31,12 +30,17 @@ public class DummyRecipe implements RevenantRecipe {
   }
 
   @Override
-  public void onCraft(Player player) {
-    Msg.sendWarning(player, "Dummy recipe for debug purposes.");
+  public boolean canCraft(Player player) {
+    return true;
   }
 
   @Override
-  public boolean canCraft(Player player) {
-    return true;
+  public Duration getCraftTime() {
+    return Duration.ofSeconds(5);
+  }
+
+  @Override
+  public void payResources(Player player) {
+
   }
 }

@@ -1,9 +1,10 @@
-package com.gestankbratwurst.revenant.projectrevenant.crafting;
+package com.gestankbratwurst.revenant.projectrevenant.crafting.recipes;
 
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public interface RevenantRecipe {
@@ -14,9 +15,10 @@ public interface RevenantRecipe {
 
   ItemStack infoIconFor(Player player);
 
-  void onCraft(Player player);
-
   boolean canCraft(Player player);
 
+  Duration getCraftTime();
+
+  void payResources(Player player);
 
 }

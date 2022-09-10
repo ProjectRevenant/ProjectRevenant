@@ -1,6 +1,5 @@
 package com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global;
 
-import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
@@ -8,23 +7,20 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiFunction;
 
 public class GlobalSpawnManager {
 
   private static final int maxMonstersPerPlayer = 25;
   private static final int spawnLocationIterations = 5;
-  private static final int minDistance = 20;
-  private static final int maxDistance = 50;
+  private static final int minDistance = 30;
+  private static final int maxDistance = 70;
   private static final int maxYDif = 10;
   private static final double highestVsOffsetChance = 0.4;
   static final double discardHighestBlock = 0.25;
@@ -37,7 +33,7 @@ public class GlobalSpawnManager {
    * @param amount positive amount for positive change, negative amount for negative change
    */
   public void changePlayerMonsterCount(Player player, int amount) {
-    playerMonsterCount.compute(player, (player1, currentAmount) -> currentAmount == null ? amount : currentAmount + amount);
+    playerMonsterCount.compute(player, (key, currentAmount) -> currentAmount == null ? amount : currentAmount + amount);
   }
 
   public void assignMonsterToPlayer(UUID uuid, Player player) {
@@ -51,30 +47,26 @@ public class GlobalSpawnManager {
       return;
     }
 
-    playerMonsterCount.compute(player, (player1, amount) -> amount == null ? 0 : amount - 1);
+    playerMonsterCount.compute(player, (key, amount) -> amount == null ? 0 : amount - 1);
 
     monsterPlayerAssignment.remove(uuid);
   }
 
-  public void spawnForNext(){
-    for(Player player : Bukkit.getOnlinePlayers()){
+  public void spawnForNext() {
+    for (Player player : Bukkit.getOnlinePlayers()) {
       spawnMonsters(player);
     }
   }
 
   public void spawnMonsters(Player target) {
 
-    final int currentMobCount;
-
     int current = playerMonsterCount.computeIfAbsent(target, (key) -> 0);
 
     if (current >= maxMonstersPerPlayer) {
-      System.out.println("[DEBUG] Reached maximum Monsters for Player " + target.getDisplayName());
       return;
     }
 
     Location currentLocation = target.getLocation();
-
     ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
 
     for (int i = 0; i < spawnLocationIterations; i++) {
@@ -82,71 +74,28 @@ public class GlobalSpawnManager {
       int xOffset = threadLocalRandom.nextInt(minDistance, maxDistance);
       int zOffset = threadLocalRandom.nextInt(minDistance, maxDistance);
 
-      Location offsetLocation = currentLocation.add(xOffset, 0, zOffset);
+      if(threadLocalRandom.nextBoolean()) xOffset = -xOffset;
+      if(threadLocalRandom.nextBoolean()) zOffset = -zOffset;
 
-      if (!offsetLocation.getWorld().isChunkLoaded(offsetLocation.getChunk())) {
+      Location offsetLocation = currentLocation.clone().add(xOffset, 0, zOffset);
+
+      int chunkX = offsetLocation.getBlockX() >> 4;
+      int chunkZ = offsetLocation.getBlockZ() >> 4;
+
+      if (!offsetLocation.getWorld().isChunkLoaded(chunkX, chunkZ)) {
         continue;
       }
 
       Block highestBlock = offsetLocation.getWorld().getHighestBlockAt(offsetLocation);
+      Location spawnableLocation = getViableLocation(threadLocalRandom, offsetLocation, highestBlock);
 
-      Location spawnableLocation = null;
-
-      if (spawnPossible(highestBlock) && threadLocalRandom.nextDouble() <= discardHighestBlock) {
-        //spawnableLocation = the highest Block
-        spawnableLocation = highestBlock.getLocation();
-      } else {
-        Block randomBlock = offsetLocation.getBlock();
-
-        if (spawnPossible(randomBlock)) {
-          //spawnableLocation = block at random offset
-          spawnableLocation = offsetLocation;
-        } else {
-
-          if (threadLocalRandom.nextDouble() <= highestVsOffsetChance) {
-
-            for (int j = 0; j < maxYDif; j++) {
-              Block offsetBlock = highestBlock.getRelative(0, -j, 0);
-              if (spawnPossible(offsetBlock)) {
-                //spawnableLocation = first spawnable block beneath the highest block
-                spawnableLocation = offsetBlock.getLocation();
-              }
-            }
-
-          } else {
-
-            boolean up = threadLocalRandom.nextDouble() >= 0.5;
-
-            for (int j = 0; j < maxYDif; j++) {
-
-              Block offsetBlock;
-
-              if(up){
-                offsetBlock = highestBlock.getRelative(0, j, 0);
-              } else {
-                offsetBlock = highestBlock.getRelative(0, -j, 0);
-              }
-
-              if (spawnPossible(offsetBlock)) {
-                //spawnableLocation = first spawnable block going up or down from the random block
-                spawnableLocation = offsetBlock.getLocation();
-              }
-            }
-
-          }
-
-        }
-
-
-      }
-
-      if(spawnableLocation == null){
+      if (spawnableLocation == null) {
         continue;
       }
 
       CustomMobType type = computeMonsterForLocation(spawnableLocation);
 
-      if(type == null){
+      if (type == null) {
         continue;
       }
 
@@ -156,13 +105,50 @@ public class GlobalSpawnManager {
 
       monsterPlayerAssignment.put(spawned.getUUID(), target);
 
-      System.out.println("[DEBUG] Spawned at " + spawnableLocation.getBlockX() + "/" + spawnableLocation.getBlockY() + "/" + spawnableLocation.getBlockZ());
-
       playerMonsterCount.compute(target, (player, currentValue) -> currentValue == null ? 0 : currentValue + 1);
 
     }
 
 
+  }
+
+  @Nullable
+  private Location getViableLocation(ThreadLocalRandom threadLocalRandom, Location offsetLocation, Block highestBlock) {
+    if (spawnPossible(highestBlock) && threadLocalRandom.nextDouble() <= discardHighestBlock) {
+      //spawnableLocation = the highest Block
+      return highestBlock.getLocation();
+    }
+
+    Block randomBlock = offsetLocation.getBlock();
+
+    if (spawnPossible(randomBlock)) {
+      //spawnableLocation = block at random offset
+      return offsetLocation;
+    }
+
+
+    if (threadLocalRandom.nextDouble() <= highestVsOffsetChance) {
+      for (int j = 0; j < maxYDif; j++) {
+        Block offsetBlock = highestBlock.getRelative(0, -j, 0);
+        if (spawnPossible(offsetBlock)) {
+          //spawnableLocation = first spawnable block beneath the highest block
+          return offsetBlock.getLocation();
+        }
+      }
+      return null;
+    }
+
+    boolean up = threadLocalRandom.nextDouble() >= 0.5;
+
+    for (int j = 0; j < maxYDif; j++) {
+      Block offsetBlock = highestBlock.getRelative(0, up ? j : -j, 0);
+      if (spawnPossible(offsetBlock)) {
+        //spawnableLocation = first spawnable block going up or down from the random block
+        return offsetBlock.getLocation();
+      }
+    }
+
+    return null;
   }
 
   public CustomMobType computeMonsterForLocation(Location spawnableLocation) {
@@ -174,11 +160,6 @@ public class GlobalSpawnManager {
       return false;
     }
 
-    if (!block.getRelative(0, 1, 0).getType().equals(Material.AIR) || !block.getRelative(0, 1, 0).getType().equals(Material.AIR)) {
-      return false;
-    }
-
-    return true;
-
+    return block.getRelative(0, 1, 0).getType() == Material.AIR && block.getRelative(0, 1, 0).getType() == Material.AIR;
   }
 }

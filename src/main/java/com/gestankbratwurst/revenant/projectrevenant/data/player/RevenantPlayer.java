@@ -1,9 +1,11 @@
 package com.gestankbratwurst.revenant.projectrevenant.data.player;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
+import com.gestankbratwurst.core.mmcore.data.json.DeserializationPostProcessable;
 import com.gestankbratwurst.core.mmcore.data.mongodb.annotationframework.Identity;
 import com.gestankbratwurst.core.mmcore.tablist.implementation.AbstractTabList;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
@@ -26,13 +28,15 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class RevenantPlayer {
+public class RevenantPlayer implements DeserializationPostProcessable {
 
   public static RevenantPlayer of(Player player) {
     return of(player.getUniqueId());
@@ -51,16 +55,30 @@ public class RevenantPlayer {
   private final Map<Class<? extends Ability>, Ability> abilityMap;
   private final transient BossBar experienceBossBar;
   private transient int levelBarCounter = 0;
+  private final Set<UUID> unlockedRecipes = new HashSet<>();
 
   public RevenantPlayer(UUID playerId) {
     this.playerId = playerId;
     this.levelContainer = new LevelContainer();
     this.experienceBossBar = Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SEGMENTED_10);
     this.abilityMap = new HashMap<>();
+    for(BaseRecipe recipe : BaseRecipe.values()) {
+      if(recipe.isStartingRecipe()) {
+        unlockRecipe(recipe.getRevenantRecipe().getId());
+      }
+    }
   }
 
   protected RevenantPlayer() {
     this(null);
+  }
+
+  public void unlockRecipe(UUID recipeId) {
+    unlockedRecipes.add(recipeId);
+  }
+
+  public boolean hasRecipeUnlocked(UUID recipeId) {
+    return unlockedRecipes.add(recipeId);
   }
 
   public double getNoiseLevel() {
@@ -238,4 +256,12 @@ public class RevenantPlayer {
     Optional.ofNullable(Bukkit.getPlayer(playerId)).ifPresent(consumer);
   }
 
+  @Override
+  public void gsonPostProcess() {
+    for(BaseRecipe recipe : BaseRecipe.values()) {
+      if(recipe.isStartingRecipe()) {
+        unlockRecipe(recipe.getRevenantRecipe().getId());
+      }
+    }
+  }
 }

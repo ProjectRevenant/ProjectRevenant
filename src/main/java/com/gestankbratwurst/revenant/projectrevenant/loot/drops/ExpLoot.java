@@ -1,5 +1,6 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot.drops;
 
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import lombok.AllArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.entity.ExperienceOrb;
@@ -16,7 +17,7 @@ public class ExpLoot implements Loot {
   @Override
   public void applyTo(Player looter, Location location) {
     int expAmount = experienceFunction.applyAsInt(looter);
-    location.getWorld().spawn(location, ExperienceOrb.class, orb -> orb.setExperience(expAmount));
+    RevenantPlayer.of(looter).addExperience(expAmount);
   }
 
   @Override

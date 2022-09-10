@@ -3,6 +3,10 @@ package com.gestankbratwurst.revenant.projectrevenant;
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.CraftingListener;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.RevenantRecipeManager;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerTickTask;
@@ -20,8 +24,8 @@ import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.SpawnSystemListener;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnTask;
-import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
-import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionTask;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatManager;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerCommand;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerManager;
@@ -75,9 +79,11 @@ public final class ProjectRevenant extends JavaPlugin {
   private RevenantPlayerManager revenantPlayerManager;
   private BodyManager bodyManager;
   private LootChestManager lootChestManager;
-  private NoisePolutionManager noisePolutionManager;
+  private ChunkHeatManager chunkHeatManager;
   private GlobalSpawnManager globalSpawnManager;
   private SpawnerManager spawnerManager;
+  private RevenantRecipeManager revenantRecipeManager;
+  private CraftingStationManager craftingStationManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -87,8 +93,8 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).spawnerManager;
   }
 
-  public static NoisePolutionManager getNoisePolutionManager() {
-    return JavaPlugin.getPlugin(ProjectRevenant.class).noisePolutionManager;
+  public static ChunkHeatManager getChunkHeatManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).chunkHeatManager;
   }
 
   public static GlobalSpawnManager getGlobalSpawnManager() {
@@ -101,6 +107,14 @@ public final class ProjectRevenant extends JavaPlugin {
 
   public static LootChestManager getLootChestManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).lootChestManager;
+  }
+
+  public static CraftingStationManager getCraftingStationManager(){
+    return JavaPlugin.getPlugin(ProjectRevenant.class).craftingStationManager;
+  }
+
+  public static RevenantRecipeManager getRevenantRecipeManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).revenantRecipeManager;
   }
 
   @Override
@@ -119,6 +133,8 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getProtocolManager().addPacketListener(new CombatPacketAdapter());
 
     setupLootManager();
+
+    setupRecipeManager();
 
     Bukkit.getPluginManager().registerEvents(new ItemAttributeListener(bodyManager), this);
     Bukkit.getPluginManager().registerEvents(new CombatListener(bodyManager), this);
@@ -141,6 +157,15 @@ public final class ProjectRevenant extends JavaPlugin {
     setupUI();
 
     setupGamerules();
+  }
+
+  private void setupRecipeManager() {
+    Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
+    revenantRecipeManager = new RevenantRecipeManager();
+    craftingStationManager = new CraftingStationManager();
+    craftingStationManager.init();
+    Arrays.stream(BaseRecipe.values()).map(BaseRecipe::getRevenantRecipe).forEach(revenantRecipeManager::registerRecipe);
+    TaskManager.getInstance().runRepeatedBukkit(craftingStationManager::tickStations, 20, 10);
   }
 
   private static void setupGamerules() {
@@ -167,11 +192,11 @@ public final class ProjectRevenant extends JavaPlugin {
   }
 
   private void setupSpawnerManager() {
-    this.noisePolutionManager = new NoisePolutionManager();
+    this.chunkHeatManager = new ChunkHeatManager();
     this.globalSpawnManager = new GlobalSpawnManager();
     this.spawnerManager = SpawnerManager.create();
-    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(noisePolutionManager, spawnerManager, globalSpawnManager), this);
-    TaskManager.getInstance().runRepeatedBukkitAsync(new NoisePolutionTask(noisePolutionManager), 60, 20);
+    Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(chunkHeatManager, spawnerManager, globalSpawnManager), this);
+    TaskManager.getInstance().runRepeatedBukkitAsync(new ChunkHeatTask(chunkHeatManager), 60, 20);
     TaskManager.getInstance().runRepeatedBukkit(new GlobalSpawnTask(globalSpawnManager), 60, 40);
     TaskManager.getInstance().runRepeatedBukkit(new SpawnerRunnable(spawnerManager), 60, 1);
     MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("RevenantSpawner", context -> spawnerManager.getAllSpawnerNames());
@@ -239,6 +264,7 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(RevenantSpawner.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(CraftingListener.class);
     MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());
@@ -246,6 +272,7 @@ public final class ProjectRevenant extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    craftingStationManager.terminate();
     revenantPlayerManager.flush();
     lootChestManager.flush();
     spawnerManager.flush();

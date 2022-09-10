@@ -16,6 +16,7 @@ import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
+import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
@@ -68,7 +69,7 @@ public class DebugCommand extends BaseCommand {
     Chest chestData = (Chest) Bukkit.createBlockData(Material.CHEST);
     chestData.setFacing(facing);
 
-    ProjectRevenant.getLootChestManager().addLootChest(new LootableChest(type, new LootableChest.Position(worldID, chunkID, location), chestData));
+    ProjectRevenant.getLootChestManager().addLootChest(new LootableChest(type, new Position(worldID, chunkID, location), chestData));
   }
 
   @Subcommand("lootchest remove")
@@ -79,7 +80,7 @@ public class DebugCommand extends BaseCommand {
       return;
     }
 
-    ProjectRevenant.getLootChestManager().removeLootChestAt(LootableChest.Position.at(block));
+    ProjectRevenant.getLootChestManager().removeLootChestAt(Position.at(block));
     block.setType(Material.AIR);
   }
 }

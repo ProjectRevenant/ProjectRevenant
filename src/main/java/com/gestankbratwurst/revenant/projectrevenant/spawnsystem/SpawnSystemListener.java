@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
-import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.NoisePolutionManager;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerManager;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +17,18 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 @RequiredArgsConstructor
 public class SpawnSystemListener implements Listener {
 
-  private final NoisePolutionManager noisePolutionManager;
+  private final ChunkHeatManager chunkHeatManager;
   private final SpawnerManager spawnerManager;
   private final GlobalSpawnManager globalSpawnManager;
 
   @EventHandler
   public void onChunkLoad(ChunkLoadEvent event) {
-    noisePolutionManager.addChunk(event.getChunk());
+    chunkHeatManager.addChunk(event.getChunk());
   }
 
   @EventHandler
   public void onChunkUnload(ChunkUnloadEvent event) {
-    noisePolutionManager.removeChunk(event.getChunk());
+    chunkHeatManager.removeChunk(event.getChunk());
   }
 
   @EventHandler(priority = EventPriority.MONITOR)

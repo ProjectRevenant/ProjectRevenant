@@ -5,6 +5,7 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
+import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.ChunkDomain;
 import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.WorldDomain;
 import lombok.SneakyThrows;
@@ -28,14 +29,14 @@ public class LootChestManager implements Flushable {
 
   private final transient Map<UUID, WorldDomain<ChunkDomain<LootableChest>>> spawnableLootChests = new HashMap<>();
   private final transient PriorityQueue<LootableChest> respawnQueue = new PriorityQueue<>();
-  private final Map<LootableChest.Position, LootableChest> allChests = new HashMap<>();
+  private final Map<Position, LootableChest> allChests = new HashMap<>();
 
   public void addLootChest(LootableChest chest) {
     allChests.put(chest.getPosition(), chest);
     enqueChestForSpawn(chest);
   }
 
-  public void removeLootChestAt(LootableChest.Position position) {
+  public void removeLootChestAt(Position position) {
     Optional.ofNullable(allChests.remove(position)).ifPresent(this::eraseFromPossibleRespawn);
   }
 
@@ -44,7 +45,7 @@ public class LootChestManager implements Flushable {
     dequeChestFromSpawn(lootableChest);
   }
 
-  public LootableChest getLootableChestAt(LootableChest.Position position) {
+  public LootableChest getLootableChestAt(Position position) {
     return allChests.get(position);
   }
 
@@ -52,7 +53,7 @@ public class LootChestManager implements Flushable {
     allChests.values().forEach(this::enqueChestForSpawn);
   }
 
-  public void addToRespawnQueue(LootableChest lootableChest){
+  public void addToRespawnQueue(LootableChest lootableChest) {
 
     respawnQueue.add(lootableChest);
 

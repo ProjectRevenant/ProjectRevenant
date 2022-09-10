@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NoisePolutionManager {
+public class ChunkHeatManager {
 
   private final Map<Long, Double> loadedChunks = new ConcurrentHashMap<>(4096);
   private final Map<Long, Double> manipulationSpots = new HashMap<>();
@@ -28,7 +28,7 @@ public class NoisePolutionManager {
   private static final double maximumHeatDistance = 128;
   private static final double maximumManipulationDistance = 128;
 
-  public NoisePolutionManager() {
+  public ChunkHeatManager() {
     init();
   }
 
@@ -38,6 +38,10 @@ public class NoisePolutionManager {
 
   public void addManipulation(long chunkKey, double value) {
     manipulationSpots.put(chunkKey, value);
+  }
+
+  public void addHeat(long chunkKey, double heat) {
+    loadedChunks.compute(chunkKey, (key, value) -> value == null ? heat : value + heat);
   }
 
   public void addChunk(Chunk chunk) {
@@ -91,8 +95,7 @@ public class NoisePolutionManager {
         }
       }
 
-      double finalAdditionalHeat = additionalHeat * heatScalar;
-      loadedChunks.compute(chunkKey, (key, curValue) -> curValue == null ? finalAdditionalHeat : curValue + finalAdditionalHeat);
+      addHeat(chunkKey, additionalHeat * heatScalar);
     }
   }
 

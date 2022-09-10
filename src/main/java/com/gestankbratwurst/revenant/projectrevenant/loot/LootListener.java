@@ -1,11 +1,10 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot;
 
 import com.gestankbratwurst.core.mmcore.util.common.UtilInv;
-import com.gestankbratwurst.core.mmcore.util.common.UtilPlayer;
-import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootManager;
+import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import lombok.AllArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -100,7 +99,7 @@ public class LootListener implements Listener {
       }
     }
 
-    LootableChest lootableChest = lootChestManager.getLootableChestAt(LootableChest.Position.at(block));
+    LootableChest lootableChest = lootChestManager.getLootableChestAt(Position.at(block));
     lootableChest.setRespawnTimeFromNow();
     lootChestManager.addToRespawnQueue(lootableChest);
   }
