@@ -5,7 +5,10 @@ import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.CraftingListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.RevenantRecipeManager;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.ingredients.Ingredient;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerManager;
@@ -160,10 +163,10 @@ public final class ProjectRevenant extends JavaPlugin {
   }
 
   private void setupRecipeManager() {
+    this.revenantRecipeManager = new RevenantRecipeManager();
+    this.craftingStationManager = new CraftingStationManager();
+    this.craftingStationManager.init();
     Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
-    revenantRecipeManager = new RevenantRecipeManager();
-    craftingStationManager = new CraftingStationManager();
-    craftingStationManager.init();
     Arrays.stream(BaseRecipe.values()).map(BaseRecipe::getRevenantRecipe).forEach(revenantRecipeManager::registerRecipe);
     TaskManager.getInstance().runRepeatedBukkit(craftingStationManager::tickStations, 20, 10);
   }
@@ -264,7 +267,7 @@ public final class ProjectRevenant extends JavaPlugin {
     MMCore.getGsonProvider().registerAbstractClassHierarchy(AbilityEffect.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(Bone.class);
     MMCore.getGsonProvider().registerAbstractClassHierarchy(RevenantSpawner.class);
-    MMCore.getGsonProvider().registerAbstractClassHierarchy(CraftingListener.class);
+    MMCore.getGsonProvider().registerAbstractClassHierarchy(CraftingStation.class);
     MMCore.getGsonProvider().registerTypeAdapter(AbilityTrigger.class, new AbilityTriggerSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(Duration.class, new DurationSerializer());
     MMCore.getGsonProvider().registerTypeAdapter(PotionEffect.class, new PotionEffectSerializer());

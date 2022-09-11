@@ -51,8 +51,12 @@ public class CraftingStationManager {
     loadedStations.put(Position.at(block), station);
   }
 
-  private CraftingStation removeLoadedBlock(Block block) {
+  public CraftingStation removeLoadedBlock(Block block) {
     return loadedStations.remove(Position.at(block));
+  }
+
+  public CraftingStation getStationAt(Position position) {
+    return loadedStations.get(position);
   }
 
   public void initChunk(Chunk chunk) {
@@ -71,7 +75,9 @@ public class CraftingStationManager {
     data.forEach((block, container) -> {
       if (container.has(stationDataKey)) {
         CraftingStation station = removeLoadedBlock(block);
-        container.set(stationDataKey, PersistentDataType.STRING, MMCore.getGsonProvider().toJson(station));
+        if(station != null) {
+          container.set(stationDataKey, PersistentDataType.STRING, MMCore.getGsonProvider().toJson(station));
+        }
       }
     });
   }

@@ -31,20 +31,22 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class RevenantItem {
 
   private static final NamespacedKey randomIdKey = NamespaceFactory.provide("unique-id");
+  private static final NamespacedKey revenantInternalKey = NamespaceFactory.provide("revenant-internal-name");
   private static final Map<String, Supplier<ItemStack>> namedCreationMap = Map.copyOf(
           new HashMap<>() {{
             put("TEST", RevenantItem::testItem);
@@ -79,75 +81,90 @@ public class RevenantItem {
     return TextureModel.RED_X.getItem();
   }
 
-  private static ItemStack basic(ItemStack baseItem, String name, ItemRarity rarity, double weight, Ability... abilities) {
+  private static ItemStack basic(String internalId, ItemStack baseItem, String name, ItemRarity rarity, double weight, Ability... abilities) {
     AbilityHandle.addTo(baseItem, abilities);
     setUnique(baseItem);
     ItemWeight.set(baseItem, weight);
     rarity.applyTo(baseItem);
     ItemMeta meta = baseItem.getItemMeta();
     meta.displayName(Component.text(name).style(Style.style(rarity.getColor(), TextDecoration.ITALIC.withState(false))));
+    meta.getPersistentDataContainer().set(revenantInternalKey, PersistentDataType.STRING, internalId);
     baseItem.setItemMeta(meta);
     return baseItem;
   }
 
-  private static ItemStack basic(TextureModel model, String name, ItemRarity rarity, double weight, Ability... abilities) {
-    return basic(model.getItem(), name, rarity, weight, abilities);
+  private static ItemStack basic(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, Ability... abilities) {
+    return basic(internalId, model.getItem(), name, rarity, weight, abilities);
   }
 
-  private static ItemStack meleeWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double baseDmg, double baseAtkSpeed, double knockback, Ability... abilities) {
+  private static ItemStack meleeWeapon(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double baseDmg, double baseAtkSpeed, double knockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new WeaponDamageAbility(baseDmg, baseAtkSpeed, knockback));
-    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack rangedWeapon(TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities) {
+  private static ItemStack rangedWeapon(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed, meleeKnockback));
-    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack food(TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
+  private static ItemStack food(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new FoodEatenAbility(nutrition, water));
-    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack food(ItemStack model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
+  private static ItemStack food(String internalId, ItemStack model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new FoodEatenAbility(nutrition, water));
-    return basic(model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack basicBottle(TextureModel model, String name, ItemRarity rarity, Ability... abilities) {
-    ItemStack itemStack = basic(model, name, rarity, 1.1, abilities);
+  private static ItemStack basicBottle(String internalId, TextureModel model, String name, ItemRarity rarity, Ability... abilities) {
+    ItemStack itemStack = basic(internalId, model, name, rarity, 1.1, abilities);
     PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
     meta.setColor(Color.WHITE);
     itemStack.setItemMeta(meta);
     return itemStack;
   }
 
-  //Bottles
+  public static boolean sameInternalName(ItemStack source, ItemStack target) {
+    if (source == null || target == null) {
+      return false;
+    }
+    ItemMeta sourceMeta = source.getItemMeta();
+    ItemMeta targetMeta = target.getItemMeta();
+    if (sourceMeta == null || targetMeta == null) {
+      return false;
+    }
+    PersistentDataContainer sourceContainer = sourceMeta.getPersistentDataContainer();
+    PersistentDataContainer targetContainer = targetMeta.getPersistentDataContainer();
 
+    return Objects.equals(sourceContainer.get(revenantInternalKey, PersistentDataType.STRING), targetContainer.get(revenantInternalKey, PersistentDataType.STRING));
+  }
+
+  //Bottles
   public static ItemStack emptyWaterBottle() {
-    return basic(TextureModel.EMPTY_WATER_BOTTLE, "Leere Wasserflasche", ItemRarity.COMMON, 0.1, new EmptyBottleAbility());
+    return basic("EMPTY_WATER_BOTTLE", TextureModel.EMPTY_WATER_BOTTLE, "Leere Wasserflasche", ItemRarity.COMMON, 0.1, new EmptyBottleAbility());
   }
 
   public static ItemStack clearWaterBottle() {
-    return basicBottle(TextureModel.CLEAR_WATER_BOTTLE, "Flasche mit klarem Wasser", ItemRarity.UNCOMMON, new ClearBottleAbility());
+    return basicBottle("CLEAR_WATER_BOTTLE", TextureModel.CLEAR_WATER_BOTTLE, "Flasche mit klarem Wasser", ItemRarity.UNCOMMON, new ClearBottleAbility());
   }
 
   public static ItemStack murkyWaterBottle() {
-    return basicBottle(TextureModel.MURKY_WATER_BOTTLE, "Flasche mit trübem Wasser", ItemRarity.COMMON, new MurkyBottleDrinkAbility());
+    return basicBottle("MURKY_WATER_BOTTLE", TextureModel.MURKY_WATER_BOTTLE, "Flasche mit trübem Wasser", ItemRarity.COMMON, new MurkyBottleDrinkAbility());
   }
 
   public static ItemStack saltyWaterBottle() {
-    return basicBottle(TextureModel.SALT_WATER_BOTTLE, "Flasche mit salzigem Wasser", ItemRarity.COMMON, new SaltyBottleAbility());
+    return basicBottle("SALTY_WATER_BOTTLE", TextureModel.SALT_WATER_BOTTLE, "Flasche mit salzigem Wasser", ItemRarity.COMMON, new SaltyBottleAbility());
   }
 
   //Melee Weapons
 
   public static ItemStack dummySword() {
-    ItemStack base = meleeWeapon(TextureModel.RED_X, "Dummy-Sword", ItemRarity.DEBUG, 0.2, 5, 1.5, 1.0);
+    ItemStack base = meleeWeapon("DUMMY_SWORD", TextureModel.RED_X, "Dummy-Sword", ItemRarity.DEBUG, 0.2, 5, 1.5, 1.0);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
@@ -156,7 +173,7 @@ public class RevenantItem {
 
   //Ranged Weapons
   public static ItemStack dummyBow() {
-    ItemStack base = rangedWeapon(TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5, 1.0);
+    ItemStack base = rangedWeapon("DUMMY_BOW", TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5, 1.0);
     ItemAttributeHandler.setAsTwoHanded(base);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
@@ -167,7 +184,7 @@ public class RevenantItem {
 
   //Food
   public static ItemStack dummyFood() {
-    ItemStack base = food(new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 0.5, new ConsumableHealthAbility(30, Duration.ofSeconds(30)));
+    ItemStack base = food("DUMMY_FOOD", new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 0.5, new ConsumableHealthAbility(30, Duration.ofSeconds(30)));
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
@@ -176,7 +193,7 @@ public class RevenantItem {
 
   //Armor
   public static ItemStack dummyHelmet() {
-    ItemStack base = basic(new ItemStack(Material.LEATHER_HELMET), "Dummy-Helmet", ItemRarity.DEBUG, 1.5, new HelmetAbility(5, 2, 2));
+    ItemStack base = basic("DUMMY_HELMET", new ItemStack(Material.LEATHER_HELMET), "Dummy-Helmet", ItemRarity.DEBUG, 1.5, new HelmetAbility(5, 2, 2));
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
@@ -184,7 +201,7 @@ public class RevenantItem {
   }
 
   public static ItemStack dummyChestplate() {
-    ItemStack base = basic(new ItemStack(Material.LEATHER_CHESTPLATE), "Dummy-Chestplate", ItemRarity.DEBUG, 3, new ChestplateAbility(10, 5, 5));
+    ItemStack base = basic("DUMMY_CHESTPLATE", new ItemStack(Material.LEATHER_CHESTPLATE), "Dummy-Chestplate", ItemRarity.DEBUG, 3, new ChestplateAbility(10, 5, 5));
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")
@@ -197,7 +214,7 @@ public class RevenantItem {
     SkeletonHealAbility healLegAbility = new SkeletonHealAbility(List.of(LegBone.LEFT, LegBone.RIGHT), false);
     DebuffRemovalAbility removeSalt = new DebuffRemovalAbility(List.of(SaltPoisoningAbility.class));
     ConsumableHealthAbility healthBuff = new ConsumableHealthAbility(30, Duration.ofSeconds(30));
-    ItemStack base = basic(new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, healLegAbility, speedAbility, removeSalt, healthBuff);
+    ItemStack base = basic("DUMMY_SPEED_POTION", new ItemStack(Material.POTION), "Dummy-Potion", ItemRarity.DEBUG, 3, healLegAbility, speedAbility, removeSalt, healthBuff);
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")

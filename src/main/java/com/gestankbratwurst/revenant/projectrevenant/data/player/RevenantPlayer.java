@@ -4,8 +4,10 @@ import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.data.json.DeserializationPostProcessable;
 import com.gestankbratwurst.core.mmcore.data.mongodb.annotationframework.Identity;
 import com.gestankbratwurst.core.mmcore.tablist.implementation.AbstractTabList;
+import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
@@ -26,6 +28,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,9 +65,10 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this.levelContainer = new LevelContainer();
     this.experienceBossBar = Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SEGMENTED_10);
     this.abilityMap = new HashMap<>();
-    for(BaseRecipe recipe : BaseRecipe.values()) {
-      if(recipe.isStartingRecipe()) {
-        unlockRecipe(recipe.getRevenantRecipe().getId());
+    for (BaseRecipe recipe : BaseRecipe.values()) {
+      if (recipe.isStartingRecipe()) {
+        //ToDo remove player message, only for debugging
+        unlockRecipe(recipe.getRevenantRecipe(), true);
       }
     }
   }
@@ -73,12 +77,16 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this(null);
   }
 
-  public void unlockRecipe(UUID recipeId) {
-    unlockedRecipes.add(recipeId);
+  public void unlockRecipe(RevenantRecipe recipe, boolean playerMessage) {
+    unlockedRecipes.add(recipe.getId());
+
+    if (playerMessage) {
+      applyToOnlinePlayer(player -> Msg.sendInfo(player, "§7Du hast das §e" + recipe.getName() + "§7-Rezept freigeschaltet!"));
+    }
   }
 
   public boolean hasRecipeUnlocked(UUID recipeId) {
-    return unlockedRecipes.add(recipeId);
+    return unlockedRecipes.contains(recipeId);
   }
 
   public double getNoiseLevel() {
@@ -258,10 +266,11 @@ public class RevenantPlayer implements DeserializationPostProcessable {
 
   @Override
   public void gsonPostProcess() {
-    for(BaseRecipe recipe : BaseRecipe.values()) {
-      if(recipe.isStartingRecipe()) {
-        unlockRecipe(recipe.getRevenantRecipe().getId());
+    for (BaseRecipe recipe : BaseRecipe.values()) {
+      if (recipe.isStartingRecipe()) {
+        unlockRecipe(recipe.getRevenantRecipe(), false);
       }
     }
+    System.out.println("Recipes: " + Arrays.toString(this.unlockedRecipes.toArray()));
   }
 }

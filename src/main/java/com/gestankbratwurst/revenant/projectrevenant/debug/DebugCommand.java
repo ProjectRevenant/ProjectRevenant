@@ -11,6 +11,9 @@ import com.destroystokyo.paper.block.TargetBlockInfo;
 import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.DummyStation;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
@@ -51,6 +54,15 @@ public class DebugCommand extends BaseCommand {
     }
     Msg.sendInfo(sender, "Du hast {} entities gespawnt. ({})", type, "x" + amount);
   }
+
+  @Subcommand("craftstation add")
+  public void onCraftStationSpawn(Player sender) {
+    Block stationBlock = sender.getLocation().getBlock();
+    stationBlock.setType(Material.CRAFTING_TABLE);
+
+    ProjectRevenant.getCraftingStationManager().createStation(stationBlock, new DummyStation(Position.at(stationBlock)));
+  }
+
 
   @Subcommand("droploot")
   @CommandCompletion("@LootType")

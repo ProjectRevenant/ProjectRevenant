@@ -21,4 +21,6 @@ public interface RevenantRecipe {
 
   void payResources(Player player);
 
+  String getName();
+
 }
