@@ -6,11 +6,15 @@ import org.bukkit.inventory.ItemStack;
 public class RevenantIngredient extends SimpleIngredient {
 
   public RevenantIngredient(ItemStack itemStack) {
-    super(itemStack);
+    this(itemStack, true);
+  }
+
+  public RevenantIngredient(ItemStack itemStack, boolean consumed) {
+    super(itemStack, consumed);
   }
 
   public RevenantIngredient() {
-    this(null);
+    this(null, true);
   }
 
   @Override

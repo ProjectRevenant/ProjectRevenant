@@ -10,6 +10,7 @@ import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.Ingredient
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.AbstractRecipeStation;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.Inventory;
 @AllArgsConstructor
 public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGUIInventory {
 
+  @Getter
   private final T station;
   private final TextureModel uiModel;
 

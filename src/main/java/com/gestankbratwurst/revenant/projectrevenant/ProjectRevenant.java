@@ -163,12 +163,13 @@ public final class ProjectRevenant extends JavaPlugin {
   }
 
   private void setupRecipeManager() {
+    Bukkit.clearRecipes();
     this.revenantRecipeManager = new RevenantRecipeManager();
     this.craftingStationManager = new CraftingStationManager();
     this.craftingStationManager.init();
     Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
     Arrays.stream(BaseRecipe.values()).map(BaseRecipe::getRevenantRecipe).forEach(revenantRecipeManager::registerRecipe);
-    TaskManager.getInstance().runRepeatedBukkit(craftingStationManager::tickStations, 20, 10);
+    TaskManager.getInstance().runRepeatedBukkit(craftingStationManager::tickStations, 20, 1);
   }
 
   private static void setupGamerules() {

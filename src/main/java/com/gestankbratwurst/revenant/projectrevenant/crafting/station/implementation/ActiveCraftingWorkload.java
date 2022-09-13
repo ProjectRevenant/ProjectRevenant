@@ -23,4 +23,8 @@ public class ActiveCraftingWorkload {
     return getTimeLeft() <= 0;
   }
 
+  public double getProgress() {
+    long time = recipe.getCraftTime().toMillis();
+    return 100.0 / time * (time - getTimeLeft());
+  }
 }

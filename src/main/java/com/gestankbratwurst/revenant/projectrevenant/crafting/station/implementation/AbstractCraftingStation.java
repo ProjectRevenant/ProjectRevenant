@@ -2,7 +2,6 @@ package com.gestankbratwurst.revenant.projectrevenant.crafting.station.implement
 
 import com.gestankbratwurst.core.mmcore.inventories.guis.AbstractGUIInventory;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
-import lombok.Setter;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
@@ -12,13 +11,17 @@ import java.util.Set;
 
 public abstract class AbstractCraftingStation implements CraftingStation {
 
-  private final Set<Player> viewers = new HashSet<>();
+  private transient final Set<Player> viewers;
+
+  public AbstractCraftingStation() {
+    viewers = new HashSet<>();
+  }
 
   public abstract AbstractGUIInventory createUI(Player player);
 
   @Override
   public void openUI(Player player) {
-    if(isWorking()) {
+    if (isWorking()) {
       return;
     }
     createUI(player).openFor(player);

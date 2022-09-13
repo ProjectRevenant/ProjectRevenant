@@ -9,7 +9,11 @@ import java.util.function.Predicate;
 public interface Ingredient extends Predicate<ItemStack> {
 
   Component getInfo(Player player);
+
   ItemStack getAsIcon(Player player);
+
   char getAsChar(Player player);
+
+  boolean isConsumed();
 
 }

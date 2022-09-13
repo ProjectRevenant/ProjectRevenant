@@ -60,6 +60,8 @@ public class RevenantItem {
             put("DUMMY_HELMET", RevenantItem::dummyHelmet);
             put("DUMMY_CHESTPLATE", RevenantItem::dummyChestplate);
             put("DUMMY_SPEED_POTION", RevenantItem::dummySpeedConsumable);
+            put("TOOLS", RevenantItem::tool);
+            put("COMMON_WOOD", RevenantItem::commonWood);
           }}
   );
 
@@ -82,8 +84,14 @@ public class RevenantItem {
   }
 
   private static ItemStack basic(String internalId, ItemStack baseItem, String name, ItemRarity rarity, double weight, Ability... abilities) {
+    return basic(internalId, baseItem, name, rarity, weight, true, abilities);
+  }
+
+  private static ItemStack basic(String internalId, ItemStack baseItem, String name, ItemRarity rarity, double weight, boolean stackable, Ability... abilities) {
     AbilityHandle.addTo(baseItem, abilities);
-    setUnique(baseItem);
+    if(!stackable) {
+      setUnique(baseItem);
+    }
     ItemWeight.set(baseItem, weight);
     rarity.applyTo(baseItem);
     ItemMeta meta = baseItem.getItemMeta();
@@ -94,13 +102,17 @@ public class RevenantItem {
   }
 
   private static ItemStack basic(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, Ability... abilities) {
-    return basic(internalId, model.getItem(), name, rarity, weight, abilities);
+    return basic(internalId, model.getItem(), name, rarity, weight, true, abilities);
+  }
+
+  private static ItemStack basic(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, boolean stackable, Ability... abilities) {
+    return basic(internalId, model.getItem(), name, rarity, weight, stackable, abilities);
   }
 
   private static ItemStack meleeWeapon(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double baseDmg, double baseAtkSpeed, double knockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new WeaponDamageAbility(baseDmg, baseAtkSpeed, knockback));
-    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, false, list.toArray(new Ability[0]));
   }
 
   private static ItemStack rangedWeapon(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities) {
@@ -220,4 +232,14 @@ public class RevenantItem {
             .lore("§fNur zum testen!")
             .build();
   }
+
+  // Resources
+  public static ItemStack tool() {
+    return basic("TOOLS", TextureModel.TOOLS.getItem(), "Werkzeug", ItemRarity.COMMON, 0.12, true);
+  }
+
+  public static ItemStack commonWood() {
+    return basic("COMMON_WOOD", TextureModel.RED_X, "Holz", ItemRarity.COMMON, 2, true);
+  }
+
 }

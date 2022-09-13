@@ -17,6 +17,7 @@ public class SimpleIngredient implements Ingredient {
 
   @Getter
   private final ItemStack itemStack;
+  private final boolean consumed;
 
   public SimpleIngredient(ItemStack itemStack) {
     this.itemStack = itemStack.asOne();
@@ -35,6 +36,11 @@ public class SimpleIngredient implements Ingredient {
   @Override
   public char getAsChar(Player player) {
     return Optional.ofNullable(TextureModel.ofItemStack(itemStack)).map(TextureModel::getChar).orElse('X');
+  }
+
+  @Override
+  public boolean isConsumed() {
+    return consumed;
   }
 
   @Override

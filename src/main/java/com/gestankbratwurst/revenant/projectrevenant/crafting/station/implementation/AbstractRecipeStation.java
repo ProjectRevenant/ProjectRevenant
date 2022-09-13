@@ -1,11 +1,13 @@
 package com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation;
 
-import com.gestankbratwurst.core.mmcore.util.common.UtilVect;
+import com.gestankbratwurst.core.mmcore.MMCore;
+import com.gestankbratwurst.core.mmcore.protocol.holograms.AbstractHologram;
+import com.gestankbratwurst.core.mmcore.protocol.holograms.impl.HologramTextLine;
+import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -13,20 +15,42 @@ import java.util.List;
 
 public abstract class AbstractRecipeStation extends AbstractCraftingStation {
 
+  @Getter
   private final Position position;
   private ActiveCraftingWorkload currentCraftingWorkload;
   private boolean workActive = false;
+  private transient AbstractHologram hologram;
+  private transient int ticksAlive;
 
   public AbstractRecipeStation(Position position) {
     this.position = position;
   }
 
   public AbstractRecipeStation() {
-    this(null);
+    this(Position.ZERO);
   }
+
+  public abstract String getDisplayName();
+
+  protected abstract int getEffectInterval();
+
+  protected abstract void playEffect();
 
   public boolean hasGatherableLoot() {
     return currentCraftingWorkload != null && !workActive;
+  }
+
+  @Override
+  public void onLoad() {
+    this.hologram = MMCore.getHologramManager().createHologram(position.toLocation().add(0.5, 1.5, 0.5));
+    hologram.appendTextLine(getDisplayName());
+  }
+
+  @Override
+  public void onUnload() {
+    if (hologram != null) {
+      hologram.delete();
+    }
   }
 
   public void gatherLoot(Player player) {
@@ -36,9 +60,13 @@ public abstract class AbstractRecipeStation extends AbstractCraftingStation {
     result.applyTo(player, location);
     currentCraftingWorkload = null;
     workActive = false;
+    if (hologram != null) {
+      ((HologramTextLine) hologram.getHologramLine(1)).update("");
+    }
   }
 
   public void activateWorkload(IngredientRecipe ingredientRecipe, Player issuer) {
+    ticksAlive = 0;
     if (isWorking()) {
       throw new IllegalStateException("Cant start a recipe while working.");
     }
@@ -50,18 +78,21 @@ public abstract class AbstractRecipeStation extends AbstractCraftingStation {
 
   @Override
   public void tick() {
+    if (hologram.getSize() < 2) {
+      hologram.appendTextLine("");
+    }
     if (workActive && currentCraftingWorkload != null && currentCraftingWorkload.isDone()) {
       workActive = false;
+      ((HologramTextLine) hologram.getHologramLine(1)).update("§a[§fFertig§a]");
     }
-    Color color;
-    if(currentCraftingWorkload == null) {
-      color = Color.GREEN;
-    } else if(workActive) {
-      color = Color.RED;
-    } else {
-      color = Color.AQUA;
+    if (workActive && currentCraftingWorkload != null) {
+      if (ticksAlive++ % getEffectInterval() == 0) {
+        playEffect();
+      }
+      int progress = (int) currentCraftingWorkload.getProgress();
+      String bar = "§f" + TextureModel.valueOf("CRAFT_PROGRESS_BAR_" + progress).getChar();
+      ((HologramTextLine) hologram.getHologramLine(1)).update(bar);
     }
-    Bukkit.getOnlinePlayers().forEach(player -> UtilVect.showBoundingBox(position.toLocation().getBlock().getBoundingBox(), player, 32, 0.1, 0.33f, color));
   }
 
   @Override

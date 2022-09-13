@@ -3,6 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.util;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -15,6 +16,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Position {
 
+  public static final Position ZERO = new Position(null, 0L, 0);
+
   public static Position at(Location location) {
     return Position.at(location.getBlock());
   }
@@ -24,6 +27,10 @@ public class Position {
     long chunkId = UtilChunk.getChunkKey(block.getChunk());
     int relLoc = UtilChunk.relativeKeyOf(block);
     return new Position(worldId, chunkId, relLoc);
+  }
+
+  public Position() {
+    this(null, 0L, 0);
   }
 
   private final UUID worldId;

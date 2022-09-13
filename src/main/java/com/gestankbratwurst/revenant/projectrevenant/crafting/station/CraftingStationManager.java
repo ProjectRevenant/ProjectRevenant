@@ -6,6 +6,7 @@ import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -13,6 +14,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CraftingStationManager {
@@ -37,10 +39,11 @@ public class CraftingStationManager {
   }
 
   public void tickStations() {
-    loadedStations.values().forEach(CraftingStation::tick);
+    List.copyOf(loadedStations.values()).forEach(CraftingStation::tick);
   }
 
   public void createStation(Block block, CraftingStation station) {
+    block.setBlockData(station.createBlockData());
     BlockDataManager blockDataManager = MMCore.getBlockDataManager();
     PersistentDataContainer container = blockDataManager.getOrCreateData(block);
     container.set(stationDataKey, PersistentDataType.STRING, MMCore.getGsonProvider().toJson(station));
@@ -49,10 +52,24 @@ public class CraftingStationManager {
 
   private void addLoadedStation(Block block, CraftingStation station) {
     loadedStations.put(Position.at(block), station);
+    station.onLoad();
   }
 
   public CraftingStation removeLoadedBlock(Block block) {
-    return loadedStations.remove(Position.at(block));
+    return this.removeLoadedBlock(block, false);
+  }
+
+  public CraftingStation removeLoadedBlock(Block block, boolean cleanseData) {
+    CraftingStation station = loadedStations.remove(Position.at(block));
+    if(station == null) {
+      return null;
+    }
+    if(cleanseData) {
+      MMCore.getBlockDataManager().clearDataOf(block);
+      block.setType(Material.AIR);
+    }
+    station.onUnload();
+    return station;
   }
 
   public CraftingStation getStationAt(Position position) {
