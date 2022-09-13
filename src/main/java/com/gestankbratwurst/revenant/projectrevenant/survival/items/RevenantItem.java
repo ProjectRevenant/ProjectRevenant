@@ -185,7 +185,7 @@ public class RevenantItem {
 
   //Ranged Weapons
   public static ItemStack dummyBow() {
-    ItemStack base = rangedWeapon("DUMMY_BOW", TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5, 1.0);
+    ItemStack base = rangedWeapon("DUMMY_BOW", TextureModel.RED_X_BOW, "Dummy-Bow", ItemRarity.DEBUG, 0.3, 8, 2, 0.5, 5.0);
     ItemAttributeHandler.setAsTwoHanded(base);
     return new ItemBuilder(base)
             .lore("§6[Debug]")

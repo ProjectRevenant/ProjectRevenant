@@ -5,6 +5,7 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -71,6 +72,10 @@ public class ChunkHeatManager {
       double additionalHeat = 0.0;
 
       for (Player player : Bukkit.getOnlinePlayers()) {
+        if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR){
+          continue;
+        }
+
         Location playerLoc = player.getLocation();
         int chunkX = playerLoc.getBlockX() >> 4;
         int chunkZ = playerLoc.getBlockZ() >> 4;

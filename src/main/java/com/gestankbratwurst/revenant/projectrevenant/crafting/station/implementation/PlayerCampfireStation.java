@@ -1,14 +1,12 @@
 package com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation;
 
 import com.gestankbratwurst.core.mmcore.inventories.guis.AbstractGUIInventory;
-import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.resourcepack.sounds.CustomSound;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RecipeType;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.CampireStationUI;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.RecipeStationUI;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -80,7 +78,7 @@ public class PlayerCampfireStation extends AbstractRecipeStation {
       Block block = getPosition().toLocation().getBlock();
       Particle particles = Particle.BLOCK_DUST;
       block.getWorld().spawnParticle(particles, block.getLocation().add(0.5, 0.5, 0.5), 20, 0.33, 0.33, 0.33, block.getBlockData());
-      block.getWorld().playSound(block.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 0.2f, 1.0f);
+      block.getWorld().playSound(block.getLocation(), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR, 0.1f, 0.75f);
       ProjectRevenant.getCraftingStationManager().removeLoadedBlock(block, true);
     }
   }

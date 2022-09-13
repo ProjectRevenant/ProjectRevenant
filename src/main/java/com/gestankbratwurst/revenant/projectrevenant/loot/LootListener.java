@@ -15,6 +15,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -102,6 +103,11 @@ public class LootListener implements Listener {
     LootableChest lootableChest = lootChestManager.getLootableChestAt(Position.at(block));
     lootableChest.setRespawnTimeFromNow();
     lootChestManager.addToRespawnQueue(lootableChest);
+  }
+
+  @EventHandler
+  public void onBlockBreak(BlockBreakEvent event){
+    lootChestManager.removeLootChestAt(Position.at(event.getBlock()));
   }
 
 }

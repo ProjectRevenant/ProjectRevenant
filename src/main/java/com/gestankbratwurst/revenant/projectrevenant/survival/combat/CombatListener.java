@@ -2,28 +2,36 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.combat;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.protocol.holograms.MovingHologram;
-import com.gestankbratwurst.core.mmcore.protocol.holograms.impl.Hologram;
 import com.gestankbratwurst.core.mmcore.protocol.holograms.impl.HologramManager;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyManager;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RequiredArgsConstructor
 public class CombatListener implements Listener {
+
+  private final static double looseStack= 0.65;
+  private final static double loosePartOfStack = 0.85;
+  private final static double minLost = 0.5;
+  private final static double maxLost = 0.8;
 
   private final BodyManager bodyManager;
 
@@ -68,6 +76,31 @@ public class CombatListener implements Listener {
       double damage = bodyManager.getBody(livingShooter).getAttribute(BodyAttribute.RANGED_DAMAGE).getCurrentValueModified();
       ItemCombatStat.applyProjectileDamage(projectile, damage);
     }
+  }
+
+  @EventHandler
+  public void onPlayerDeath(PlayerDeathEvent event){
+    Player player = event.getPlayer();
+    List<ItemStack> droppedItems = event.getDrops();
+
+    if(player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE){
+      event.getDrops().clear();
+      return;
+    }
+
+    ThreadLocalRandom random = ThreadLocalRandom.current();
+
+    for(ItemStack item : List.copyOf(droppedItems)){
+      if(random.nextDouble() <= looseStack){
+        droppedItems.remove(item);
+      } else if(item.getAmount() > 1 && random.nextDouble() <= loosePartOfStack){
+        int newAmount = (int) (item.getAmount() * random.nextDouble(minLost, maxLost) + 0.5);
+        droppedItems.remove(item);
+        item.setAmount(newAmount);
+        droppedItems.add(item);
+      }
+    }
+
   }
 
 }
