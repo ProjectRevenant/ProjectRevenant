@@ -1,5 +1,6 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot.chestloot;
 
+import com.gestankbratwurst.core.mmcore.util.functional.WeightedCollection;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import lombok.AllArgsConstructor;
@@ -11,9 +12,8 @@ import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiFunction;
 
 public class LootChestSpawnArea {
 
@@ -26,21 +26,39 @@ public class LootChestSpawnArea {
   private final WeightedCollection<LootType> availableTypes;
 
   @Getter
-  private final int maxActive;
+  @Setter
+  private int maxActive;
+  @Getter
+  @Setter
+  private int currentActive;
+  @Getter
+  @Setter
+  private int enqueudCount;
 
   public LootChestSpawnArea() {
     emptyPositions = new ArrayList<>();
     availableTypes = new WeightedCollection<>();
 
-    this.maxActive = maxActive;
+    this.maxActive = 0;
+    currentActive = 0;
+
+    this.areaId = UUID.randomUUID();
   }
 
   public void reduceCurrentActive() {
     currentActive -= 1;
   }
 
+  public void incrementCurrentActive() {
+    currentActive += 1;
+  }
+
   public void addType(LootType type, double weight) {
     availableTypes.add(weight, type);
+  }
+
+  public void addEmptyPosition(Position pos, BlockData data) {
+    emptyPositions.add(new PositionData(pos, data));
   }
 
   public void removeEmptyPosition(Position position) {
