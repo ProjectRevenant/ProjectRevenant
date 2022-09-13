@@ -86,6 +86,7 @@ public class LootListener implements Listener {
 
     Block block = invHolder.getBlock();
     Inventory inventory = invHolder.getInventory();
+    Location location = block.getLocation();
 
     for (ItemStack item : inventory) {
       if (item != null) {

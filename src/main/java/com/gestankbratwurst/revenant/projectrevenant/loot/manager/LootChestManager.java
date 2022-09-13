@@ -5,6 +5,7 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
+import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.ChunkDomain;
 import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.WorldDomain;
@@ -55,6 +56,15 @@ public class LootChestManager implements Flushable {
     }
 
     eraseFromPossibleRespawn(position);
+  }
+
+  public void removeLootChestArea(LootChestSpawnArea area) {
+    purgeArea(area);
+    spawnAreaMap.remove(area.getAreaId());
+
+    if (activeChestMap.containsValue(area.getAreaId())) {
+      throw new RuntimeException("Active Chests still contained removed lootchest spawnarea");
+    }
   }
 
   public void populateArea(LootChestSpawnArea area) {
@@ -245,7 +255,7 @@ public class LootChestManager implements Flushable {
     for (LootableChest lootableChest : chunkDomain.getValues()) {
       taskManager.runBukkitSyncDelayed(() -> {
         spawnLootableChest(lootableChest);
-        dequeChestFromSpawn(lootableChest);
+        dequeChestFromSpawn(lootableChest.getPosition());
       }, tickDelay);
 
       tickDelay += 1;
@@ -276,10 +286,10 @@ public class LootChestManager implements Flushable {
     worldDomain.addInChunk(chunkKey, chunkDomain);
   }
 
-  public void dequeChestFromSpawn(LootableChest lootableChest) {
-    UUID worldId = lootableChest.getPosition().getWorldId();
-    long chunkKey = lootableChest.getPosition().getChunkId();
-    int position = lootableChest.getPosition().getRelLoc();
+  public void dequeChestFromSpawn(Position position) {
+    UUID worldId = position.getWorldId();
+    long chunkKey = position.getChunkId();
+    int relLoc = position.getRelLoc();
 
     WorldDomain<ChunkDomain<LootableChest>> worldDomain = spawnableLootChests.get(worldId);
 
@@ -293,7 +303,12 @@ public class LootChestManager implements Flushable {
       return;
     }
 
-    chunkDomain.removeAtLocation(position);
+    LootableChest chest = chunkDomain.removeAtLocation(relLoc);
+    if (chest != null) {
+      LootChestSpawnArea area = spawnAreaMap.get(chest.getOwner());
+      area.setEnqueudCount(area.getEnqueudCount() - 1);
+    }
+
 
     if (chunkDomain.isEmpty()) {
       worldDomain.removeInChunk(chunkKey);
@@ -313,15 +328,24 @@ public class LootChestManager implements Flushable {
     }
 
     Chunk chunk = world.getChunkAt(lootableChest.getPosition().getChunkId());
-    int position = lootableChest.getPosition().getRelLoc();
-
-    Block block = chunk.getBlock(UtilChunk.blockKeyToX(position), UtilChunk.blockKeyToY(position), UtilChunk.blockKeyToZ(position));
+    int relLoc = lootableChest.getPosition().getRelLoc();
+    Block block = chunk.getBlock(UtilChunk.blockKeyToX(relLoc), UtilChunk.blockKeyToY(relLoc), UtilChunk.blockKeyToZ(relLoc));
 
     block.setBlockData(lootableChest.getBlockData(), true);
 
     TileState state = (TileState) block.getState();
     lootManager.applyTypeTo(state, lootableChest.getType());
     state.update(true);
+
+    UUID ownerId = lootableChest.getOwner();
+    LootChestSpawnArea area = spawnAreaMap.get(ownerId);
+
+    if (area == null) {
+      throw new IllegalStateException("Unowned chest tried to respawn.");
+    }
+
+    activeChestMap.put(lootableChest.getPosition(), ownerId);
+    area.incrementCurrentActive();
   }
 
 

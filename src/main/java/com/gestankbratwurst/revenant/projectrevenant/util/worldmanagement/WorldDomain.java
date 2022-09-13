@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +23,10 @@ public class WorldDomain<T> implements Iterable<T> {
 
   public void removeInChunk(Long chunk) {
     worldDomainMap.remove(chunk);
+  }
+
+  public Collection<T> getValues() {
+    return worldDomainMap.values();
   }
 
   public boolean isEmpty() {

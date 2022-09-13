@@ -152,15 +152,4 @@ public class DebugCommand extends BaseCommand {
   }
 
 
-  @Subcommand("lootchest remove")
-  public void onLootchestRemove(Player sender) {
-    Block block = sender.getTargetBlock(10, TargetBlockInfo.FluidMode.NEVER);
-
-    if (block == null) {
-      return;
-    }
-
-    ProjectRevenant.getLootChestManager().removeLootChestAt(Position.at(block));
-    block.setType(Material.AIR);
-  }
 }

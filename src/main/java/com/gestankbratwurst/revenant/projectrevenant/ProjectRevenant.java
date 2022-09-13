@@ -1,5 +1,8 @@
 package com.gestankbratwurst.revenant.projectrevenant;
 
+import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.CommandCompletions;
+import co.aikar.commands.InvalidCommandArgument;
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
@@ -75,7 +78,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public final class ProjectRevenant extends JavaPlugin {
@@ -229,10 +234,12 @@ public final class ProjectRevenant extends JavaPlugin {
 
   private void setupLootManager() {
     lootChestManager = LootChestManager.create();
-    lootChestManager.initialize();
     long lootManagerFlushDelay = Duration.ofMinutes(15).toSeconds() * 20;
     TaskManager.getInstance().runRepeatedBukkitAsync(() -> lootChestManager.flush(), lootManagerFlushDelay, lootManagerFlushDelay);
     TaskManager.getInstance().runRepeatedBukkit(() -> lootChestManager.checkRespawnQueue(), 0, 10);
+
+    MMCore.getPaperCommandManager().getCommandCompletions().registerCompletion("LootChestArea", context -> lootChestManager.getSpawnAreaNames());
+    MMCore.getPaperCommandManager().getCommandContexts().registerContext(LootChestSpawnArea.class, context -> lootChestManager.getSpawnArea(context.popFirstArg()));
   }
 
   private void setupBodyManager() {
