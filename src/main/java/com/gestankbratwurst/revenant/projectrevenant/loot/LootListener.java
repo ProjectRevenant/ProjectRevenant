@@ -84,15 +84,8 @@ public class LootListener implements Listener {
       return;
     }
 
-    Inventory inventory = invHolder.getInventory();
-
     Block block = invHolder.getBlock();
-    BlockData brokenData = block.getBlockData();
-    block.setType(Material.AIR);
-
-    Location location = block.getLocation();
-
-    block.getWorld().spawnParticle(Particle.BLOCK_DUST, location.add(0.5, 0.5, 0.5), 6, 0.2, 0.2, 0.2, brokenData);
+    Inventory inventory = invHolder.getInventory();
 
     for (ItemStack item : inventory) {
       if (item != null) {
@@ -100,9 +93,7 @@ public class LootListener implements Listener {
       }
     }
 
-    LootableChest lootableChest = lootChestManager.getLootableChestAt(Position.at(block));
-    lootableChest.setRespawnTimeFromNow();
-    lootChestManager.addToRespawnQueue(lootableChest);
+    lootChestManager.reportLootedChest(Position.at(block));
   }
 
   @EventHandler

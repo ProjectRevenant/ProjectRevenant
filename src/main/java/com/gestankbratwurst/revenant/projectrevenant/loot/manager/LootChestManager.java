@@ -1,9 +1,11 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot.manager;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
+import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
+import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.ChunkDomain;
@@ -11,62 +13,209 @@ import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.WorldD
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.TileState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.command.CommandSender;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.Flushable;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.UUID;
 
 public class LootChestManager implements Flushable {
 
-  private final transient Map<UUID, WorldDomain<ChunkDomain<LootableChest>>> spawnableLootChests = new HashMap<>();
-  private final transient PriorityQueue<LootableChest> respawnQueue = new PriorityQueue<>();
-  private final Map<Position, LootableChest> allChests = new HashMap<>();
+  private final Map<UUID, WorldDomain<ChunkDomain<LootableChest>>> spawnableLootChests = new HashMap<>();
+  private final PriorityQueue<LootableChest> respawnQueue = new PriorityQueue<>();
 
-  public void addLootChest(LootableChest chest) {
-    allChests.put(chest.getPosition(), chest);
-    enqueChestForSpawn(chest);
+  private final Map<UUID, LootChestSpawnArea> spawnAreaMap = new HashMap<>();
+  private final Map<Position, UUID> activeChestMap = new HashMap<>();
+
+  public List<LootChestSpawnArea> getAllAreas() {
+    return List.copyOf(spawnAreaMap.values());
   }
 
   public void removeLootChestAt(Position position) {
-    Optional.ofNullable(allChests.remove(position)).ifPresent(this::eraseFromPossibleRespawn);
+    LootChestSpawnArea area = getAreaConnectedTo(position);
+
+    for (LootChestSpawnArea possibleArea : spawnAreaMap.values()) {
+      possibleArea.removeEmptyPosition(position);
+    }
+
+    if (area != null) {
+      area.reduceCurrentActive();
+    }
+
+    eraseFromPossibleRespawn(position);
   }
 
-  private void eraseFromPossibleRespawn(LootableChest lootableChest) {
-    respawnQueue.remove(lootableChest);
-    dequeChestFromSpawn(lootableChest);
+  public void populateArea(LootChestSpawnArea area) {
+    purgeArea(area);
+
+    area.setCurrentActive(0);
+    int available = area.getAvailablePositionCount();
+
+    for (int i = 0; i < available; i++) {
+      LootType type = area.getRandomType();
+      LootChestSpawnArea.PositionData positionData = area.getRandomEmptyPosition();
+
+      LootableChest lootableChest = new LootableChest(type, positionData.getPosition(), positionData.getBlockData(), area.getAreaId());
+      enqueChestForSpawn(lootableChest);
+      area.removeEmptyPosition(positionData.getPosition());
+    }
   }
 
-  public LootableChest getLootableChestAt(Position position) {
-    return allChests.get(position);
+  private void purgeArea(LootChestSpawnArea area) {
+    LootManager lootManager = LootManager.getInstance();
+    UUID areaId = area.getAreaId();
+    for (Position pos : List.copyOf(activeChestMap.keySet())) {
+      if (!activeChestMap.get(pos).equals(areaId)) {
+        continue;
+      }
+
+      activeChestMap.remove(pos);
+      Block block = pos.toLocation().getBlock();
+
+      if (block.getType() == Material.AIR) {
+        new IllegalStateException("Active chest of type AIR: " + block.getLocation()).printStackTrace();
+        continue;
+      }
+
+      if (!(block.getState() instanceof PersistentDataHolder holder)) {
+        block.setType(Material.AIR);
+        new IllegalStateException("Active chest is not a data holder: " + block.getLocation()).printStackTrace();
+        continue;
+      }
+
+      if (!lootManager.hasLoot(holder)) {
+        block.setType(Material.AIR);
+        new IllegalStateException("Active chest is data holder but has no data: " + block.getLocation()).printStackTrace();
+        continue;
+      }
+
+      area.addEmptyPosition(Position.at(block), block.getBlockData());
+      pos.toLocation().getBlock().setType(Material.AIR);
+    }
+
+    for (LootableChest lootableChest : List.copyOf(respawnQueue)) {
+      if (lootableChest.getOwner().equals(areaId)) {
+        eraseFromPossibleRespawn(lootableChest.getPosition());
+        area.addEmptyPosition(lootableChest.getPosition(), lootableChest.getBlockData());
+      }
+    }
+
+    for (WorldDomain<ChunkDomain<LootableChest>> worldDomain : List.copyOf(spawnableLootChests.values())) {
+      for (ChunkDomain<LootableChest> chunkDomain : List.copyOf(worldDomain.getValues())) {
+        for (LootableChest lootableChest : List.copyOf(chunkDomain.getValues())) {
+          if (lootableChest.getOwner().equals(areaId)) {
+            eraseFromPossibleRespawn(lootableChest.getPosition());
+            area.addEmptyPosition(lootableChest.getPosition(), lootableChest.getBlockData());
+          }
+        }
+      }
+    }
   }
 
-  public void initialize() {
-    allChests.values().forEach(this::enqueChestForSpawn);
+  public void forceFullChestPopulation() {
+    this.forceFullChestPopulation(null);
   }
 
-  public void addToRespawnQueue(LootableChest lootableChest) {
+  public void forceFullChestPopulation(CommandSender issuer) {
+    int counter = 0;
+    int full = spawnAreaMap.size();
+    for (LootChestSpawnArea area : spawnAreaMap.values()) {
+      int finalCounter = counter;
+      TaskManager.getInstance().runBukkitSyncDelayed(() -> {
+        populateArea(area);
+        if (issuer != null) {
+          Msg.sendInfo(issuer, "Populated {} [{}/{}]", area.getInternalName(), finalCounter, full);
+        }
+      }, counter++);
+    }
+  }
+
+  public List<String> getSpawnAreaNames() {
+    return getAllAreas().stream().map(LootChestSpawnArea::getInternalName).toList();
+  }
+
+  public LootChestSpawnArea getSpawnArea(String internalName) {
+    for (LootChestSpawnArea area : spawnAreaMap.values()) {
+      if (area.getInternalName().equals(internalName)) {
+        return area;
+      }
+    }
+
+    throw new RuntimeException("No SpawnArea found with name: " + internalName);
+  }
+
+  private LootChestSpawnArea getAreaConnectedTo(Position position) {
+    return spawnAreaMap.get(activeChestMap.get(position));
+  }
+
+  private void eraseFromPossibleRespawn(Position lootChestPosition) {
+    respawnQueue.removeIf(chest -> {
+      if (chest.getPosition().equals(lootChestPosition)) {
+        LootChestSpawnArea area = spawnAreaMap.get(chest.getOwner());
+        area.setEnqueudCount(area.getEnqueudCount() - 1);
+        return true;
+      } else {
+        return false;
+      }
+    });
+    dequeChestFromSpawn(lootChestPosition);
+  }
+
+  public void reportLootedChest(Position position) {
+    UUID areaId = activeChestMap.get(position);
+    LootChestSpawnArea area = getAreaConnectedTo(position);
+
+    if (area == null) {
+      throw new IllegalStateException("Illegal Lootchest: " + position.toLocation());
+    }
+
+    Location location = position.toLocation();
+    Block block = location.getBlock();
+
+    BlockData brokenData = block.getBlockData();
+    block.setType(Material.AIR);
+
+    block.getWorld().spawnParticle(Particle.BLOCK_DUST, location.add(0.5, 0.5, 0.5), 6, 0.2, 0.2, 0.2, brokenData);
+
+    activeChestMap.remove(position);
+    area.reduceCurrentActive();
+    area.addEmptyPosition(position, brokenData);
+
+    LootChestSpawnArea.PositionData newPositionData = area.getRandomEmptyPosition();
+    LootType newType = area.getRandomType();
+
+    area.removeEmptyPosition(newPositionData.getPosition());
+
+    LootableChest lootableChest = new LootableChest(newType, newPositionData.getPosition(), newPositionData.getBlockData(), areaId);
+    lootableChest.setRespawnTimeFromNow();
 
     respawnQueue.add(lootableChest);
-
+    area.setEnqueudCount(area.getEnqueudCount() + 1);
   }
 
   public void checkRespawnQueue() {
-
     LootableChest chest = respawnQueue.peek();
 
     if (chest == null || chest.getRespawnTimestamp() > System.currentTimeMillis()) {
       return;
     }
 
+    LootChestSpawnArea area = spawnAreaMap.get(chest.getOwner());
+    area.setEnqueudCount(area.getEnqueudCount() - 1);
     enqueChestForSpawn(chest);
     respawnQueue.poll();
 
@@ -102,7 +251,6 @@ public class LootChestManager implements Flushable {
 
       tickDelay += 1;
     }
-
   }
 
   public void enqueChestForSpawn(LootableChest lootableChest) {
@@ -175,6 +323,11 @@ public class LootChestManager implements Flushable {
     TileState state = (TileState) block.getState();
     lootManager.applyTypeTo(state, lootableChest.getType());
     state.update(true);
+  }
+
+
+  public void addSpawnArea(LootChestSpawnArea area) {
+    spawnAreaMap.put(area.getAreaId(), area);
   }
 
   @SneakyThrows

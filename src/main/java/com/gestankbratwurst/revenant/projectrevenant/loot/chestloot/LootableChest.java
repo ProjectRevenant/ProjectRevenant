@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 @Getter
 @RequiredArgsConstructor
 public class LootableChest implements Comparable<LootableChest> {
@@ -14,7 +16,16 @@ public class LootableChest implements Comparable<LootableChest> {
   private final LootType type;
   private final Position position;
   private final BlockData blockData;
+  private final UUID owner;
   private long respawnTimestamp = 0L;
+
+  public void setRespawnTimestamp(long respawnTimestamp) {
+    this.respawnTimestamp = respawnTimestamp;
+  }
+
+  public void setRespawnTimeFromNow() {
+    this.setRespawnTimestamp(System.currentTimeMillis() + type.getRespawnTimeMillis());
+  }
 
   @Override
   public int hashCode() {
@@ -23,20 +34,11 @@ public class LootableChest implements Comparable<LootableChest> {
 
   @Override
   public boolean equals(Object obj) {
-
     if (!(obj instanceof LootableChest lootChest)) {
       return false;
     }
 
     return this.position.equals(lootChest.position);
-  }
-
-  public void setRespawnTimestamp(long respawnTimestamp) {
-    this.respawnTimestamp = respawnTimestamp;
-  }
-
-  public void setRespawnTimeFromNow() {
-    this.setRespawnTimestamp(System.currentTimeMillis() + type.getRespawnTimeMillis());
   }
 
   @Override

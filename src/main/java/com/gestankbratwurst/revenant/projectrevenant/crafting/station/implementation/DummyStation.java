@@ -23,7 +23,7 @@ public class DummyStation extends AbstractRecipeStation {
   }
 
   public DummyStation() {
-    this(null);
+    this(Position.ZERO);
   }
 
   @Override

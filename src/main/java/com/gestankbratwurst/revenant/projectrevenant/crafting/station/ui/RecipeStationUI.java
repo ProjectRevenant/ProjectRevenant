@@ -19,7 +19,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+
+import java.util.List;
 
 @AllArgsConstructor
 public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGUIInventory {
@@ -27,6 +30,12 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
   @Getter
   private final T station;
   private final TextureModel uiModel;
+
+  @Override
+  protected void preClose(InventoryCloseEvent event) {
+    super.preClose(event);
+    station.unregisterViewer((Player) event.getPlayer());
+  }
 
   @Override
   protected Inventory createInventory(Player player) {
@@ -37,7 +46,7 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
   protected void init(Player player) {
     int x = 1;
     int y = 1;
-    for (IngredientRecipe recipe : station.getRecipeList()) {
+    for (IngredientRecipe recipe : getViableRecipeList()) {
       GUIItem recipeIcon = recipeIcon(player, recipe);
       setGUIItem(y * 9 + x, recipeIcon);
       if (++x == 7) {
@@ -50,7 +59,11 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
     setGUIItem(8, getClosingIcon());
   }
 
-  private GUIItem getClosingIcon() {
+  protected List<IngredientRecipe> getViableRecipeList() {
+    return station.getRecipeList();
+  }
+
+  protected GUIItem getClosingIcon() {
     return GUIItem.builder()
             .eventConsumer(event -> {
               UtilPlayer.playUIClick((Player) event.getWhoClicked());
@@ -61,7 +74,7 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
             .build();
   }
 
-  private GUIItem recipeIcon(Player player, IngredientRecipe recipe) {
+  protected GUIItem recipeIcon(Player player, IngredientRecipe recipe) {
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
     if (!revenantPlayer.hasRecipeUnlocked(recipe.getId())) {
       return GUIItem.builder()

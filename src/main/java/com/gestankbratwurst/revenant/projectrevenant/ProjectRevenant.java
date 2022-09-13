@@ -18,6 +18,7 @@ import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.ExperienceCommand;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.MinecraftExpListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
+import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;

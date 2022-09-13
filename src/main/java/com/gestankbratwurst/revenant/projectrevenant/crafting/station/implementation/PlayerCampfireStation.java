@@ -6,7 +6,7 @@ import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RecipeType;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.CampireStationUI;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.CampfireStationUI;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -85,7 +85,7 @@ public class PlayerCampfireStation extends AbstractRecipeStation {
 
   @Override
   public AbstractGUIInventory createUI(Player player) {
-    return new CampireStationUI(this);
+    return new CampfireStationUI(this);
   }
 
   @Override

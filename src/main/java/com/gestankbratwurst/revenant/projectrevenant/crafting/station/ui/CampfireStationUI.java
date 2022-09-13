@@ -16,28 +16,33 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
-public class CampireStationUI extends RecipeStationUI<PlayerCampfireStation> {
+public class CampfireStationUI extends RecipeStationUI<PlayerCampfireStation> {
 
-  public CampireStationUI(PlayerCampfireStation station) {
+  public CampfireStationUI(PlayerCampfireStation station) {
     super(station, TextureModel.CAMPFIRE_CRAFTING_UI);
   }
 
   @Override
   protected void init(Player player) {
-    if (getStation().isLit()) {
-      super.init(player);
-    }
-
+    super.init(player);
     this.setGUIItem(47, campfireToggleIcon());
     this.setGUIItem(50, campfireFeedIcon(player));
+  }
+
+  @Override
+  protected List<IngredientRecipe> getViableRecipeList() {
+    if (getStation().isLit()) {
+      super.getViableRecipeList();
+    }
+    return super.getViableRecipeList().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTED).toList();
   }
 
   private GUIItem campfireFeedIcon(Player player) {
@@ -65,6 +70,8 @@ public class CampireStationUI extends RecipeStationUI<PlayerCampfireStation> {
               UtilPlayer.playSound(player, Sound.BLOCK_CAMPFIRE_CRACKLE);
               UtilPlayer.playSound(player, Sound.ENTITY_BLAZE_SHOOT, 0.2f, 0.66f);
 
+              station.getViewers().forEach(viewer -> new CampfireStationUI(station).openFor(viewer));
+
             }).iconCreator(unused -> {
               long lifetimeSeconds = station.getLifetime().getSeconds();
               return ItemBuilder.of(Material.OAK_WOOD)
@@ -83,10 +90,10 @@ public class CampireStationUI extends RecipeStationUI<PlayerCampfireStation> {
 
   @EventHandler
   public void onDrop(BlockDropItemEvent event) {
-    if(event.getBlockState() instanceof BlockInventoryHolder) {
+    if (event.getBlockState() instanceof BlockInventoryHolder) {
       Material self = event.getBlockState().getType();
-      for(Item item : event.getItems()) {
-        if(item.getItemStack().getType() == self) {
+      for (Item item : event.getItems()) {
+        if (item.getItemStack().getType() == self) {
           item.remove();
         }
       }
@@ -101,13 +108,13 @@ public class CampireStationUI extends RecipeStationUI<PlayerCampfireStation> {
               UtilPlayer.playUIClick(player);
               station.setLit(!station.isLit());
 
-              if(station.isLit()){
+              if (station.isLit()) {
                 station.setLifetimeFromNow(System.currentTimeMillis() + station.getLifetime().toMillis() / 2);
               } else {
                 station.setLifetimeFromNow(System.currentTimeMillis() + station.getLifetime().toMillis() * 2);
               }
 
-              this.update(player);
+              station.getViewers().forEach(viewer -> new CampfireStationUI(station).openFor(viewer));
             })
             .iconCreator(player -> {
               if (station.isLit()) {

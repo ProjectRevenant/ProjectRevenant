@@ -20,11 +20,11 @@ public class ChunkDomain<T> implements Iterable<T> {
     chunkDomainMap.put(locationInChunk, atLocation);
   }
 
-  public void removeAtLocation(Integer locationInChunk){
-    chunkDomainMap.remove(locationInChunk);
+  public T removeAtLocation(Integer locationInChunk) {
+    return chunkDomainMap.remove(locationInChunk);
   }
 
-  public boolean isEmpty(){
+  public boolean isEmpty() {
     return chunkDomainMap.isEmpty();
   }
 
@@ -32,7 +32,9 @@ public class ChunkDomain<T> implements Iterable<T> {
     return chunkDomainMap.keySet();
   }
 
-  public Collection<T> getValues() { return chunkDomainMap.values(); }
+  public Collection<T> getValues() {
+    return chunkDomainMap.values();
+  }
 
   @NotNull
   @Override
