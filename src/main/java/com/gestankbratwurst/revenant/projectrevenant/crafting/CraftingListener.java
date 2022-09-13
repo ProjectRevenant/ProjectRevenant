@@ -1,9 +1,12 @@
 package com.gestankbratwurst.revenant.projectrevenant.crafting;
 
+import com.destroystokyo.paper.event.player.PlayerRecipeBookClickEvent;
+import com.gestankbratwurst.core.mmcore.events.recipebook.RecipeBookClickEvent;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.AbstractRecipeStation;
+import com.gestankbratwurst.revenant.projectrevenant.ui.gui.PlayerMenuGUI;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -63,6 +66,16 @@ public class CraftingListener implements Listener {
   @EventHandler
   public void onBlockBreak(BlockBreakEvent event) {
     craftingStationManager.removeLoadedBlock(event.getBlock());
+  }
+
+  @EventHandler
+  public void onRecipeBookClick(PlayerRecipeBookClickEvent event) {
+    event.setCancelled(true);
+  }
+
+  @EventHandler
+  public void onKnowledgeBookClick(RecipeBookClickEvent event) {
+    new PlayerMenuGUI().openFor(event.getPlayer());
   }
 
 }

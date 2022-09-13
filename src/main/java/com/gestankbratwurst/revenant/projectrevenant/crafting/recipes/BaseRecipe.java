@@ -17,6 +17,7 @@ public enum BaseRecipe {
           .setRecipeId(UUID.fromString("70f50997-d8a6-4677-841c-bdb60195aa73"))
           .setName("Debug")
           .addIcon(RevenantItem.dummyFood())
+          .setType(RecipeType.BAKED)
           .setResult(new SimpleItemLoot(ItemBuilder.of(RevenantItem.dummyFood()).amount(16).build()))
           .setCraftTime(Duration.ofSeconds(5))
           .addIngredient(new RevenantIngredient(RevenantItem.dummyBow()), 1)

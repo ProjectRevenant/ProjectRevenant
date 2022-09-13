@@ -30,6 +30,7 @@ public class IngredientRecipe implements RevenantRecipe {
 
   private final UUID recipeId;
   private final String name;
+  private final RecipeType type;
   private final Loot result;
   private final Object2IntMap<Ingredient> ingredientMap;
   private final List<Predicate<Player>> conditions;
@@ -37,9 +38,10 @@ public class IngredientRecipe implements RevenantRecipe {
   private final long craftTime;
 
 
-  public IngredientRecipe(UUID recipeId, String name, Loot result, ItemStack icon, Duration craftTime) {
+  public IngredientRecipe(UUID recipeId, String name, RecipeType type, Loot result, ItemStack icon, Duration craftTime) {
     this.recipeId = recipeId;
     this.name = name;
+    this.type = type;
     this.result = result;
     this.icon = icon;
     this.craftTime = craftTime.toMillis();
@@ -130,8 +132,10 @@ public class IngredientRecipe implements RevenantRecipe {
   @Override
   public void payResources(Player player) {
     ingredientMap.forEach((ingredient, amount) -> {
-      for (int i = 0; i < amount; i++) {
-        removeIngredient(player, ingredient);
+      if(ingredient.isConsumed()) {
+        for (int i = 0; i < amount; i++) {
+          removeIngredient(player, ingredient);
+        }
       }
     });
   }
@@ -151,9 +155,15 @@ public class IngredientRecipe implements RevenantRecipe {
     throw new IllegalStateException("Could not remove ingredient: " + ingredient.getInfo(player));
   }
 
+  @Override
+  public RecipeType getType(){
+    return type;
+  }
+
   public static class IngredientRecipeBuilder {
     private UUID recipeId;
     private String name;
+    private RecipeType type;
     private Loot result;
     private ItemStack icon;
     private Duration craftTime;
@@ -172,6 +182,11 @@ public class IngredientRecipe implements RevenantRecipe {
 
     public IngredientRecipeBuilder setName(String name) {
       this.name = name;
+      return this;
+    }
+
+    public IngredientRecipeBuilder setType(RecipeType type){
+      this.type = type;
       return this;
     }
 
@@ -206,7 +221,7 @@ public class IngredientRecipe implements RevenantRecipe {
         throw new IllegalStateException("Illegal Recipe: " + (name == null ? "missing_name" : name));
       }
 
-      IngredientRecipe recipe = new IngredientRecipe(recipeId, name, result, icon, craftTime);
+      IngredientRecipe recipe = new IngredientRecipe(recipeId, name, type, result, icon, craftTime);
       recipe.ingredientMap.putAll(this.ingredientMap);
       recipe.conditions.addAll(this.conditions);
       return recipe;

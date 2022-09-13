@@ -118,19 +118,19 @@ public class RevenantItem {
   private static ItemStack rangedWeapon(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double rangedDmg, double meleeDmg, double meleeAtkSpeed, double meleeKnockback, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new RangedDamageAbility(rangedDmg, meleeDmg, meleeAtkSpeed, meleeKnockback));
-    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, false, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack food(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
+  private static ItemStack food(String internalId, TextureModel model, String name, ItemRarity rarity, double weight, double nutrition, double water, boolean stackable, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new FoodEatenAbility(nutrition, water));
-    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, stackable, list.toArray(new Ability[0]));
   }
 
-  private static ItemStack food(String internalId, ItemStack model, String name, ItemRarity rarity, double weight, double nutrition, double water, Ability... abilities) {
+  private static ItemStack food(String internalId, ItemStack model, String name, ItemRarity rarity, double weight, double nutrition, double water, boolean stackable, Ability... abilities) {
     List<Ability> list = new ArrayList<>(List.of(abilities));
     list.add(new FoodEatenAbility(nutrition, water));
-    return basic(internalId, model, name, rarity, weight, list.toArray(new Ability[0]));
+    return basic(internalId, model, name, rarity, weight, stackable, list.toArray(new Ability[0]));
   }
 
   private static ItemStack basicBottle(String internalId, TextureModel model, String name, ItemRarity rarity, Ability... abilities) {
@@ -196,7 +196,7 @@ public class RevenantItem {
 
   //Food
   public static ItemStack dummyFood() {
-    ItemStack base = food("DUMMY_FOOD", new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 0.5, new ConsumableHealthAbility(30, Duration.ofSeconds(30)));
+    ItemStack base = food("DUMMY_FOOD", new ItemStack(Material.BREAD), "Dummy-Essen", ItemRarity.DEBUG, 0.2, 500, 0.5, true, new ConsumableHealthAbility(30, Duration.ofSeconds(30)));
     return new ItemBuilder(base)
             .lore("§6[Debug]")
             .lore("§fNur zum testen!")

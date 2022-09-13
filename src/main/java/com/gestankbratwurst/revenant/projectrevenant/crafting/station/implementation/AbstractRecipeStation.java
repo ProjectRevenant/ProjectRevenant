@@ -17,7 +17,7 @@ public abstract class AbstractRecipeStation extends AbstractCraftingStation {
 
   @Getter
   private final Position position;
-  private ActiveCraftingWorkload currentCraftingWorkload;
+  protected ActiveCraftingWorkload currentCraftingWorkload;
   private boolean workActive = false;
   private transient AbstractHologram hologram;
   private transient int ticksAlive;

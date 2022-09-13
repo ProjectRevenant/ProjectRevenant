@@ -3,6 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,6 +60,10 @@ public class GlobalSpawnManager {
   }
 
   public void spawnMonsters(Player target) {
+
+    if(!(target.getGameMode() == GameMode.SURVIVAL || target.getGameMode() == GameMode.ADVENTURE)){
+      return;
+    }
 
     int current = playerMonsterCount.computeIfAbsent(target, (key) -> 0);
 

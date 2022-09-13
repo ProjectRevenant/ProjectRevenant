@@ -19,8 +19,9 @@ public class SimpleIngredient implements Ingredient {
   private final ItemStack itemStack;
   private final boolean consumed;
 
-  public SimpleIngredient(ItemStack itemStack) {
+  public SimpleIngredient(ItemStack itemStack, boolean consumed) {
     this.itemStack = itemStack.asOne();
+    this.consumed = consumed;
   }
 
   @Override

@@ -23,4 +23,6 @@ public interface RevenantRecipe {
 
   String getName();
 
+  RecipeType getType();
+
 }
