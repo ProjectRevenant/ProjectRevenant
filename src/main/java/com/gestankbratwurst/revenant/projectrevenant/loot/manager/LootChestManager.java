@@ -4,6 +4,7 @@ import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
+import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import com.gestankbratwurst.revenant.projectrevenant.util.worldmanagement.ChunkDomain;
@@ -19,7 +20,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.Flushable;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
@@ -29,15 +32,11 @@ public class LootChestManager implements Flushable {
 
   private final transient Map<UUID, WorldDomain<ChunkDomain<LootableChest>>> spawnableLootChests = new HashMap<>();
   private final transient PriorityQueue<LootableChest> respawnQueue = new PriorityQueue<>();
-  private final Map<Position, LootableChest> allChests = new HashMap<>();
-
-  public void addLootChest(LootableChest chest) {
-    allChests.put(chest.getPosition(), chest);
-    enqueChestForSpawn(chest);
-  }
+  private final Map<Position, LootableChest> allSingleChests = new HashMap<>();
+  private List<LootChestSpawnArea> spawnAreas = new ArrayList<>();
 
   public void removeLootChestAt(Position position) {
-    Optional.ofNullable(allChests.remove(position)).ifPresent(this::eraseFromPossibleRespawn);
+    Optional.ofNullable(allSingleChests.remove(position)).ifPresent(this::eraseFromPossibleRespawn);
   }
 
   private void eraseFromPossibleRespawn(LootableChest lootableChest) {
@@ -46,17 +45,26 @@ public class LootChestManager implements Flushable {
   }
 
   public LootableChest getLootableChestAt(Position position) {
-    return allChests.get(position);
+    return allSingleChests.get(position);
   }
 
   public void initialize() {
-    allChests.values().forEach(this::enqueChestForSpawn);
+    allSingleChests.values().forEach(this::enqueChestForSpawn);
   }
 
   public void addToRespawnQueue(LootableChest lootableChest) {
 
     respawnQueue.add(lootableChest);
 
+  }
+
+  public void reportClosedLootchest(LootableChest chest){
+    for(LootChestSpawnArea area : spawnAreas){
+      if(area.isActiveIn(chest)){
+        area.removeActive(chest);
+        area.getRandomEmpty();
+      }
+    }
   }
 
   public void checkRespawnQueue() {
@@ -175,6 +183,16 @@ public class LootChestManager implements Flushable {
     TileState state = (TileState) block.getState();
     lootManager.applyTypeTo(state, lootableChest.getType());
     state.update(true);
+  }
+
+
+  public void addSpawnArea(LootChestSpawnArea area){
+    spawnAreas.add(area);
+  }
+
+  public void addLootChest(LootableChest chest) {
+    allSingleChests.put(chest.getPosition(), chest);
+    enqueChestForSpawn(chest);
   }
 
   @SneakyThrows
