@@ -1,9 +1,11 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot.manager;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
+import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
+import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
