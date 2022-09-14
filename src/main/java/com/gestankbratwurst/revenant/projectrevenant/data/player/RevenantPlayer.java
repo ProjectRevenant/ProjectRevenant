@@ -67,7 +67,13 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   private final Map<Class<? extends Ability>, Ability> abilityMap;
   private final transient BossBar experienceBossBar;
   private transient int levelBarCounter = 0;
-  private final Set<UUID> unlockedRecipes = new HashSet<>();
+  private final Set<UUID> unlockedRecipes;
+  @Getter
+  @Setter
+  private long survivalTime;
+  @Getter
+  @Setter
+  private long joinTimestamp;
   @Getter
   @Setter
   private Position logoutPosition = Position.ZERO;
@@ -86,6 +92,9 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this.levelContainer = new LevelContainer();
     this.experienceBossBar = Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SEGMENTED_10);
     this.abilityMap = new HashMap<>();
+    this.scoreMap = new HashMap<>();
+    this.chosenPerks = new HashSet<>();
+    this.unlockedRecipes = new HashSet<>();
     for (BaseRecipe recipe : BaseRecipe.values()) {
       if (recipe.isStartingRecipe()) {
         //ToDo remove player message, only for debugging

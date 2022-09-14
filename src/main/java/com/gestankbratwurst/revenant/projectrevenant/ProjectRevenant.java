@@ -90,6 +90,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private RevenantRecipeManager revenantRecipeManager;
   private CraftingStationManager craftingStationManager;
   private PlayerSpawnManager playerSpawnManager;
+  private MetaProgressionManager metaProgressionManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -125,6 +126,10 @@ public final class ProjectRevenant extends JavaPlugin {
 
   public static PlayerSpawnManager getPlayerSpawnManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).playerSpawnManager;
+  }
+
+  public static MetaProgressionManager getMetaProgressionManager(){
+    return JavaPlugin.getPlugin(ProjectRevenant.class).metaProgressionManager;
   }
 
   @Override
@@ -164,9 +169,15 @@ public final class ProjectRevenant extends JavaPlugin {
 
     setupSpawnerManager();
 
+    setupMetaProgression();
+
     setupUI();
 
     setupGamerules();
+  }
+
+  private void setupMetaProgression(){
+    this.metaProgressionManager = new MetaProgressionManager();
   }
 
   private void setupRecipeManager() {
