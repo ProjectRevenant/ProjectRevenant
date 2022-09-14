@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerCampfireStation extends AbstractRecipeStation {
 
@@ -106,13 +107,17 @@ public class PlayerCampfireStation extends AbstractRecipeStation {
       case COOKED -> location.getWorld().playSound(location, Sound.BLOCK_SMOKER_SMOKE, SoundCategory.MASTER, 1.0f, 1.0f);
       case BAKED -> location.getWorld().playSound(location, Sound.BLOCK_FIRE_AMBIENT, SoundCategory.MASTER, 1.0f, 1.0f);
       case FORGED -> location.getWorld().playSound(location, Sound.BLOCK_ANVIL_HIT, SoundCategory.MASTER, 1.0f, 1.0f);
-      case BREWED -> location.getWorld().playSound(location, Sound.BLOCK_BREWING_STAND_BREW, SoundCategory.MASTER, 1.0f, 1.0f);
+      case BREWED -> {
+        if(ThreadLocalRandom.current().nextDouble() > 0.5){
+          location.getWorld().playSound(location, Sound.BLOCK_BREWING_STAND_BREW, SoundCategory.MASTER, 1.0f, 1.0f);
+        }
+      }
       case CRAFTED -> CustomSound.STICK_HIT_ONE.playAt(location, SoundCategory.MASTER, 1.0f, 1.0f);
     }
   }
 
   @Override
   public List<IngredientRecipe> getRecipeList() {
-    return List.of((IngredientRecipe) BaseRecipe.DUMMY.getRevenantRecipe());
+    return List.of((IngredientRecipe) BaseRecipe.DUMMY.getRevenantRecipe(), (IngredientRecipe) BaseRecipe.WATER_PURIFICATION.getRevenantRecipe());
   }
 }

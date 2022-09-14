@@ -19,10 +19,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @AllArgsConstructor
 public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGUIInventory {
@@ -75,6 +77,18 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
   }
 
   protected GUIItem recipeIcon(Player player, IngredientRecipe recipe) {
+    return recipeIcon(player, recipe, event -> {
+      if (recipe.canCraft(player)) {
+        station.activateWorkload(recipe, player);
+        Msg.sendInfo(player, "Es wird jetzt {} gecraftet.", recipe.getName());
+        UtilPlayer.playUIClick(player);
+      } else {
+        UtilPlayer.playSound(player, Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.75F, 0.5F);
+      }
+    });
+  }
+
+  protected GUIItem recipeIcon(Player player, IngredientRecipe recipe, Consumer<InventoryClickEvent> onClick) {
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
     if (!revenantPlayer.hasRecipeUnlocked(recipe.getId())) {
       return GUIItem.builder()
@@ -83,15 +97,7 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
               .build();
     } else {
       return GUIItem.builder()
-              .eventConsumer(event -> {
-                if (recipe.canCraft(player)) {
-                  station.activateWorkload(recipe, player);
-                  Msg.sendInfo(player, "Es wird jetzt {} gecraftet.", recipe.getName());
-                  UtilPlayer.playUIClick(player);
-                } else {
-                  UtilPlayer.playSound(player, Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.75F, 0.5F);
-                }
-              }).iconCreator(unused -> recipe.infoIconFor(player)).build();
+              .eventConsumer(onClick).iconCreator(unused -> recipe.infoIconFor(player)).build();
     }
   }
 
