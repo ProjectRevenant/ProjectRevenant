@@ -100,7 +100,7 @@ public class BodyManager {
             BodyAttributeIcon.of(BodyAttribute.HEALTH_SHIFT, 1.0 / (health.getMaxValueModified() / 10000.0) * healthShift.getCurrentValueModified()).getChar() + " " +
             BodyAttributeIcon.of("FOOD_BAR", 1.0 / nutrition.getMaxValueModified() * nutrition.getCurrentValue()).getChar() +
             BodyAttributeIcon.of(BodyAttribute.NUTRITION_SHIFT, 1.0 / (nutrition.getMaxValueModified() / 21000.0) * nutritionShift.getCurrentValueModified()).getChar() + " " +
-            ("" + TextureModel.PIXEL_M).repeat(2) + ("" + TextureModel.PIXEL_S).repeat(6) +
+            ("" + TextureModel.PIXEL_M.getChar()).repeat(2) + ("" + TextureModel.PIXEL_S.getChar()).repeat(6) +
             BodyAttributeIcon.of("WATER_BAR", 1.0 / water.getMaxValueModified() * water.getCurrentValue()).getChar() +
             BodyAttributeIcon.of(BodyAttribute.WATER_SHIFT, 1.0 / (water.getMaxValueModified() / 11500.0) * waterShift.getCurrentValueModified()).getChar() + " " +
             BodyAttributeIcon.of("WEIGHT_BAR", 1.0 / weight.getMaxValueModified() * weight.getCurrentValue()).getChar() +
