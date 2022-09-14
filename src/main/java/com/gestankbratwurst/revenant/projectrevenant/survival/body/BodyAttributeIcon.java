@@ -8,6 +8,7 @@ import com.google.common.collect.TreeRangeMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @SuppressWarnings("UnstableApiUsage")
 public class BodyAttributeIcon {
@@ -29,12 +30,13 @@ public class BodyAttributeIcon {
           rangeMap.put(Range.openClosed(-60, -20), TextureModel.GRADIENT_ICON_M2);
           rangeMap.put(Range.open(-20, 0), TextureModel.GRADIENT_ICON_M1);
         } else {
-          for (int i = 0; i <= 100; i += 4) {
+          for (int i = 0; i <= 100; i++) {
             String modelId = identifier.toUpperCase() + "_" + i;
             TextureModel model;
             try {
               model = TextureModel.valueOf(modelId);
             } catch (Exception exception) {
+              exception.printStackTrace();
               continue;
             }
             if (i == 0) {
@@ -42,7 +44,7 @@ public class BodyAttributeIcon {
             } else if (i == 100) {
               rangeMap.put(Range.atLeast(100), model);
             } else {
-              rangeMap.put(Range.closedOpen(i, i + 4), model);
+              rangeMap.put(Range.closedOpen(i, i + 1), model);
             }
           }
         }
@@ -57,7 +59,8 @@ public class BodyAttributeIcon {
   }
 
   public static TextureModel of(String identity, double percentageScaled) {
-    return Optional.ofNullable(getIcons().get(identity).get((int) (percentageScaled * 100.0))).orElse(TextureModel.RED_X);
+    percentageScaled = Math.max(0, Math.min(100, percentageScaled));
+    return Optional.ofNullable(getIcons().get(identity).get((int) (percentageScaled * 100.0 + 0.5))).orElse(TextureModel.RED_X);
   }
 
 }

@@ -6,7 +6,9 @@ import com.gestankbratwurst.core.mmcore.actionbar.ActionBarManager;
 import com.gestankbratwurst.core.mmcore.actionbar.ActionLine;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.DangerLevel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
@@ -45,7 +47,7 @@ public class ActionBarListener implements Listener {
       });
       return builder.toString();
     });
-    ActionLine noiseLine = new ActionLine(ActionLine.MID_PRIORITY, () -> getNoiseBar(player));
+    ActionLine noiseLine = new ActionLine(ActionLine.MID_PRIORITY, () -> getDangerLevel(player) + " " + getNoiseBar(player));
     board.getSection(ActionBarBoard.Section.MIDDLE).addLayer(bodyLine);
     board.getSection(ActionBarBoard.Section.RIGHT).addLayer(buffLine);
     board.getSection(ActionBarBoard.Section.LEFT).addLayer(noiseLine);
@@ -58,22 +60,43 @@ public class ActionBarListener implements Listener {
     });
   }
 
+  private String getDangerLevel(Player player) {
+    double heat = ProjectRevenant.getChunkHeatManager().getAverageHeatInRegion(player.getLocation(), 64);
+    DangerLevel dangerLevel = DangerLevel.getByHeat(heat);
+    return String.valueOf(dangerLevel.getTextureModel().getChar());
+  }
+
   private String getNoiseBar(Player player) {
     StringBuilder builder = new StringBuilder();
     RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
     double noise = revenantPlayer.getNoiseLevel();
     double max = revenantPlayer.getBody().getAttribute(BodyAttribute.NOISE).getMaxValue();
     double percent = 1.0 / max * noise;
-    int size = 50;
-    int fulls = (int) (size * percent);
-    int empties = size - fulls;
-    builder.append("§e").append((int) noise).append(" ");
-    builder.append("§f[§7");
-    builder.append(".".repeat(Math.max(0, empties)));
-    builder.append("§6");
-    builder.append("|".repeat(Math.max(0, fulls)));
-    builder.append("§f] ").append(TextureModel.SOUND_ICON.getChar());
-    return builder.toString();
+    if (percent > 0.9) {
+      return builder.append(TextureModel.SOUND_ICON_8.getChar()).toString();
+    }
+    if (percent > 0.75) {
+      return builder.append(TextureModel.SOUND_ICON_7.getChar()).toString();
+    }
+    if (percent > 0.62) {
+      return builder.append(TextureModel.SOUND_ICON_6.getChar()).toString();
+    }
+    if (percent >= 0.50) {
+      return builder.append(TextureModel.SOUND_ICON_5.getChar()).toString();
+    }
+    if (percent > 0.365) {
+      return builder.append(TextureModel.SOUND_ICON_4.getChar()).toString();
+    }
+    if (percent > 0.25) {
+      return builder.append(TextureModel.SOUND_ICON_3.getChar()).toString();
+    }
+    if (percent > 0.125) {
+      return builder.append(TextureModel.SOUND_ICON_2.getChar()).toString();
+    }
+    if (percent > 0.05) {
+      return builder.append(TextureModel.SOUND_ICON_1.getChar()).toString();
+    }
+    return builder.append(TextureModel.SOUND_ICON_0.getChar()).toString();
   }
 
 }

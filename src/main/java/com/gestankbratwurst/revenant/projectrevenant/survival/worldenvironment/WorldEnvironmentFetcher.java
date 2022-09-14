@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Campfire;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -124,6 +125,9 @@ public class WorldEnvironmentFetcher {
         for (int y = -1; y <= 1; y++) {
           Block relative = base.getRelative(x, y, z);
           if (hotBlocks.contains(relative.getType())) {
+            if(relative.getBlockData() instanceof Campfire campfire) {
+              return campfire.isLit();
+            }
             return true;
           }
         }

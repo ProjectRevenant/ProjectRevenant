@@ -33,6 +33,8 @@ import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSp
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatTask;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnListener;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerCommand;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.SpawnerManager;
@@ -93,6 +95,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private SpawnerManager spawnerManager;
   private RevenantRecipeManager revenantRecipeManager;
   private CraftingStationManager craftingStationManager;
+  private PlayerSpawnManager playerSpawnManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -124,6 +127,10 @@ public final class ProjectRevenant extends JavaPlugin {
 
   public static RevenantRecipeManager getRevenantRecipeManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantRecipeManager;
+  }
+
+  public static PlayerSpawnManager getPlayerSpawnManager() {
+    return JavaPlugin.getPlugin(ProjectRevenant.class).playerSpawnManager;
   }
 
   @Override
@@ -202,9 +209,11 @@ public final class ProjectRevenant extends JavaPlugin {
   }
 
   private void setupSpawnerManager() {
+    this.playerSpawnManager = PlayerSpawnManager.create();
     this.chunkHeatManager = new ChunkHeatManager();
     this.globalSpawnManager = new GlobalSpawnManager();
     this.spawnerManager = SpawnerManager.create();
+    Bukkit.getPluginManager().registerEvents(new PlayerSpawnListener(), this);
     Bukkit.getPluginManager().registerEvents(new SpawnSystemListener(chunkHeatManager, spawnerManager, globalSpawnManager), this);
     TaskManager.getInstance().runRepeatedBukkitAsync(new ChunkHeatTask(chunkHeatManager), 60, 20);
     TaskManager.getInstance().runRepeatedBukkit(new GlobalSpawnTask(globalSpawnManager), 60, 40);

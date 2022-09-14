@@ -9,7 +9,8 @@ public enum RecipeType {
   BAKED("Gebacken"),
   FORGED("Geschmiedetes"),
   BREWED("Gebrautes"),
-  CRAFTED("Gebautes");
+  CRAFTED("Gebautes"),
+  SMELTED("Verhüttet");
 
   private final String displayName;
 

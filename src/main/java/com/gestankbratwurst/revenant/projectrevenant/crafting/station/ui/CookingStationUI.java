@@ -60,6 +60,10 @@ public class CookingStationUI extends RecipeStationUI<CookingStation> {
             .eventConsumer(event -> {
               Player player = (Player) event.getWhoClicked();
 
+              if(getStation().getWaterLevel() >= CookingStation.MAX_WATER_LEVEL) {
+                return;
+              }
+
               RevenantRecipe recipe = IngredientRecipe.builder()
                       .setType(RecipeType.CRAFTED)
                       .setRecipeId(UUID.randomUUID())

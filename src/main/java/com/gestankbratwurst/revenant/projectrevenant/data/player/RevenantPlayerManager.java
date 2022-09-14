@@ -19,7 +19,7 @@ public class RevenantPlayerManager implements Flushable, Iterable<RevenantPlayer
   private final MappedMongoStorage<UUID, RevenantPlayer> mongoStorage = MMCore.getMongoStorage().mapped("RevenantPlayer", RevenantPlayer.class);
 
   public RevenantPlayer getOnline(UUID playerId) {
-    return Objects.requireNonNull(loadedPlayerMap.get(playerId));
+    return loadedPlayerMap.get(playerId);
   }
 
   public void loadData(UUID playerId) {

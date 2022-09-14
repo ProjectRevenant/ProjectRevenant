@@ -12,6 +12,7 @@ import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.AbstractRecipeStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.CookingStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.DummyStation;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.FurnaceStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.PlayerCampfireStation;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
@@ -32,9 +33,11 @@ public class DebugCommand extends BaseCommand {
 
   @Subcommand("getitem")
   @CommandCompletion("@RevenantItem")
-  public void onAbilityItem(Player sender, @Values("@RevenantItem") String internalName) {
-    sender.getInventory().addItem(RevenantItem.getItemByInternalName(internalName));
-    Msg.sendInfo(sender, "Du hast das " + internalName + " item erhalten.");
+  public void onAbilityItem(Player sender, @Values("@RevenantItem") String internalName, @Default("1") int amount) {
+    for (int i = 0; i < amount; i++) {
+      sender.getInventory().addItem(RevenantItem.getItemByInternalName(internalName));
+    }
+    Msg.sendInfo(sender, "Du hast das " + internalName + "x" + amount + " item erhalten.");
   }
 
   @Subcommand("custommob")
@@ -47,13 +50,15 @@ public class DebugCommand extends BaseCommand {
   }
 
   @Subcommand("craftstation add")
-  public void onCraftStationSpawn(Player sender, @Default("campfire") @Values("campfire|cooking") String type) {
+  @CommandCompletion("campfire|cooking|furnace")
+  public void onCraftStationSpawn(Player sender, @Default("campfire") String type) {
     Block stationBlock = sender.getLocation().getBlock();
     stationBlock.setType(Material.CRAFTING_TABLE);
 
     AbstractRecipeStation station = switch (type) {
       case "campfire" -> new PlayerCampfireStation(Position.at(stationBlock));
       case "cooking" -> new CookingStation(Position.at(stationBlock));
+      case "furnace" -> new FurnaceStation(Position.at(stationBlock));
       default -> new DummyStation(Position.at(stationBlock));
     };
 
@@ -149,6 +154,30 @@ public class DebugCommand extends BaseCommand {
   public void onLootChestAreaRemove(Player sender, @Values("@LootChestArea") LootChestSpawnArea area) {
     ProjectRevenant.getLootChestManager().removeLootChestArea(area);
     Msg.sendInfo(sender, "Lösche LootSpawnArea...");
+  }
+
+  @Subcommand("playerspawn addpod")
+  public void onAddPod(Player sender) {
+    ProjectRevenant.getPlayerSpawnManager().addSpawnPod(Position.at(sender.getLocation()));
+    Msg.sendInfo(sender, "Du hast einen Pod hinzugefügt.");
+  }
+
+  @Subcommand("playerspawn addspawn")
+  public void onAddSpawn(Player sender) {
+    ProjectRevenant.getPlayerSpawnManager().addSpawnPoint(Position.at(sender.getLocation()));
+    Msg.sendInfo(sender, "Du hast einen Spawnpunkt hinzugefügt.");
+  }
+
+  @Subcommand("playerspawn removepod")
+  public void onRemovePod(Player sender) {
+    ProjectRevenant.getPlayerSpawnManager().removeSpawnPod(Position.at(sender.getLocation()));
+    Msg.sendInfo(sender, "Du hast einen Pod gelöscht. (Falls hier einer war...)");
+  }
+
+  @Subcommand("playerspawn removespawn")
+  public void onRemoveSpawn(Player sender) {
+    ProjectRevenant.getPlayerSpawnManager().removeSpawnPoint(Position.at(sender.getLocation()));
+    Msg.sendInfo(sender, "Du hast einen Spawnpunkt gelöscht. (Falls hier einer war...)");
   }
 
 

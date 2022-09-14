@@ -1,6 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.body;
 
 import com.gestankbratwurst.core.mmcore.data.json.GsonProvider;
+import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
@@ -39,8 +40,8 @@ public class BodyManager {
     PersistentDataContainer container = entity.getPersistentDataContainer();
     String data = container.get(bodyDataKey, PersistentDataType.STRING);
     Body body;
-    if(data == null) {
-      if(((CraftLivingEntity) entity).getHandle() instanceof RevenantMob<?> revenantMob) {
+    if (data == null) {
+      if (((CraftLivingEntity) entity).getHandle() instanceof RevenantMob<?> revenantMob) {
         body = revenantMob.createDefaultBody();
       } else {
         body = new DummyBody();
@@ -63,7 +64,7 @@ public class BodyManager {
     return loadedBodyMap.get(entity.getUniqueId());
   }
 
-  public Body getBody(UUID uuid){
+  public Body getBody(UUID uuid) {
     return loadedBodyMap.get(uuid);
   }
 
@@ -95,13 +96,14 @@ public class BodyManager {
     BodyAttribute tempShift = body.getAttribute(BodyAttribute.TEMPERATURE_SHIFT);
 
     return "" +
-            BodyAttributeIcon.of(BodyAttribute.HEALTH, 1.0 / health.getMaxValueModified() * health.getCurrentValue()).getChar() +
+            BodyAttributeIcon.of("HEALTH_BAR", 1.0 / health.getMaxValueModified() * health.getCurrentValue()).getChar() +
             BodyAttributeIcon.of(BodyAttribute.HEALTH_SHIFT, 1.0 / (health.getMaxValueModified() / 10000.0) * healthShift.getCurrentValueModified()).getChar() + " " +
-            BodyAttributeIcon.of(BodyAttribute.NUTRITION, 1.0 / nutrition.getMaxValueModified() * nutrition.getCurrentValue()).getChar() +
+            BodyAttributeIcon.of("FOOD_BAR", 1.0 / nutrition.getMaxValueModified() * nutrition.getCurrentValue()).getChar() +
             BodyAttributeIcon.of(BodyAttribute.NUTRITION_SHIFT, 1.0 / (nutrition.getMaxValueModified() / 21000.0) * nutritionShift.getCurrentValueModified()).getChar() + " " +
-            BodyAttributeIcon.of(BodyAttribute.WATER, 1.0 / water.getMaxValueModified() * water.getCurrentValue()).getChar() +
+            ("" + TextureModel.PIXEL_M).repeat(2) + ("" + TextureModel.PIXEL_S).repeat(6) +
+            BodyAttributeIcon.of("WATER_BAR", 1.0 / water.getMaxValueModified() * water.getCurrentValue()).getChar() +
             BodyAttributeIcon.of(BodyAttribute.WATER_SHIFT, 1.0 / (water.getMaxValueModified() / 11500.0) * waterShift.getCurrentValueModified()).getChar() + " " +
-            BodyAttributeIcon.of(BodyAttribute.WEIGHT, 1.0 / weight.getMaxValueModified() * weight.getCurrentValue()).getChar() +
+            BodyAttributeIcon.of("WEIGHT_BAR", 1.0 / weight.getMaxValueModified() * weight.getCurrentValue()).getChar() +
             BodyAttributeIcon.of(BodyAttribute.WEIGHT_SHIFT, 1.0 / (weight.getMaxValueModified() / 10000.0) * weightShift.getCurrentValueModified()).getChar() + " " +
             WorldEnvironmentFetcher.getThermometer(temperature.getCurrentValue(), 22.5, 45.0).getChar() +
             BodyAttributeIcon.of(BodyAttribute.TEMPERATURE_SHIFT, 1.0 / 3.0 * (tempShift.getCurrentValueModified() * 1000)).getChar();

@@ -62,6 +62,7 @@ public class RevenantItem {
             put("DUMMY_SPEED_POTION", RevenantItem::dummySpeedConsumable);
             put("TOOLS", RevenantItem::tool);
             put("COMMON_WOOD", RevenantItem::commonWood);
+            put("COAL", RevenantItem::coal);
           }}
   );
 
@@ -236,6 +237,11 @@ public class RevenantItem {
   // Resources
   public static ItemStack tool() {
     return basic("TOOLS", TextureModel.TOOLS.getItem(), "Werkzeug", ItemRarity.COMMON, 0.12, true);
+  }
+
+  // Resources
+  public static ItemStack coal() {
+    return basic("COAL", TextureModel.TOOLS.getItem(), "Kohle", ItemRarity.COMMON, 0.05, true);
   }
 
   public static ItemStack commonWood() {

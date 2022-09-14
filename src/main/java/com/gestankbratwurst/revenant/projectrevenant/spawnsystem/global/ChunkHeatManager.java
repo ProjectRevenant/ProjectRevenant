@@ -19,18 +19,42 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkHeatManager {
 
+  private static final double playerBaseHeating = 2.5;
+  private static final double coolingPerMinute = 5.0;
+  private static final double maximumHeatDistance = 16;
+  private static final double maximumManipulationDistance = 16;
+  private static final double globalHeatScalar = 0.01;
+
   private final Map<Long, Double> loadedChunks = new ConcurrentHashMap<>(4096);
   private final Map<Long, Double> manipulationSpots = new HashMap<>();
   private final NamespacedKey heatKey = NamespaceFactory.provide("chunk-heat-level");
   private final NamespacedKey timestampKey = NamespaceFactory.provide("chunk-last-visit");
 
-  private static final double playerBaseHeating = 2.5;
-  private static final double coolingPerMinute = 1;
-  private static final double maximumHeatDistance = 128;
-  private static final double maximumManipulationDistance = 128;
-
   public ChunkHeatManager() {
     init();
+  }
+
+  public double getAverageHeatInRegion(Location location, double blockRadius) {
+    int chunkRadius = ((int) blockRadius) >> 4;
+    int cx = location.getBlockX() >> 4;
+    int cz = location.getBlockZ() >> 4;
+    int chunkCount = chunkRadius * chunkRadius;
+    double heatSum = 0.0;
+    for (int x = -chunkRadius; x <= chunkRadius; x++) {
+      for (int z = -chunkRadius; z <= chunkRadius; z++) {
+        double heat = getChunkHeat(cx + x, cz + z);
+        if (!location.getWorld().isChunkLoaded(cx + x, cz + z)) {
+          chunkCount--;
+        }
+        heatSum += heat;
+      }
+    }
+    System.out.printf("Heat for %d (%d) chunks.%n", chunkCount, chunkRadius * chunkRadius);
+    return heatSum / chunkCount;
+  }
+
+  public double getChunkHeat(int chunkX, int chunkZ) {
+    return loadedChunks.getOrDefault(UtilChunk.getChunkKey(chunkX, chunkZ), 0D);
   }
 
   private void init() {
@@ -58,7 +82,12 @@ public class ChunkHeatManager {
       return;
     }
 
-    loadedChunks.compute(chunkKey, (key, curValue) -> curValue == null ? 0 : curValue - ((timestamp / 1000 / 60) * coolingPerMinute));
+    loadedChunks.compute(chunkKey, (key, curValue) -> {
+      if (curValue == null) {
+        return 0D;
+      }
+      return Math.max(0, curValue - ((timestamp / 1000D / 60D) * coolingPerMinute));
+    });
   }
 
   public void removeChunk(Chunk chunk) {
@@ -72,7 +101,7 @@ public class ChunkHeatManager {
       double additionalHeat = 0.0;
 
       for (Player player : Bukkit.getOnlinePlayers()) {
-        if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR){
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
           continue;
         }
 
@@ -100,7 +129,7 @@ public class ChunkHeatManager {
         }
       }
 
-      addHeat(chunkKey, additionalHeat * heatScalar);
+      addHeat(chunkKey, additionalHeat * heatScalar * globalHeatScalar);
     }
   }
 

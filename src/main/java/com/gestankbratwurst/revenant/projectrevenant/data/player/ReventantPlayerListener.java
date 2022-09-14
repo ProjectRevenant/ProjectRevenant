@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.data.player;
 
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.overweight.OverweightDebuff;
+import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

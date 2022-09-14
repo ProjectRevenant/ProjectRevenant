@@ -106,6 +106,10 @@ public abstract class Body implements DeserializationPostProcessable {
   }
 
   public void tick() {
+    RevenantPlayer revenantPlayer = RevenantPlayer.of(entityId);
+    if(revenantPlayer != null && revenantPlayer.isInSpawnPod()) {
+      return;
+    }
     ticksAlive++;
     if (ticksAlive % 20 == 0) {
       tickSeconds();
@@ -176,6 +180,15 @@ public abstract class Body implements DeserializationPostProcessable {
     boolean dry = WorldEnvironmentFetcher.isDry(player.getLocation(), false);
     boolean nearHeatSource = WorldEnvironmentFetcher.isNearHeatSource(player.getLocation());
     WetDebuff wetDebuff = revenantPlayer.getAbility(WetDebuff.class);
+
+    if (nearHeatSource) {
+      if (!revenantPlayer.hasAbility(CampfireBuff.class)) {
+        revenantPlayer.addAbility(new CampfireBuff());
+      }
+    } else if (revenantPlayer.hasAbility(CampfireBuff.class)) {
+      revenantPlayer.removeAbility(CampfireBuff.class);
+    }
+
     if(wetDebuff != null) {
       if(wetDebuff.isDry()) {
         revenantPlayer.removeAbility(WetDebuff.class);
@@ -186,6 +199,7 @@ public abstract class Body implements DeserializationPostProcessable {
       revenantPlayer.removeAbility(DryBuff.class);
       return;
     }
+
     if (dry || nearHeatSource) {
       DryBuff dryAbility = revenantPlayer.getAbility(DryBuff.class);
       if (dryAbility == null) {
@@ -196,13 +210,6 @@ public abstract class Body implements DeserializationPostProcessable {
       } else {
         dryAbility.setDurationFromNow(Duration.ofSeconds(10));
       }
-    }
-    if (nearHeatSource) {
-      if (!revenantPlayer.hasAbility(CampfireBuff.class)) {
-        revenantPlayer.addAbility(new CampfireBuff());
-      }
-    } else if (revenantPlayer.hasAbility(CampfireBuff.class)) {
-      revenantPlayer.removeAbility(CampfireBuff.class);
     }
   }
 

@@ -4,6 +4,7 @@ import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.protocol.holograms.MovingHologram;
 import com.gestankbratwurst.core.mmcore.protocol.holograms.impl.HologramManager;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyManager;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,11 @@ public class CombatListener implements Listener {
 
   @EventHandler(priority = EventPriority.LOW)
   public void onDamage(EntityDamageEvent event) {
+    RevenantPlayer revenantPlayer = RevenantPlayer.of(event.getEntity().getUniqueId());
+    if(revenantPlayer != null && revenantPlayer.isInSpawnPod()) {
+      event.setCancelled(true);
+      return;
+    }
     if (event instanceof EntityDamageByEntityEvent combatEvent) {
       onCombat(combatEvent);
     } else {

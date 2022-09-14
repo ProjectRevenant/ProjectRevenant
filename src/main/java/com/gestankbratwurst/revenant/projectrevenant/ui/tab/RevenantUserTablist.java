@@ -5,8 +5,10 @@ import com.gestankbratwurst.core.mmcore.tablist.implementation.AbstractTabList;
 import com.gestankbratwurst.core.mmcore.tablist.implementation.TabLine;
 import com.gestankbratwurst.core.mmcore.util.common.UtilMath;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.DangerLevel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.dry.DryBuff;
@@ -17,6 +19,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.W
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -45,6 +48,30 @@ public class RevenantUserTablist extends AbstractTabList {
     this.setFooter("");
   }
 
+  private String getHeatLevel(Location location) {
+    double heat = ProjectRevenant.getChunkHeatManager().getAverageHeatInRegion(location, 64);
+    DangerLevel dangerLevel = DangerLevel.getByHeat(heat);
+    return dangerLevel.getDisplayName() + " §7(%.1f)".formatted(heat);
+  }
+
+  private String getNoiseBar(RevenantPlayer revenantPlayer) {
+    StringBuilder builder = new StringBuilder();
+    double noise = revenantPlayer.getNoiseLevel();
+    double max = revenantPlayer.getBody().getAttribute(BodyAttribute.NOISE).getMaxValue();
+    double percent = 1.0 / max * noise;
+    String prefix = "§7";
+    if (percent >= 0.75) {
+      prefix = "§c";
+    }
+    if (percent >= 0.5) {
+      prefix = "§6";
+    }
+    if (percent >= 0.25) {
+      prefix = "§a";
+    }
+    return builder.append(prefix).append(" %.1f".formatted(percent * 100)).toString();
+  }
+
   public void updateBody() {
     HumanBody body = RevenantPlayer.of(userId).getBody();
     BodyAttribute health = body.getAttribute(BodyAttribute.HEALTH);
@@ -66,8 +93,10 @@ public class RevenantUserTablist extends AbstractTabList {
     updateDisplay(23, "§eWasser:" + waterPrefix + " %.2f §9L".formatted(water.getCurrentValue()));
     updateDisplay(24, "§eNahrung:" + nutritionPrefix + " %.0f §9kcal".formatted(nutrition.getCurrentValue()));
     updateDisplay(25, "§eGewicht:" + weightPrefix + " %.2f §9kg".formatted(weight.getCurrentValue()));
+    updateDisplay(26, "§eLärm: §f" + getNoiseBar(RevenantPlayer.of(userId)));
+    updateDisplay(27, "§eGefahr: §f" + getHeatLevel(Objects.requireNonNull(Bukkit.getPlayer(userId)).getLocation()));
 
-    int infoIndex = 27;
+    int infoIndex = 29;
     if (waterPercent < 0.1) {
       updateDisplay(infoIndex++, "§cDu verdurstest!");
     }
@@ -78,7 +107,7 @@ public class RevenantUserTablist extends AbstractTabList {
       updateDisplay(infoIndex++, "§cDu bist überladen!");
     }
 
-    while (infoIndex < 32) {
+    while (infoIndex < 34) {
       updateDisplay(infoIndex++, "");
     }
   }

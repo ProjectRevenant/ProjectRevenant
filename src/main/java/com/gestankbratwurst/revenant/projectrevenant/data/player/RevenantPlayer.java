@@ -9,6 +9,7 @@ import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.Mergeable;
@@ -16,7 +17,9 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implemen
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
+import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -59,6 +62,9 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   private final transient BossBar experienceBossBar;
   private transient int levelBarCounter = 0;
   private final Set<UUID> unlockedRecipes = new HashSet<>();
+  @Getter
+  @Setter
+  private Position logoutPosition = Position.ZERO;
 
   public RevenantPlayer(UUID playerId) {
     this.playerId = playerId;
@@ -102,6 +108,10 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     }
 
     return base;
+  }
+
+  public boolean isInSpawnPod() {
+    return getBukkitPlayer().getScoreboardTags().contains(PlayerSpawnListener.SPAWN_POD_TAG);
   }
 
   public double getNoiseLevelAt(Location location) {
