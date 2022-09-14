@@ -1,16 +1,11 @@
 package com.gestankbratwurst.revenant.projectrevenant;
 
-import co.aikar.commands.BukkitCommandCompletionContext;
-import co.aikar.commands.CommandCompletions;
-import co.aikar.commands.InvalidCommandArgument;
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.CraftingListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.RevenantRecipeManager;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.ingredients.Ingredient;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
@@ -18,8 +13,9 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerM
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerTickTask;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.ReventantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
-import com.gestankbratwurst.revenant.projectrevenant.levelsystem.ExperienceCommand;
-import com.gestankbratwurst.revenant.projectrevenant.levelsystem.MinecraftExpListener;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.MetaProgressionManager;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.ExperienceCommand;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.MinecraftExpListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
@@ -80,9 +76,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public final class ProjectRevenant extends JavaPlugin {

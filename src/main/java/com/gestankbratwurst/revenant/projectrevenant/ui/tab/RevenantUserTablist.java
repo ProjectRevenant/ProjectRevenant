@@ -7,7 +7,7 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilMath;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
-import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.DangerLevel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.TimedAbility;

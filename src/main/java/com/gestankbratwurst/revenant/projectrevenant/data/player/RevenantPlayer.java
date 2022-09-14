@@ -8,7 +8,11 @@ import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
-import com.gestankbratwurst.revenant.projectrevenant.levelsystem.LevelContainer;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.Perk;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.PerkAbility;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.PerkRegistry;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
@@ -18,6 +22,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -54,6 +59,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
 
   private static final double sprintingNoiseMod = 2;
   private static final double sneakingNoiseMod = 0.5;
+
   @Identity
   private final UUID playerId;
   @Getter
@@ -65,6 +71,15 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   @Getter
   @Setter
   private Position logoutPosition = Position.ZERO;
+  @Getter
+  @Setter
+  private boolean inLobby;
+  private final Map<ScoreType, Integer> scoreMap;
+  @Getter
+  private int availablePerkPoints = 0;
+  @Getter
+  private int spentPerkPoints = 0;
+  private final Set<Class<? extends PerkAbility>> chosenPerks;
 
   public RevenantPlayer(UUID playerId) {
     this.playerId = playerId;
@@ -81,6 +96,41 @@ public class RevenantPlayer implements DeserializationPostProcessable {
 
   protected RevenantPlayer() {
     this(null);
+  }
+
+  public Set<Class<? extends PerkAbility>> getChosenPerks() {
+    return new HashSet<>(chosenPerks);
+  }
+
+  public <T extends PerkAbility> void addPerk(Class<T> perkClass) {
+    chosenPerks.add(perkClass);
+    ensurePerkIntegrity();
+  }
+
+  public void grantPerkPoints(int amount) {
+    availablePerkPoints += amount;
+  }
+
+  public void spendPerPoints(int amount) {
+    Preconditions.checkArgument(amount <= availablePerkPoints, "Cant spend more points than available.");
+    availablePerkPoints -= amount;
+    spentPerkPoints += amount;
+  }
+
+  public void addSurvivalTime(long survivalTime) {
+    this.survivalTime += survivalTime;
+  }
+
+  public void addScore(ScoreType type, int score) {
+    scoreMap.compute(type, (key, curValue) -> curValue == null ? score : curValue + score);
+  }
+
+  public void clearScores(){
+    scoreMap.clear();
+  }
+
+  public int getScore(ScoreType type){
+    return scoreMap.get(type);
   }
 
   public void unlockRecipe(RevenantRecipe recipe, boolean playerMessage) {
@@ -148,6 +198,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     if (player == null) {
       return;
     }
+    ensurePerkIntegrity();
     EntityAbilityCache.autoUpdate(player, Player.class);
   }
 
@@ -157,6 +208,10 @@ public class RevenantPlayer implements DeserializationPostProcessable {
 
   public boolean hasAbility(Ability ability) {
     return hasAbility(ability.getClass());
+  }
+
+  public boolean hasPerk(Perk<?> perk) {
+    return chosenPerks.contains(perk.getAbilityClass());
   }
 
   @SuppressWarnings("unchecked")
@@ -183,6 +238,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     if (player == null) {
       return;
     }
+    ensurePerkIntegrity();
     EntityAbilityCache.autoUpdate(player, Player.class);
   }
 
@@ -192,7 +248,16 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     if (player == null) {
       return;
     }
+    ensurePerkIntegrity();
     EntityAbilityCache.autoUpdate(player, Player.class);
+  }
+
+  public void ensurePerkIntegrity() {
+    chosenPerks.forEach(perkClass -> {
+      if (!hasAbility(perkClass)) {
+        addAbility(PerkRegistry.createPerkInstance(perkClass));
+      }
+    });
   }
 
   public void removeAbility(Ability ability) {
@@ -262,6 +327,8 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   }
 
   private void onLevelUp() {
+    int gainedPoints = Math.max(1, levelContainer.getCurrentLevel() % 10);
+    this.grantPerkPoints(gainedPoints);
     applyToOnlinePlayer(player -> {
       player.playSound(player.getEyeLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1F, 1F);
       Title.Times times = Title.Times.times(Duration.ofSeconds(1), Duration.ofSeconds(3), Duration.ofSeconds(1));

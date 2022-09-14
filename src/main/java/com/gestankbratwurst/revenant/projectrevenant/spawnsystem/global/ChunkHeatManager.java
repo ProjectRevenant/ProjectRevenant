@@ -49,7 +49,6 @@ public class ChunkHeatManager {
         heatSum += heat;
       }
     }
-    System.out.printf("Heat for %d (%d) chunks.%n", chunkCount, chunkRadius * chunkRadius);
     return heatSum / chunkCount;
   }
 

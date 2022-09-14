@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.levelsystem;
+package com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem;
 
 import lombok.Getter;
 

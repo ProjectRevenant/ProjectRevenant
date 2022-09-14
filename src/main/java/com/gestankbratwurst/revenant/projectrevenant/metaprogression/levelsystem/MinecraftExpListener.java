@@ -1,4 +1,4 @@
-package com.gestankbratwurst.revenant.projectrevenant.levelsystem;
+package com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem;
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;

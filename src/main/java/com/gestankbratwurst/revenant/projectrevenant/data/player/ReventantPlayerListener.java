@@ -1,8 +1,8 @@
 package com.gestankbratwurst.revenant.projectrevenant.data.player;
 
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.overweight.OverweightDebuff;
-import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,6 +27,12 @@ public class ReventantPlayerListener implements Listener {
   @EventHandler(priority = EventPriority.LOW)
   public void onJoin(PlayerJoinEvent event) {
     TaskManager.getInstance().runBukkitSync(() -> revenantPlayerManager.getOnline(event.getPlayer().getUniqueId()).addAbility(new OverweightDebuff()));
+  }
+
+  @EventHandler(priority = EventPriority.HIGH)
+  public void onRespawn(PlayerRespawnEvent event) {
+    RevenantPlayer revenantPlayer = revenantPlayerManager.getOnline(event.getPlayer().getUniqueId());
+    TaskManager.getInstance().runBukkitSync(revenantPlayer::ensurePerkIntegrity);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)

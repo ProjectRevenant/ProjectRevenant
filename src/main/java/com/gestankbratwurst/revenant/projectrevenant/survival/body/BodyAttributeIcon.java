@@ -22,24 +22,37 @@ public class BodyAttributeIcon {
           "FOOD_BAR",
           "WATER_BAR",
           "WEIGHT_BAR",
+          "HEALTH_SHIFT",
+          "WEIGHT_SHIFT_AS",
+          "FOOD_SHIFT",
+          "WATER_SHIFT_AS",
+          "TEMPERATURE_SHIFT"
   };
 
   private static Map<String, RangeMap<Integer, TextureModel>> getIcons() {
     if (!initialized) {
-      List<String> ids = new ArrayList<>();
-      ids.addAll(Arrays.asList(BodyAttribute.getValues()));
-      ids.addAll(Arrays.asList(magicKeys));
+      List<String> ids = new ArrayList<>(Arrays.asList(magicKeys));
       for (String identifier : ids) {
         RangeMap<Integer, TextureModel> rangeMap = TreeRangeMap.create();
         attributeIcons.put(identifier, rangeMap);
-        if (identifier.contains("shift")) {
-          rangeMap.put(Range.atLeast(60), TextureModel.GRADIENT_ICON_3);
-          rangeMap.put(Range.closedOpen(20, 60), TextureModel.GRADIENT_ICON_2);
-          rangeMap.put(Range.open(0, 20), TextureModel.GRADIENT_ICON_1);
-          rangeMap.put(Range.singleton(0), TextureModel.GRADIENT_ICON_0);
-          rangeMap.put(Range.atMost(-60), TextureModel.GRADIENT_ICON_M3);
-          rangeMap.put(Range.openClosed(-60, -20), TextureModel.GRADIENT_ICON_M2);
-          rangeMap.put(Range.open(-20, 0), TextureModel.GRADIENT_ICON_M1);
+        if (identifier.contains("SHIFT")) {
+          if (identifier.contains("AS")) {
+            rangeMap.put(Range.atLeast(60), TextureModel.GRADIENT_ICON_3_AS);
+            rangeMap.put(Range.closedOpen(20, 60), TextureModel.GRADIENT_ICON_2_AS);
+            rangeMap.put(Range.open(0, 20), TextureModel.GRADIENT_ICON_1_AS);
+            rangeMap.put(Range.singleton(0), TextureModel.GRADIENT_ICON_0_AS);
+            rangeMap.put(Range.atMost(-60), TextureModel.GRADIENT_ICON_M3_AS);
+            rangeMap.put(Range.openClosed(-60, -20), TextureModel.GRADIENT_ICON_M2_AS);
+            rangeMap.put(Range.open(-20, 0), TextureModel.GRADIENT_ICON_M1_AS);
+          } else {
+            rangeMap.put(Range.atLeast(60), TextureModel.GRADIENT_ICON_3);
+            rangeMap.put(Range.closedOpen(20, 60), TextureModel.GRADIENT_ICON_2);
+            rangeMap.put(Range.open(0, 20), TextureModel.GRADIENT_ICON_1);
+            rangeMap.put(Range.singleton(0), TextureModel.GRADIENT_ICON_0);
+            rangeMap.put(Range.atMost(-60), TextureModel.GRADIENT_ICON_M3);
+            rangeMap.put(Range.openClosed(-60, -20), TextureModel.GRADIENT_ICON_M2);
+            rangeMap.put(Range.open(-20, 0), TextureModel.GRADIENT_ICON_M1);
+          }
         } else {
           for (int i = 0; i <= 100; i++) {
             String modelId = identifier.toUpperCase() + "_" + i;
@@ -69,8 +82,7 @@ public class BodyAttributeIcon {
   }
 
   public static TextureModel of(String identity, double percentageScaled) {
-    percentageScaled = Math.max(0, Math.min(100, percentageScaled));
-    return Optional.ofNullable(getIcons().get(identity).get((int) (percentageScaled * 100.0 + 0.5))).orElse(TextureModel.RED_X);
+    return of(identity, (int) (percentageScaled * 100.0));
   }
 
 }
