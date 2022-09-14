@@ -3,7 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.loot.drops;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import lombok.AllArgsConstructor;
 import org.bukkit.Location;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 

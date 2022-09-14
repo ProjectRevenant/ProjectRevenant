@@ -12,7 +12,6 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.L
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

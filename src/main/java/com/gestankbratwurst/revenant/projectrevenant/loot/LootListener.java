@@ -1,17 +1,16 @@
 package com.gestankbratwurst.revenant.projectrevenant.loot;
 
 import com.gestankbratwurst.core.mmcore.util.common.UtilInv;
-import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootableChest;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootManager;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import lombok.AllArgsConstructor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -64,6 +63,8 @@ public class LootListener implements Listener {
     }
 
     PersistentDataContainer container = updatableDataHolder.getPersistentDataContainer();
+    LootType type = lootManager.getTypeFrom(container);
+    RevenantPlayer.of(event.getPlayer()).addScore(ScoreType.LOOTED_CHESTS, type.getScore());
     lootManager.removeTypeFrom(container);
     lootManager.tagForRemoval(container);
     state.update(true);

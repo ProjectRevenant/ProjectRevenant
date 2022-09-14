@@ -2,9 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.bones.BrokenLegAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.bones.BrokenRibsAbility;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.bones.HealingLegAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.bones.HealingRibsAbility;
 
 import java.util.Collections;

@@ -5,7 +5,7 @@ import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.CraftingListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.RevenantRecipeManager;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipes;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
@@ -186,7 +186,7 @@ public final class ProjectRevenant extends JavaPlugin {
     this.craftingStationManager = new CraftingStationManager();
     this.craftingStationManager.init();
     Bukkit.getPluginManager().registerEvents(new CraftingListener(), this);
-    Arrays.stream(BaseRecipe.values()).map(BaseRecipe::getRevenantRecipe).forEach(revenantRecipeManager::registerRecipe);
+    Arrays.stream(BaseRecipes.values()).map(BaseRecipes::getRevenantRecipe).forEach(revenantRecipeManager::registerRecipe);
     TaskManager.getInstance().runRepeatedBukkit(craftingStationManager::tickStations, 20, 1);
   }
 

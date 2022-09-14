@@ -9,6 +9,7 @@ import com.gestankbratwurst.core.mmcore.util.items.ItemBuilder;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation.AbstractRecipeStation;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -81,6 +82,7 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
       if (recipe.canCraft(player)) {
         station.activateWorkload(recipe, player);
         Msg.sendInfo(player, "Es wird jetzt {} gecraftet.", recipe.getName());
+        RevenantPlayer.of(player).addScore(ScoreType.CRAFTED_ITEMS, recipe.getScore());
         UtilPlayer.playUIClick(player);
       } else {
         UtilPlayer.playSound(player, Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.75F, 0.5F);

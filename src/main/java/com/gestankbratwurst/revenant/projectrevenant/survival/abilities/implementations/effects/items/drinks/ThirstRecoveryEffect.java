@@ -1,12 +1,10 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.drinks;
 
-import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttributeModifier;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 public class ThirstRecoveryEffect extends AbilityEffect<Body> {
   //0.001 pro Tick, 0.02 pro Sekunde

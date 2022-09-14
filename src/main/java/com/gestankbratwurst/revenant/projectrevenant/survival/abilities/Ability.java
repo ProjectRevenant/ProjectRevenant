@@ -1,11 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.abilities;
 
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.minecraft.world.entity.monster.Zombie;
-import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

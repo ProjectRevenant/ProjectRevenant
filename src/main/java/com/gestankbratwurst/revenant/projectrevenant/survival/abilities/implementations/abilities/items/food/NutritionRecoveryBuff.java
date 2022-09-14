@@ -8,7 +8,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 
 public class NutritionRecoveryBuff extends TimedAbility implements Mergeable<NutritionRecoveryBuff> {

@@ -3,7 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.crafting.station.implement
 import com.gestankbratwurst.core.mmcore.inventories.guis.AbstractGUIInventory;
 import com.gestankbratwurst.core.mmcore.resourcepack.sounds.CustomSound;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipes;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RecipeType;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.CampfireStationUI;
@@ -118,6 +118,6 @@ public class PlayerCampfireStation extends AbstractRecipeStation {
 
   @Override
   public List<IngredientRecipe> getRecipeList() {
-    return List.of((IngredientRecipe) BaseRecipe.DUMMY.getRevenantRecipe(), (IngredientRecipe) BaseRecipe.WATER_PURIFICATION.getRevenantRecipe());
+    return List.of((IngredientRecipe) BaseRecipes.DUMMY.getRevenantRecipe(), (IngredientRecipe) BaseRecipes.WATER_PURIFICATION.getRevenantRecipe());
   }
 }

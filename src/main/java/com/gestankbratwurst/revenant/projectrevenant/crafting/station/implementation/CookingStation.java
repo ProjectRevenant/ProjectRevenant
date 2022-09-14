@@ -1,7 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.crafting.station.implementation;
 
 import com.gestankbratwurst.core.mmcore.inventories.guis.AbstractGUIInventory;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipes;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RecipeType;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.CookingStationUI;
@@ -76,6 +76,6 @@ public class CookingStation extends AbstractRecipeStation {
 
   @Override
   public List<IngredientRecipe> getRecipeList() {
-    return List.of((IngredientRecipe) BaseRecipe.DUMMY.getRevenantRecipe());
+    return List.of((IngredientRecipe) BaseRecipes.DUMMY.getRevenantRecipe());
   }
 }

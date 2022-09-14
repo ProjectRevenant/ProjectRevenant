@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 @AllArgsConstructor
-public enum BaseRecipe {
+public enum BaseRecipes {
 
   DUMMY(IngredientRecipe.builder()
           .setRecipeId(UUID.fromString("70f50997-d8a6-4677-841c-bdb60195aa73"))
@@ -21,6 +21,7 @@ public enum BaseRecipe {
           .setType(RecipeType.BAKED)
           .setResult(new SimpleItemLoot(ItemBuilder.of(RevenantItem.dummyFood()).amount(16).build()))
           .setCraftTime(Duration.ofSeconds(5))
+          .setScore(50)
           .addIngredient(new RevenantIngredient(RevenantItem.dummyBow()), 1)
           .addIngredient(new RevenantIngredient(RevenantItem.tool()), 1)
           .build(), true),
@@ -31,6 +32,7 @@ public enum BaseRecipe {
           .setType(RecipeType.BREWED)
           .setResult(new SimpleItemLoot(RevenantItem.clearWaterBottle()))
           .setCraftTime(Duration.ofSeconds(20))
+          .setScore(15)
           .addIngredient(new RevenantIngredient(RevenantItem.murkyWaterBottle()), 1)
           .build(), true);
 
@@ -38,5 +40,6 @@ public enum BaseRecipe {
   private final RevenantRecipe revenantRecipe;
   @Getter
   private final boolean startingRecipe;
+
 
 }

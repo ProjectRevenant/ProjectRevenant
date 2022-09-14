@@ -3,7 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.communication;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;

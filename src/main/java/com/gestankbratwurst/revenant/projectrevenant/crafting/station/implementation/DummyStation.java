@@ -3,7 +3,7 @@ package com.gestankbratwurst.revenant.projectrevenant.crafting.station.implement
 import com.gestankbratwurst.core.mmcore.inventories.guis.AbstractGUIInventory;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.resourcepack.sounds.CustomSound;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipes;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.IngredientRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui.RecipeStationUI;
 import com.gestankbratwurst.revenant.projectrevenant.util.Position;
@@ -53,7 +53,7 @@ public class DummyStation extends AbstractRecipeStation {
 
   @Override
   public List<IngredientRecipe> getRecipeList() {
-    return List.of((IngredientRecipe) BaseRecipe.DUMMY.getRevenantRecipe());
+    return List.of((IngredientRecipe) BaseRecipes.DUMMY.getRevenantRecipe());
   }
 
   @Override

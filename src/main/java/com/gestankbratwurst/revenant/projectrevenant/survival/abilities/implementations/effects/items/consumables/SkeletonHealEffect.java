@@ -1,14 +1,12 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.effects.items.consumables;
 
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
-import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityEffect;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.AbilityTrigger;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.bones.Skeleton;
 import lombok.Getter;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-import java.util.List;
 import java.util.Map;
 
 public class SkeletonHealEffect extends AbilityEffect<PlayerItemConsumeEvent> {

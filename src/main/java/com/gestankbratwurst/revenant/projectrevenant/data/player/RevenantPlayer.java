@@ -6,7 +6,7 @@ import com.gestankbratwurst.core.mmcore.data.mongodb.annotationframework.Identit
 import com.gestankbratwurst.core.mmcore.tablist.implementation.AbstractTabList;
 import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
-import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipes;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.Perk;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.PerkAbility;
@@ -95,7 +95,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this.scoreMap = new HashMap<>();
     this.chosenPerks = new HashSet<>();
     this.unlockedRecipes = new HashSet<>();
-    for (BaseRecipe recipe : BaseRecipe.values()) {
+    for (BaseRecipes recipe : BaseRecipes.values()) {
       if (recipe.isStartingRecipe()) {
         //ToDo remove player message, only for debugging
         unlockRecipe(recipe.getRevenantRecipe(), true);
@@ -352,7 +352,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
 
   @Override
   public void gsonPostProcess() {
-    for (BaseRecipe recipe : BaseRecipe.values()) {
+    for (BaseRecipes recipe : BaseRecipes.values()) {
       if (recipe.isStartingRecipe()) {
         unlockRecipe(recipe.getRevenantRecipe(), false);
       }

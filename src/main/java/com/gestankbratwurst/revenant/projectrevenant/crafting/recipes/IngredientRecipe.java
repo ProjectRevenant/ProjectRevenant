@@ -5,6 +5,7 @@ import com.gestankbratwurst.revenant.projectrevenant.crafting.ingredients.Ingred
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -36,9 +37,11 @@ public class IngredientRecipe implements RevenantRecipe {
   private final List<Predicate<Player>> conditions;
   private final ItemStack icon;
   private final long craftTime;
+  @Getter
+  private final int score;
 
 
-  public IngredientRecipe(UUID recipeId, String name, RecipeType type, Loot result, ItemStack icon, Duration craftTime) {
+  public IngredientRecipe(UUID recipeId, String name, RecipeType type, Loot result, ItemStack icon, Duration craftTime, int score) {
     this.recipeId = recipeId;
     this.name = name;
     this.type = type;
@@ -48,6 +51,7 @@ public class IngredientRecipe implements RevenantRecipe {
     this.ingredientMap = new Object2IntOpenHashMap<>();
     this.conditions = new ArrayList<>();
     this.conditions.add(this::hasIngredients);
+    this.score = score;
   }
 
   private boolean hasIngredients(Player player) {
@@ -169,6 +173,7 @@ public class IngredientRecipe implements RevenantRecipe {
     private Loot result;
     private ItemStack icon;
     private Duration craftTime;
+    private int score;
     private final Object2IntMap<Ingredient> ingredientMap;
     private final List<Predicate<Player>> conditions;
 
@@ -207,6 +212,11 @@ public class IngredientRecipe implements RevenantRecipe {
       return this;
     }
 
+    public IngredientRecipeBuilder setScore(int score){
+      this.score = score;
+      return this;
+    }
+
     public IngredientRecipeBuilder addIngredient(Ingredient ingredient, int amount) {
       ingredientMap.compute(ingredient, (key, currentAmount) -> currentAmount == null ? amount : amount + currentAmount);
       return this;
@@ -219,11 +229,11 @@ public class IngredientRecipe implements RevenantRecipe {
 
 
     public IngredientRecipe build() {
-      if (Stream.of(recipeId, name, result, icon, craftTime).anyMatch(Objects::isNull)) {
+      if (Stream.of(recipeId, name, result, icon, craftTime, score).anyMatch(Objects::isNull)) {
         throw new IllegalStateException("Illegal Recipe: " + (name == null ? "missing_name" : name));
       }
 
-      IngredientRecipe recipe = new IngredientRecipe(recipeId, name, type, result, icon, craftTime);
+      IngredientRecipe recipe = new IngredientRecipe(recipeId, name, type, result, icon, craftTime, score);
       recipe.ingredientMap.putAll(this.ingredientMap);
       recipe.conditions.addAll(this.conditions);
       return recipe;

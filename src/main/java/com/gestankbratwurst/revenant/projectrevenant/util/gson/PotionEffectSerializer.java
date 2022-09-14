@@ -1,12 +1,16 @@
 package com.gestankbratwurst.revenant.projectrevenant.util.gson;
 
-import com.google.gson.*;
-import io.leangen.geantyref.TypeToken;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 
 public class PotionEffectSerializer implements JsonSerializer<PotionEffect>, JsonDeserializer<PotionEffect> {
   @Override

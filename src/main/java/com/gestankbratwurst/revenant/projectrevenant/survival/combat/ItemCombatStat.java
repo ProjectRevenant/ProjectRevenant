@@ -3,8 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.combat;
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Projectile;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 

@@ -6,8 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BrokenSkullEffect extends AbilityEffect<Player> {
   public BrokenSkullEffect() {
     super(AbilityTrigger.PLAYER_EVERY_SECOND);
