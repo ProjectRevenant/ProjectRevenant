@@ -107,6 +107,8 @@ public class IngredientRecipe implements RevenantRecipe {
   @Override
   public ItemStack infoIconFor(Player player) {
     ItemBuilder builder = new ItemBuilder(icon.clone());
+    builder.clearLore();
+    builder.name(name);
     builder.lore("");
     Map<Ingredient, Integer> missing = getMissingIngredients(player);
     ingredientMap.forEach((ingredient, amount) -> {

@@ -21,7 +21,17 @@ public enum BaseRecipe {
           .setType(RecipeType.BAKED)
           .setResult(new SimpleItemLoot(ItemBuilder.of(RevenantItem.dummyFood()).amount(16).build()))
           .setCraftTime(Duration.ofSeconds(5))
+          .addIngredient(new RevenantIngredient(RevenantItem.dummyBow()), 1)
           .addIngredient(new RevenantIngredient(RevenantItem.tool()), 1)
+          .build(), true),
+  WATER_PURIFICATION(IngredientRecipe.builder()
+          .setRecipeId(UUID.fromString("70f50997-d8a6-4677-841c-bdb60195aa74"))
+          .setName("§7Trinkwasser")
+          .addIcon(RevenantItem.clearWaterBottle())
+          .setType(RecipeType.BREWED)
+          .setResult(new SimpleItemLoot(RevenantItem.clearWaterBottle()))
+          .setCraftTime(Duration.ofSeconds(20))
+          .addIngredient(new RevenantIngredient(RevenantItem.murkyWaterBottle()), 1)
           .build(), true);
 
   @Getter

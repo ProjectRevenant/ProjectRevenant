@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.crafting.station.ui;
 
 import com.gestankbratwurst.core.mmcore.inventories.guis.GUIItem;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
+import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.core.mmcore.util.common.UtilPlayer;
 import com.gestankbratwurst.core.mmcore.util.items.ItemBuilder;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.ingredients.RevenantIngredient;
@@ -40,9 +41,22 @@ public class CampfireStationUI extends RecipeStationUI<PlayerCampfireStation> {
   @Override
   protected List<IngredientRecipe> getViableRecipeList() {
     if (getStation().isLit()) {
-      super.getViableRecipeList();
+      return super.getViableRecipeList();
     }
     return super.getViableRecipeList().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTED).toList();
+  }
+
+  @Override
+  protected GUIItem recipeIcon(Player player, IngredientRecipe recipe) {
+    return super.recipeIcon(player, recipe, clickEvent -> {
+      if (recipe.canCraft(player) && recipe.getCraftTime().compareTo(getStation().getLifetime()) < 0) {
+        getStation().activateWorkload(recipe, player);
+        Msg.sendInfo(player, "Es wird jetzt {} gecraftet.", recipe.getName());
+        UtilPlayer.playUIClick(player);
+      } else {
+        UtilPlayer.playSound(player, Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.75F, 0.5F);
+      }
+    });
   }
 
   private GUIItem campfireFeedIcon(Player player) {
@@ -88,18 +102,6 @@ public class CampfireStationUI extends RecipeStationUI<PlayerCampfireStation> {
             .build();
   }
 
-  @EventHandler
-  public void onDrop(BlockDropItemEvent event) {
-    if (event.getBlockState() instanceof BlockInventoryHolder) {
-      Material self = event.getBlockState().getType();
-      for (Item item : event.getItems()) {
-        if (item.getItemStack().getType() == self) {
-          item.remove();
-        }
-      }
-    }
-  }
-
   private GUIItem campfireToggleIcon() {
     PlayerCampfireStation station = getStation();
     return GUIItem.builder()
@@ -137,6 +139,18 @@ public class CampfireStationUI extends RecipeStationUI<PlayerCampfireStation> {
               }
             })
             .build();
+  }
+
+  @EventHandler
+  public void onDrop(BlockDropItemEvent event) {
+    if (event.getBlockState() instanceof BlockInventoryHolder) {
+      Material self = event.getBlockState().getType();
+      for (Item item : event.getItems()) {
+        if (item.getItemStack().getType() == self) {
+          item.remove();
+        }
+      }
+    }
   }
 
 }
