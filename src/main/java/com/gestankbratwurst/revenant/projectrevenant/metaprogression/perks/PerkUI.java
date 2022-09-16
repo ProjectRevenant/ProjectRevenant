@@ -3,7 +3,9 @@ package com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks;
 import com.gestankbratwurst.core.mmcore.inventories.guis.AbstractGUIInventory;
 import com.gestankbratwurst.core.mmcore.inventories.guis.GUIItem;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
+import com.gestankbratwurst.core.mmcore.util.common.UtilPlayer;
 import com.gestankbratwurst.core.mmcore.util.items.ItemBuilder;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,6 +46,22 @@ public class PerkUI extends AbstractGUIInventory {
   }
 
   private GUIItem getPerkIcon(Perk<?> perk, Player player) {
+    RevenantPlayer revenantPlayer = RevenantPlayer.of(player);
+    PerkAbility perkAbility = perk.getPerkAbilitySupplier().get();
+    boolean hasPoints = revenantPlayer.getAvailablePerkPoints() >= perk.getCost();
+    ItemBuilder builder = new ItemBuilder(perkAbility.getModel().getItem());
+    String appendix = revenantPlayer.hasPerk(perk) ? " §a[§fFreigeschaltet§a]" : "";
+    builder.name(perkAbility.getInfoTitle(player).append(Component.text(appendix)));
+    builder.lore("");
+    builder.lore(perkAbility.getInfos(player));
+    if(revenantPlayer.hasPerk(perk)) {
+      builder.lore("");
+      builder.lore("§7Bereits freigeschaltet");
+    } else {
+      builder.lore("");
+      builder.lore("§6Kosten: " + (hasPoints ? "§a" : "§c") + perk.getCost() + " Punkte");
+    }
+
     return null;
   }
 
@@ -51,7 +69,18 @@ public class PerkUI extends AbstractGUIInventory {
     if(yOffset == 0) {
       return fillerItem;
     }
-    return null;
+    return GUIItem.builder()
+            .iconCreator(player -> ItemBuilder.of(TextureModel.DOUBLE_GRAY_ARROW_DOWN.getItem())
+                    .name(Component.text("§7Aufwärts scrollen"))
+                    .build())
+            .eventConsumer(event -> {
+              if(yOffset == 0) {
+                return;
+              }
+              yOffset--;
+              UtilPlayer.playUIClick((Player) event.getWhoClicked());
+              this.update((Player) event.getWhoClicked());
+            }).build();
   }
 
   private GUIItem getDownIcon() {
@@ -64,8 +93,11 @@ public class PerkUI extends AbstractGUIInventory {
                     .build())
             .eventConsumer(event -> {
               if(yOffset == PerkLayout.getMaxYOffset(perkType)) {
-
+                return;
               }
+              yOffset++;
+              UtilPlayer.playUIClick((Player) event.getWhoClicked());
+              this.update((Player) event.getWhoClicked());
             }).build();
   }
 
