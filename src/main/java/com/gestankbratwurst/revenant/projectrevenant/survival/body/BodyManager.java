@@ -97,19 +97,19 @@ public class BodyManager {
 
     return "" +
 
-            BodyAttributeIcon.of("HEALTH_BAR", 1.0 / health.getMaxValueModified() * health.getCurrentValue()).getChar() +
-            BodyAttributeIcon.of("HEALTH_SHIFT", 1.0 / (health.getMaxValueModified() / 10000.0) * healthShift.getCurrentValueModified()).getChar() + " " +
-
             BodyAttributeIcon.of("FOOD_BAR", 1.0 / nutrition.getMaxValueModified() * nutrition.getCurrentValue()).getChar() +
             BodyAttributeIcon.of("FOOD_SHIFT", 1.0 / (nutrition.getMaxValueModified() / 21000.0) * nutritionShift.getCurrentValueModified()).getChar() + " " +
 
-            ("" + TextureModel.PIXEL.getChar()).repeat(4) + ("" + TextureModel.PIXEL_M.getChar()).repeat(7) + ("" + TextureModel.PIXEL_S.getChar()).repeat(2) +
-
             BodyAttributeIcon.of("WATER_BAR", 1.0 / water.getMaxValueModified() * water.getCurrentValue()).getChar() +
-            BodyAttributeIcon.of("WATER_SHIFT_AS", 1.0 / (water.getMaxValueModified() / 11500.0) * waterShift.getCurrentValueModified()).getChar() + " " +
+            BodyAttributeIcon.of("WATER_SHIFT", 1.0 / (water.getMaxValueModified() / 11500.0) * waterShift.getCurrentValueModified()).getChar() + " " +
 
-            BodyAttributeIcon.of("WEIGHT_BAR", 1.0 / weight.getMaxValueModified() * weight.getCurrentValue()).getChar() +
-            BodyAttributeIcon.of("WEIGHT_SHIFT_AS", 1.0 / (weight.getMaxValueModified() / 10000.0) * weightShift.getCurrentValueModified()).getChar() + " " +
+            ("" + TextureModel.PIXEL.getChar()).repeat(5) + ("" + TextureModel.PIXEL_M.getChar()).repeat(6) + ("" + TextureModel.PIXEL_S.getChar()).repeat(2) +
+
+            BodyAttributeIcon.of("HEALTH_BAR", 1.0 / health.getMaxValueModified() * health.getCurrentValue()).getChar() +
+            BodyAttributeIcon.of("HEALTH_SHIFT_AS", 1.0 / (health.getMaxValueModified() / 10000.0) * healthShift.getCurrentValueModified()).getChar() + " " +
+
+            // BodyAttributeIcon.of("WEIGHT_BAR", 1.0 / weight.getMaxValueModified() * weight.getCurrentValue()).getChar() +
+            // BodyAttributeIcon.of("WEIGHT_SHIFT_AS", 1.0 / (weight.getMaxValueModified() / 10000.0) * weightShift.getCurrentValueModified()).getChar() + " " +
 
             WorldEnvironmentFetcher.getThermometer(temperature.getCurrentValue(), 22.5, 45.0).getChar() +
             BodyAttributeIcon.of("TEMPERATURE_SHIFT", 1.0 / 3.0 * (tempShift.getCurrentValueModified() * 1000)).getChar();

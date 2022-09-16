@@ -22,10 +22,10 @@ public class BodyAttributeIcon {
           "FOOD_BAR",
           "WATER_BAR",
           "WEIGHT_BAR",
-          "HEALTH_SHIFT",
+          "HEALTH_SHIFT_AS",
           "WEIGHT_SHIFT_AS",
           "FOOD_SHIFT",
-          "WATER_SHIFT_AS",
+          "WATER_SHIFT",
           "TEMPERATURE_SHIFT"
   };
 

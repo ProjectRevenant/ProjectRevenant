@@ -8,11 +8,11 @@ import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipes;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.RevenantRecipe;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.Perk;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.PerkAbility;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.perks.PerkRegistry;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
-import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.LevelContainer;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnListener;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.cache.EntityAbilityCache;
@@ -134,7 +134,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     scoreMap.compute(type, (key, curValue) -> curValue == null ? score : curValue + score);
   }
 
-  public void clearScores(){
+  public void clearScores() {
     scoreMap.clear();
   }
 

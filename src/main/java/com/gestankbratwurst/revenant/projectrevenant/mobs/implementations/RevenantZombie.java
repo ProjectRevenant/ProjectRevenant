@@ -1,5 +1,7 @@
 package com.gestankbratwurst.revenant.projectrevenant.mobs.implementations;
 
+import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
+import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.Ability;
@@ -28,6 +30,7 @@ public class RevenantZombie extends Zombie implements RevenantMob<RevenantZombie
   public RevenantZombie(EntityType<? extends Zombie> type, Level world) {
     super(EntityType.ZOMBIE, world);
     this.setShouldBurnInDay(false);
+    LootManager.getInstance().applyTypeTo(getBukkitEntity(), LootType.DUMMY_LOOT);
   }
 
   @Override

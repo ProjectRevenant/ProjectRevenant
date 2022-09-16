@@ -30,6 +30,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 
     compileOnly(files("dependencies/Model-Engine-B3.0.0-0d5d6e6.jar"))
+    compileOnly(files("dependencies/Dynmap-3.4-spigot.jar"))
 
     annotationProcessor("org.projectlombok:lombok:1.18.24")
     implementation("com.github.Redempt:Crunch:1.1.2")
