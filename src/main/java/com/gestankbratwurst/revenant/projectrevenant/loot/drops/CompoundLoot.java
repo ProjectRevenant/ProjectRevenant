@@ -21,12 +21,8 @@ public class CompoundLoot implements Loot {
     lootList.forEach(loot -> loot.applyTo(looter, inventory));
   }
 
-  public void addLoot(Loot loot) {
+  public CompoundLoot addLoot(Loot loot) {
     this.lootList.add(loot);
-  }
-
-  public CompoundLoot and(Loot loot) {
-    addLoot(loot);
     return this;
   }
 

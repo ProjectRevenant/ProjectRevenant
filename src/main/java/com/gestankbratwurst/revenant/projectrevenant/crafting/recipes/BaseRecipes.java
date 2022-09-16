@@ -2,7 +2,10 @@ package com.gestankbratwurst.revenant.projectrevenant.crafting.recipes;
 
 import com.gestankbratwurst.core.mmcore.util.items.ItemBuilder;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.ingredients.RevenantIngredient;
+import com.gestankbratwurst.revenant.projectrevenant.loot.drops.CompoundLoot;
+import com.gestankbratwurst.revenant.projectrevenant.loot.drops.ScoreLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.SimpleItemLoot;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +22,10 @@ public enum BaseRecipes {
           .setName("Debug")
           .addIcon(ItemBuilder.of(Material.BREAD).name("Dummy Food Rezept").build())
           .setType(RecipeType.BAKED)
-          .setResult(new SimpleItemLoot(ItemBuilder.of(RevenantItem.dummyFood()).amount(16).build()))
+          .setResult(new CompoundLoot()
+                  .addLoot(new SimpleItemLoot(ItemBuilder.of(RevenantItem.dummyFood()).amount(16).build()))
+                  .addLoot(new ScoreLoot(ScoreType.CRAFTED_ITEMS, 15)))
           .setCraftTime(Duration.ofSeconds(5))
-          .setScore(50)
           .addIngredient(new RevenantIngredient(RevenantItem.dummyBow()), 1)
           .addIngredient(new RevenantIngredient(RevenantItem.tool()), 1)
           .build(), true),
@@ -30,9 +34,11 @@ public enum BaseRecipes {
           .setName("§7Trinkwasser")
           .addIcon(RevenantItem.clearWaterBottle())
           .setType(RecipeType.BREWED)
-          .setResult(new SimpleItemLoot(RevenantItem.clearWaterBottle()))
+          .setResult(new CompoundLoot()
+                  .addLoot(new SimpleItemLoot(RevenantItem.clearWaterBottle()))
+                  .addLoot(new SimpleItemLoot(RevenantItem.emptyWaterBottle()))
+                  .addLoot(new ScoreLoot(ScoreType.CRAFTED_ITEMS, 15)))
           .setCraftTime(Duration.ofSeconds(20))
-          .setScore(15)
           .addIngredient(new RevenantIngredient(RevenantItem.murkyWaterBottle()), 1)
           .build(), true);
 

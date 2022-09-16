@@ -11,10 +11,14 @@ import lombok.AllArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -64,7 +68,6 @@ public class LootListener implements Listener {
 
     PersistentDataContainer container = updatableDataHolder.getPersistentDataContainer();
     LootType type = lootManager.getTypeFrom(container);
-    RevenantPlayer.of(event.getPlayer()).addScore(ScoreType.LOOTED_CHESTS, type.getScore());
     lootManager.removeTypeFrom(container);
     lootManager.tagForRemoval(container);
     state.update(true);
@@ -101,6 +104,27 @@ public class LootListener implements Listener {
   @EventHandler
   public void onBlockBreak(BlockBreakEvent event){
     lootChestManager.removeLootChestAt(Position.at(event.getBlock()));
+  }
+
+  @EventHandler
+  public void onEntityDeath(EntityDeathEvent event){
+    Entity entity = event.getEntity();
+    if(event.getEntity() instanceof Player){
+      return;
+    }
+
+    event.getDrops().clear();
+    event.setDroppedExp(0);
+
+    Player player = event.getEntity().getKiller();
+    if(player == null){
+      return;
+    }
+    LootManager lootManager = LootManager.getInstance();
+    PersistentDataContainer container = event.getEntity().getPersistentDataContainer();
+    if(lootManager.hasLoot(container)){
+      lootManager.dropAt(event.getEntity().getLocation(), player, container);
+    }
   }
 
 }

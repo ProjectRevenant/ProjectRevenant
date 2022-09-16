@@ -17,7 +17,7 @@ import java.util.function.Function;
 @AllArgsConstructor
 public enum LootType {
 
-  DUMMY_LOOT(new DummyLootGenerator(), Duration.ofSeconds(5).toMillis(), 10, MiniMessage.builder().tags(TagResolver.builder()
+  DUMMY_LOOT(new DummyLootGenerator(), Duration.ofSeconds(5).toMillis(), MiniMessage.builder().tags(TagResolver.builder()
                   .resolver(StandardTags.color())
                   .resolver(StandardTags.decorations())
                   .resolver(StandardTags.gradient())
@@ -26,7 +26,6 @@ public enum LootType {
 
   private final Function<Player, Loot> generator;
   private final long respawnTimeMillis;
-  private final int score;
   private final Component displayName;
 
 }

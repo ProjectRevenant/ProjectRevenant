@@ -34,8 +34,10 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,6 +77,9 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   @Setter
   private long joinTimestamp;
   @Getter
+  private int stashSize = 3;
+  private final List<ItemStack> stashItems;
+  @Getter
   @Setter
   private Position logoutPosition = Position.ZERO;
   @Getter
@@ -95,6 +100,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this.scoreMap = new HashMap<>();
     this.chosenPerks = new HashSet<>();
     this.unlockedRecipes = new HashSet<>();
+    this.stashItems = new ArrayList<>();
     for (BaseRecipes recipe : BaseRecipes.values()) {
       if (recipe.isStartingRecipe()) {
         //ToDo remove player message, only for debugging
@@ -126,6 +132,19 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     spentPerkPoints += amount;
   }
 
+  public void setStashItems(List<ItemStack> newStashItems) {
+    stashItems.clear();
+    stashItems.addAll(newStashItems);
+  }
+
+  public List<ItemStack> getStashItems() {
+    return new ArrayList<>(stashItems);
+  }
+
+  public void increaseStashSize(int value) {
+    stashSize += value;
+  }
+
   public void addSurvivalTime(long survivalTime) {
     this.survivalTime += survivalTime;
   }
@@ -138,7 +157,11 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     scoreMap.clear();
   }
 
-  public int getScore(ScoreType type){
+  public int getScore() {
+    return scoreMap.values().stream().mapToInt(Integer::intValue).sum();
+  }
+
+  public int getScore(ScoreType type) {
     return scoreMap.get(type);
   }
 

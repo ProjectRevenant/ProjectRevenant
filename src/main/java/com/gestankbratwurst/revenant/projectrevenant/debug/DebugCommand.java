@@ -22,6 +22,7 @@ import com.gestankbratwurst.revenant.projectrevenant.util.Position;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.persistence.PersistentDataHolder;
@@ -72,6 +73,28 @@ public class DebugCommand extends BaseCommand {
     type.getGenerator().apply(sender).applyTo(sender, sender.getLocation());
   }
 
+  @Subcommand("createstash")
+  public void onStashCreation(Player sender){
+    RayTraceResult traceResult = sender.rayTraceBlocks(16);
+    if (traceResult == null) {
+      Msg.sendError(sender, "Bitte schaue auf einen Block.");
+      return;
+    }
+    Block block = traceResult.getHitBlock();
+    if (block == null) {
+      Msg.sendError(sender, "Bitte schaue auf einen Block.");
+      return;
+    }
+    BlockState state = block.getState();
+    if (!(state instanceof PersistentDataHolder dataHolder)) {
+      Msg.sendError(sender, "Der Block muss einen PersistantDataHolder besitzen.");
+      return;
+    }
+    ProjectRevenant.getStashManager().applyStashTo(dataHolder);
+    state.update(true);
+    Msg.sendInfo(sender, "Stash erstellt.");
+  }
+
   @Subcommand("lootchest addarea")
   public void onLootchestAreaAdd(Player sender, String areaName) {
     LootChestSpawnArea area = new LootChestSpawnArea();
@@ -90,7 +113,7 @@ public class DebugCommand extends BaseCommand {
   @Subcommand("lootchest addpositoon")
   @CommandCompletion("@LootChestArea")
   public void onLootchestPositionAdd(Player sender, @Values("@LootChestArea") LootChestSpawnArea area) {
-    RayTraceResult traceResult = sender.rayTraceBlocks(32);
+    RayTraceResult traceResult = sender.rayTraceBlocks(16);
     if (traceResult == null) {
       Msg.sendError(sender, "Bitte schaue auf einen Block.");
       return;

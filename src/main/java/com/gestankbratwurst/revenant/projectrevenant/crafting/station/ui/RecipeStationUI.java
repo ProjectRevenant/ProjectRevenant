@@ -36,7 +36,6 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
 
   @Override
   protected void preClose(InventoryCloseEvent event) {
-    super.preClose(event);
     station.unregisterViewer((Player) event.getPlayer());
   }
 
@@ -82,7 +81,6 @@ public class RecipeStationUI<T extends AbstractRecipeStation> extends AbstractGU
       if (recipe.canCraft(player)) {
         station.activateWorkload(recipe, player);
         Msg.sendInfo(player, "Es wird jetzt {} gecraftet.", recipe.getName());
-        RevenantPlayer.of(player).addScore(ScoreType.CRAFTED_ITEMS, recipe.getScore());
         UtilPlayer.playUIClick(player);
       } else {
         UtilPlayer.playSound(player, Sound.BLOCK_NOTE_BLOCK_GUITAR, 0.75F, 0.5F);

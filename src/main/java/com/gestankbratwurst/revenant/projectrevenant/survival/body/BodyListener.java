@@ -126,9 +126,6 @@ public class BodyListener implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onDamageCancel(EntityDamageEvent event) {
     event.setDamage(0);
-    if (event instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player) {
-      event.setCancelled(true);
-    }
   }
 
   @EventHandler

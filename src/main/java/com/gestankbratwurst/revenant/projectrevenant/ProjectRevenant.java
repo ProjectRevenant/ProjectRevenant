@@ -14,6 +14,8 @@ import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerT
 import com.gestankbratwurst.revenant.projectrevenant.data.player.ReventantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.MetaProgressionManager;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashListener;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashManager;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.ExperienceCommand;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.MinecraftExpListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
@@ -91,6 +93,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private CraftingStationManager craftingStationManager;
   private PlayerSpawnManager playerSpawnManager;
   private MetaProgressionManager metaProgressionManager;
+  private StashManager stashManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -130,6 +133,10 @@ public final class ProjectRevenant extends JavaPlugin {
 
   public static MetaProgressionManager getMetaProgressionManager(){
     return JavaPlugin.getPlugin(ProjectRevenant.class).metaProgressionManager;
+  }
+
+  public static StashManager getStashManager(){
+    return JavaPlugin.getPlugin(ProjectRevenant.class).stashManager;
   }
 
   @Override
@@ -178,6 +185,8 @@ public final class ProjectRevenant extends JavaPlugin {
 
   private void setupMetaProgression(){
     this.metaProgressionManager = new MetaProgressionManager();
+    this.stashManager = new StashManager();
+    Bukkit.getPluginManager().registerEvents(new StashListener(), this);
   }
 
   private void setupRecipeManager() {

@@ -2,6 +2,7 @@ package com.gestankbratwurst.revenant.projectrevenant.data.player;
 
 import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.survival.overweight.OverweightDebuff;
 import lombok.RequiredArgsConstructor;
@@ -58,12 +59,10 @@ public class ReventantPlayerListener implements Listener {
   public void onPlayerDeath(PlayerDeathEvent event) {
     RevenantPlayer revenantPlayer = RevenantPlayer.of(event.getPlayer());
     revenantPlayer.addSurvivalTime(System.currentTimeMillis() - revenantPlayer.getJoinTimestamp());
-    long survived = revenantPlayer.getSurvivalTime();
-    revenantPlayer.addScore(ScoreType.SURVIVED_TIME, (int) survived / 10000);
-    revenantPlayer.setSurvivalTime(0);
+    revenantPlayer.addScore(ScoreType.SURVIVED_TIME, (int) revenantPlayer.getSurvivalTime() / 10000);
     revenantPlayer.setJoinTimestamp(System.currentTimeMillis());
 
-    Msg.sendInfo(event.getPlayer(), "Du hast " + Duration.ofMillis(survived).toMinutes() + " Minuten überlebt!");
+    ProjectRevenant.getMetaProgressionManager().reportPlayerDeath(event.getPlayer());
   }
 
 }

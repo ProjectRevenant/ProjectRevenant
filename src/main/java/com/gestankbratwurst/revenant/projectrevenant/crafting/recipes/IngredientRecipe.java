@@ -37,11 +37,9 @@ public class IngredientRecipe implements RevenantRecipe {
   private final List<Predicate<Player>> conditions;
   private final ItemStack icon;
   private final long craftTime;
-  @Getter
-  private final int score;
 
 
-  public IngredientRecipe(UUID recipeId, String name, RecipeType type, Loot result, ItemStack icon, Duration craftTime, int score) {
+  public IngredientRecipe(UUID recipeId, String name, RecipeType type, Loot result, ItemStack icon, Duration craftTime) {
     this.recipeId = recipeId;
     this.name = name;
     this.type = type;
@@ -51,7 +49,6 @@ public class IngredientRecipe implements RevenantRecipe {
     this.ingredientMap = new Object2IntOpenHashMap<>();
     this.conditions = new ArrayList<>();
     this.conditions.add(this::hasIngredients);
-    this.score = score;
   }
 
   private boolean hasIngredients(Player player) {
@@ -173,7 +170,6 @@ public class IngredientRecipe implements RevenantRecipe {
     private Loot result;
     private ItemStack icon;
     private Duration craftTime;
-    private int score;
     private final Object2IntMap<Ingredient> ingredientMap;
     private final List<Predicate<Player>> conditions;
 
@@ -212,10 +208,6 @@ public class IngredientRecipe implements RevenantRecipe {
       return this;
     }
 
-    public IngredientRecipeBuilder setScore(int score){
-      this.score = score;
-      return this;
-    }
 
     public IngredientRecipeBuilder addIngredient(Ingredient ingredient, int amount) {
       ingredientMap.compute(ingredient, (key, currentAmount) -> currentAmount == null ? amount : amount + currentAmount);
@@ -229,11 +221,11 @@ public class IngredientRecipe implements RevenantRecipe {
 
 
     public IngredientRecipe build() {
-      if (Stream.of(recipeId, name, result, icon, craftTime, score).anyMatch(Objects::isNull)) {
+      if (Stream.of(recipeId, name, result, icon, craftTime).anyMatch(Objects::isNull)) {
         throw new IllegalStateException("Illegal Recipe: " + (name == null ? "missing_name" : name));
       }
 
-      IngredientRecipe recipe = new IngredientRecipe(recipeId, name, type, result, icon, craftTime, score);
+      IngredientRecipe recipe = new IngredientRecipe(recipeId, name, type, result, icon, craftTime);
       recipe.ingredientMap.putAll(this.ingredientMap);
       recipe.conditions.addAll(this.conditions);
       return recipe;

@@ -44,6 +44,10 @@ public class LootManager {
     getTypeFrom(origin).getGenerator().apply(player).applyTo(player, location);
   }
 
+  public void dropAt(Location location, Player player, PersistentDataContainer origin) {
+    getTypeFrom(origin).getGenerator().apply(player).applyTo(player, location);
+  }
+
   public void dropIn(Inventory inventory, Player player, PersistentDataHolder origin) {
     getTypeFrom(origin).getGenerator().apply(player).applyTo(player, inventory);
   }

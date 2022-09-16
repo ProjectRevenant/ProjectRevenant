@@ -5,10 +5,12 @@ import com.gestankbratwurst.revenant.projectrevenant.loot.drops.AbilityLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.ChanceLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.CompoundLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
+import com.gestankbratwurst.revenant.projectrevenant.loot.drops.ScoreLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.SimpleExpLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.SimpleItemLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.SoundLoot;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootGenerator;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
 import com.gestankbratwurst.revenant.projectrevenant.survival.abilities.implementations.abilities.items.armor.NoiseAbility;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
@@ -37,6 +39,7 @@ public class DummyLootGenerator implements LootGenerator {
     lootbag.addLoot(new SimpleItemLoot(new ItemStack(Material.GRASS_BLOCK, itemAmount)));
     lootbag.addLoot(new SimpleItemLoot(RevenantItem.murkyWaterBottle()));
     lootbag.addLoot(new AbilityLoot(new NoiseAbility(20, Duration.ofSeconds(3), "loot"), new SoundLoot(Sound.ITEM_GOAT_HORN_SOUND_1, 1.0f, 1.0f)));
+    lootbag.addLoot(new ScoreLoot(ScoreType.KILLED_MOBS, 20));
 
     return lootbag;
   }

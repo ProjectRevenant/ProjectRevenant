@@ -142,6 +142,12 @@ public class HumanBody extends Body {
     meleeGirth.setMinValue(0.05);
     meleeGirth.setCurrentValue(1.0);
 
+    // Melee Damage
+    BodyAttribute meleeDamage = this.getAttribute(BodyAttribute.MELEE_DAMAGE);
+    meleeDamage.setMaxValue(1000);
+    meleeDamage.setMinValue(0.0);
+    meleeDamage.setCurrentValue(1.0);
+
     // Critical strike chance
     BodyAttribute critChance = this.getAttribute(BodyAttribute.CRITICAL_STRIKE_CHANCE);
     critChance.setMaxValue(100.0);
