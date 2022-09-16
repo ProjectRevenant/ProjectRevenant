@@ -2,7 +2,9 @@ package com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global;
 
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
 import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
+import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayer;
+import com.gestankbratwurst.revenant.projectrevenant.util.DynmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -10,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import org.dynmap.markers.MarkerIcon;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,10 +65,12 @@ public class ChunkHeatManager {
 
   public void addManipulation(long chunkKey, double value) {
     manipulationSpots.put(chunkKey, value);
+    ProjectRevenant.getDynmapManager().addMarker((UtilChunk.blockKeyToX((int) chunkKey) >> 4), (UtilChunk.blockKeyToZ((int) chunkKey) >> 4), MarkerIcon.WORLD, "Chunkheat", "Manipulation");
   }
 
-  public void addHeat(long chunkKey, double heat) {
+  public double addHeat(long chunkKey, double heat) {
     loadedChunks.compute(chunkKey, (key, value) -> value == null ? heat : value + heat);
+    return loadedChunks.get(chunkKey);
   }
 
   public void addChunk(Chunk chunk) {
@@ -96,6 +101,7 @@ public class ChunkHeatManager {
 
   protected void updateChunkNoise() {
     for (long chunkKey : loadedChunks.keySet()) {
+      DynmapManager dynmapManager = ProjectRevenant.getDynmapManager();
       int[] chunkPos = UtilChunk.getChunkCoords(chunkKey);
       double additionalHeat = 0.0;
 
@@ -105,10 +111,10 @@ public class ChunkHeatManager {
         }
 
         Location playerLoc = player.getLocation();
-        int chunkX = playerLoc.getBlockX() >> 4;
-        int chunkZ = playerLoc.getBlockZ() >> 4;
+        int playerX = playerLoc.getBlockX() >> 4;
+        int playerZ = playerLoc.getBlockZ() >> 4;
 
-        double distanceSquared = (chunkX - chunkPos[0]) * (chunkZ - chunkPos[1]);
+        double distanceSquared = Math.max(Math.abs((playerX - chunkPos[0])), 1) * Math.max(Math.abs((playerZ - chunkPos[1])), 1);
 
         if (distanceSquared <= maximumHeatDistance * maximumHeatDistance) {
           additionalHeat += playerBaseHeating;
@@ -128,7 +134,10 @@ public class ChunkHeatManager {
         }
       }
 
-      addHeat(chunkKey, additionalHeat * heatScalar * globalHeatScalar);
+      double heat = addHeat(chunkKey, additionalHeat * heatScalar * globalHeatScalar);
+      if(dynmapManager != null){
+        dynmapManager.setChunkMarker(chunkKey, heat);
+      }
     }
   }
 

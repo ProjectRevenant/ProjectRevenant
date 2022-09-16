@@ -73,6 +73,11 @@ public class DebugCommand extends BaseCommand {
     type.getGenerator().apply(sender).applyTo(sender, sender.getLocation());
   }
 
+  @Subcommand("manipulationspot")
+  public void onManipulationSpotCreation(Player sender, double scalar){
+    ProjectRevenant.getChunkHeatManager().addManipulation(sender.getChunk().getChunkKey(), scalar);
+  }
+
   @Subcommand("createstash")
   public void onStashCreation(Player sender){
     RayTraceResult traceResult = sender.rayTraceBlocks(16);

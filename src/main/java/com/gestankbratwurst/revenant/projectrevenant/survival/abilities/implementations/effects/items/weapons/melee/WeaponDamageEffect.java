@@ -21,7 +21,7 @@ public class WeaponDamageEffect extends AbilityEffect<Body> {
 
   @Override
   public void cast(Body element) {
-    element.getAttribute(BodyAttribute.MELEE_DAMAGE).addModifier(new BodyAttributeModifier("meele-base-dmg-mod", BodyAttribute.MELEE_DAMAGE) {
+    element.getAttribute(BodyAttribute.MELEE_DAMAGE).addModifier(new BodyAttributeModifier("melee-base-dmg-mod", BodyAttribute.MELEE_DAMAGE) {
       @Override
       public double applyAsDouble(double current) {
         return current + damage;

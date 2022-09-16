@@ -3,7 +3,6 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.body;
 import com.gestankbratwurst.core.mmcore.data.json.GsonProvider;
 import com.gestankbratwurst.core.mmcore.resourcepack.skins.TextureModel;
 import com.gestankbratwurst.core.mmcore.util.common.NamespaceFactory;
-import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.RevenantMob;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.human.HumanBody;
 import com.gestankbratwurst.revenant.projectrevenant.survival.worldenvironment.WorldEnvironmentFetcher;
@@ -13,7 +12,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +43,7 @@ public class BodyManager {
         body = revenantMob.createDefaultBody();
       } else {
         body = new DummyBody();
-        JavaPlugin.getPlugin(ProjectRevenant.class).getLogger().warning("! Created dummy body for %s!".formatted(entity.getType()));
+        //JavaPlugin.getPlugin(ProjectRevenant.class).getLogger().warning("! Created dummy body for %s!".formatted(entity.getType()));
       }
     } else {
       body = GsonProvider.INSTANCE.fromJson(data, Body.class);

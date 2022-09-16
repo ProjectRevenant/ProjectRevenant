@@ -67,6 +67,7 @@ import com.gestankbratwurst.revenant.projectrevenant.ui.actionbar.ActionBarListe
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.RevenantUserTablist;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListListener;
 import com.gestankbratwurst.revenant.projectrevenant.ui.tab.TabListTask;
+import com.gestankbratwurst.revenant.projectrevenant.util.DynmapManager;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.AbilityTriggerSerializer;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.BlockDataSerializer;
 import com.gestankbratwurst.revenant.projectrevenant.util.gson.DurationSerializer;
@@ -94,6 +95,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private PlayerSpawnManager playerSpawnManager;
   private MetaProgressionManager metaProgressionManager;
   private StashManager stashManager;
+  private DynmapManager dynmapManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -139,6 +141,13 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).stashManager;
   }
 
+  public static DynmapManager getDynmapManager(){
+    return JavaPlugin.getPlugin(ProjectRevenant.class).dynmapManager;
+  }
+
+
+
+
   @Override
   public void onLoad() {
     CustomEntityType.touch();
@@ -181,6 +190,8 @@ public final class ProjectRevenant extends JavaPlugin {
     setupUI();
 
     setupGamerules();
+
+    setupDynmap();
   }
 
   private void setupMetaProgression(){
@@ -211,6 +222,10 @@ public final class ProjectRevenant extends JavaPlugin {
       world.setGameRule(GameRule.MOB_GRIEFING, false);
       world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
     }));
+  }
+
+  private void setupDynmap(){
+    TaskManager.getInstance().runBukkitSyncDelayed(() -> this.dynmapManager = new DynmapManager(), 200);
   }
 
   private void setupUI() {

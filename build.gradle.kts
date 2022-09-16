@@ -74,5 +74,5 @@ bukkit {
     main = "com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant"
     apiVersion = "1.19"
     authors = listOf("Gestankbratwurst", "btw25")
-    depend = listOf("MMCore")
+    depend = listOf("MMCore", "dynmap")
 }

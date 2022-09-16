@@ -1,11 +1,8 @@
 package com.gestankbratwurst.revenant.projectrevenant.survival.combat;
 
-import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,7 +58,6 @@ public class CombatEvaluator {
       damage = ItemCombatStat.fetchProjectileDamage(projectile);
     } else if(attacker instanceof LivingEntity livingAttacker) {
       float cooldownMod = attacker instanceof Player player ? PlayerSwingActionEvaluator.getCd(player) : 1.0F;
-
       cooldownMod = cooldownMod * cooldownMod * cooldownMod * cooldownMod;
       Body attackerBody = ProjectRevenant.getBodyManager().getBody(livingAttacker);
       damage = attackerBody.getAttribute(BodyAttribute.MELEE_DAMAGE).getCurrentValueModified() * cooldownMod;
