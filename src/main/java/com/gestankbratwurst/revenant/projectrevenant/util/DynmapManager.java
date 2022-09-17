@@ -4,6 +4,7 @@ import com.gestankbratwurst.core.mmcore.util.common.UtilChunk;
 import org.bukkit.Bukkit;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
+import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
@@ -15,9 +16,9 @@ public class DynmapManager {
   private final MarkerAPI markerAPI;
   private final MarkerSet chunkMarkerSet;
 
-  private static final Color hotColor = new Color(4, 108, 219);
-  private static final Color coldColor = new Color(246, 21, 21);
-  private static final float maxValue = 1000;
+  private static final Color hotColor = new Color(233, 0, 0);
+  private static final Color coldColor = new Color(5, 0, 233, 252);
+  private static final float maxValue = 50000;
 
   public DynmapManager() {
     this.dynmapAPI = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("dynmap");
@@ -35,14 +36,15 @@ public class DynmapManager {
     double[] yArea = {chunkPos[1] * 16, chunkPos[1] * 16 + 16};
     String label = chunkKey + "";
     AreaMarker currentAreaMarker = chunkMarkerSet.findAreaMarker(label);
-    Color fillColor = lerpRGB(Math.min((float) Math.min(heatValue, maxValue) / maxValue, 1.0f)) ;
+    Color fillColor = lerpRGB(Math.min((float) Math.min(heatValue, maxValue) / maxValue, 1.0f));
     if(currentAreaMarker != null){
-      currentAreaMarker.setFillStyle(0.8, fillColor.getRGB());
+      //ToDo holy macceroni das hier muss doch einfacher gehen
+      currentAreaMarker.setFillStyle(0.4,  Integer.decode("0x" + Integer.toHexString(fillColor.getRGB()).substring(2)));
       currentAreaMarker.setDescription("Heat: " + heatValue);
     } else {
       AreaMarker newAreaMarker = chunkMarkerSet.createAreaMarker(label, "Chunkheat", true, Bukkit.getWorlds().get(0).getName(), xArea, yArea, false);
       if(newAreaMarker != null){
-        newAreaMarker.setFillStyle(0.8, fillColor.getRGB());
+        newAreaMarker.setFillStyle(0.4, Integer.decode("0x" + Integer.toHexString(fillColor.getRGB()).substring(2)));
         newAreaMarker.setDescription("Heat: " + heatValue);
         newAreaMarker.setLineStyle(1, new Color(255, 255, 255).getRGB(), 1);
       }
@@ -50,7 +52,9 @@ public class DynmapManager {
   }
 
   public void addMarker(int x, int z, String icon, String category, String description){
-    chunkMarkerSet.createMarker(System.currentTimeMillis() + "", category, Bukkit.getWorlds().get(0).getName(), x, 0.0, z, markerAPI.getMarkerIcon(icon), false).setDescription(description);
+    Marker marker = chunkMarkerSet.createMarker(System.currentTimeMillis() + "", category, Bukkit.getWorlds().get(0).getName(), x, 0.0, z, markerAPI.getMarkerIcon(icon), true);
+    marker.setLabel(category, true);
+    marker.setDescription(description);
   }
 
   public static Color lerpRGB(float t) {

@@ -94,6 +94,10 @@ public class ChunkHeatManager {
     });
   }
 
+  public void clearChunkHeat(){
+    loadedChunks.replaceAll((c, v) -> 0.0);
+  }
+
   public void removeChunk(Chunk chunk) {
     loadedChunks.remove(chunk.getChunkKey());
     chunk.getPersistentDataContainer().set(timestampKey, PersistentDataType.LONG, System.currentTimeMillis());

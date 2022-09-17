@@ -73,9 +73,14 @@ public class DebugCommand extends BaseCommand {
     type.getGenerator().apply(sender).applyTo(sender, sender.getLocation());
   }
 
-  @Subcommand("manipulationspot")
+  @Subcommand("heat add manipulation")
   public void onManipulationSpotCreation(Player sender, double scalar){
     ProjectRevenant.getChunkHeatManager().addManipulation(sender.getChunk().getChunkKey(), scalar);
+  }
+
+  @Subcommand("heat clear")
+  public void onHeatClear(Player sender){
+    ProjectRevenant.getChunkHeatManager().clearChunkHeat();
   }
 
   @Subcommand("createstash")
