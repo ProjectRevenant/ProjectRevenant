@@ -11,28 +11,28 @@ import com.gestankbratwurst.revenant.projectrevenant.crafting.recipes.BaseRecipe
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStation;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingStationManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerTickTask;
-import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
-import com.gestankbratwurst.revenant.projectrevenant.metaprogression.MetaProgressionManager;
-import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashListener;
-import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashManager;
-import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.ExperienceCommand;
-import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.MinecraftExpListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.LootListener;
 import com.gestankbratwurst.revenant.projectrevenant.loot.chestloot.LootChestSpawnArea;
 import com.gestankbratwurst.revenant.projectrevenant.loot.generators.LootType;
 import com.gestankbratwurst.revenant.projectrevenant.loot.manager.LootChestManager;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.MetaProgressionManager;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.ExperienceCommand;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.levelsystem.MinecraftExpListener;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashListener;
+import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomEntityType;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobListener;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobManager;
 import com.gestankbratwurst.revenant.projectrevenant.mobs.CustomMobType;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.SpawnSystemListener;
-import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
-import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.ChunkHeatTask;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnManager;
+import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.global.GlobalSpawnTask;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnListener;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.player.PlayerSpawnManager;
 import com.gestankbratwurst.revenant.projectrevenant.spawnsystem.spawner.RevenantSpawner;
@@ -124,7 +124,7 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).lootChestManager;
   }
 
-  public static CraftingStationManager getCraftingStationManager(){
+  public static CraftingStationManager getCraftingStationManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).craftingStationManager;
   }
 
@@ -136,23 +136,21 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).playerSpawnManager;
   }
 
-  public static MetaProgressionManager getMetaProgressionManager(){
+  public static MetaProgressionManager getMetaProgressionManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).metaProgressionManager;
   }
 
-  public static StashManager getStashManager(){
+  public static StashManager getStashManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).stashManager;
   }
 
-  public static DynmapManager getDynmapManager(){
+  public static DynmapManager getDynmapManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).dynmapManager;
   }
 
-  public static CombatLogManager getCombatLogManager(){
+  public static CombatLogManager getCombatLogManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).combatLogManager;
   }
-
-
 
 
   @Override
@@ -203,7 +201,7 @@ public final class ProjectRevenant extends JavaPlugin {
     setupDynmap();
   }
 
-  private void setupMetaProgression(){
+  private void setupMetaProgression() {
     this.metaProgressionManager = new MetaProgressionManager();
     this.stashManager = new StashManager();
     Bukkit.getPluginManager().registerEvents(new StashListener(), this);
@@ -233,7 +231,7 @@ public final class ProjectRevenant extends JavaPlugin {
     }));
   }
 
-  private void setupDynmap(){
+  private void setupDynmap() {
     TaskManager.getInstance().runBukkitSyncDelayed(() -> this.dynmapManager = new DynmapManager(), 200);
   }
 
@@ -273,7 +271,7 @@ public final class ProjectRevenant extends JavaPlugin {
     TaskManager.getInstance().runRepeatedBukkit(abilitySecondTask, 1, 1);
   }
 
-  private void setupCombatLog(){
+  private void setupCombatLog() {
     this.combatLogManager = new CombatLogManager();
     Bukkit.getPluginManager().registerEvents(new CombatLogListener(combatLogManager), this);
   }

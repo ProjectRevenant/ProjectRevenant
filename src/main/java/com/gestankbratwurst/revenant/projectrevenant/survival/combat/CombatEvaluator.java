@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CombatEvaluator {
 
-  private final static double looseStack= 0.65;
+  private final static double looseStack = 0.65;
   private final static double loosePartOfStack = 0.85;
   private final static double minLost = 0.5;
   private final static double maxLost = 0.8;
@@ -64,9 +64,9 @@ public class CombatEvaluator {
 
   public static double evaluateAttack(Entity attacker, LivingEntity defender, boolean vanillaCrit, double modifier) {
     double damage;
-    if(attacker instanceof Projectile projectile) {
+    if (attacker instanceof Projectile projectile) {
       damage = ItemCombatStat.fetchProjectileDamage(projectile);
-    } else if(attacker instanceof LivingEntity livingAttacker) {
+    } else if (attacker instanceof LivingEntity livingAttacker) {
       float cooldownMod = attacker instanceof Player player ? PlayerSwingActionEvaluator.getCd(player) : 1.0F;
       cooldownMod = cooldownMod * cooldownMod * cooldownMod * cooldownMod;
       Body attackerBody = ProjectRevenant.getBodyManager().getBody(livingAttacker);
@@ -89,14 +89,18 @@ public class CombatEvaluator {
     return percentage * healthAttr.getMaxValueModified();
   }
 
-  public static void managePlayerItemDrops(List<ItemStack> inventory, Location location){
+  public static void managePlayerItemDrops(List<ItemStack> inventory, Block block) {
     ThreadLocalRandom random = ThreadLocalRandom.current();
     World world = location.getWorld();
 
-    for(ItemStack item : List.copyOf(inventory)){
-      if(random.nextDouble() <= looseStack){
-        inventory.remove(item);
-      } else if(item.getAmount() > 1 && random.nextDouble() <= loosePartOfStack){
+    for (ItemStack item : inventory) {
+      if (item == null) {
+        continue;
+      }
+
+      if (random.nextDouble() <= looseStack) {
+        item.setAmount(0);
+      } else if (item.getAmount() > 1 && random.nextDouble() <= loosePartOfStack) {
         int newAmount = (int) (item.getAmount() * random.nextDouble(minLost, maxLost) + 0.5);
         inventory.remove(item);
         item.setAmount(newAmount);
@@ -104,8 +108,11 @@ public class CombatEvaluator {
       }
     }
 
-    for(ItemStack item : inventory){
-      world.dropItemNaturally(location, item);
+    for (ItemStack item : inventory) {
+      if(item == null){
+        continue;
+      }
+      world.dropItem(block.getLocation().add(0.5, 0.5, 0.5), item);
     }
   }
 
