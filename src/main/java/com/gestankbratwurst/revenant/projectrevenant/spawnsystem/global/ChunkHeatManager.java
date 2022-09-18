@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkHeatManager {
 
-  private static final double playerBaseHeating = 2.5;
+  // private static final double playerBaseHeating = 2.5;
   private static final double coolingPerMinute = 5.0;
   private static final double maximumHeatDistance = 16;
   private static final double maximumManipulationDistance = 16;
@@ -69,8 +69,7 @@ public class ChunkHeatManager {
   }
 
   public double addHeat(long chunkKey, double heat) {
-    loadedChunks.compute(chunkKey, (key, value) -> value == null ? heat : value + heat);
-    return loadedChunks.get(chunkKey);
+    return loadedChunks.compute(chunkKey, (key, value) -> value == null ? heat : heat + value);
   }
 
   public void addChunk(Chunk chunk) {
@@ -94,7 +93,7 @@ public class ChunkHeatManager {
     });
   }
 
-  public void clearChunkHeat(){
+  public void clearChunkHeat() {
     loadedChunks.replaceAll((c, v) -> 0.0);
   }
 
@@ -134,12 +133,18 @@ public class ChunkHeatManager {
         double distanceSquared = (chunkPos[0] - spotPos[0]) * (chunkPos[1] - spotPos[1]);
 
         if (distanceSquared <= maximumManipulationDistance * maximumManipulationDistance) {
-          heatScalar *= manipulationSpots.get(spotKey) / Math.exp(distanceSquared * 0.01);
+          double manipulationScalar = manipulationSpots.get(spotKey);
+          double effectiveness = Math.max(0, 1.0 - distanceSquared * 0.002);
+          if(manipulationScalar < 1.0) {
+            heatScalar *= Math.min(1.0, manipulationScalar + (1.0 - effectiveness) * (1.0 - manipulationScalar));
+          } else {
+            heatScalar *= Math.max(1.0, manipulationScalar * effectiveness);
+          }
         }
       }
 
       double heat = addHeat(chunkKey, additionalHeat * heatScalar * globalHeatScalar);
-      if(dynmapManager != null){
+      if (dynmapManager != null) {
         dynmapManager.setChunkMarker(chunkKey, heat);
       }
     }
