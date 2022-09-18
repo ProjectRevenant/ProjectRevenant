@@ -26,7 +26,7 @@ public class ChunkHeatManager {
   private static final double coolingPerMinute = 5.0;
   private static final double maximumHeatDistance = 16;
   private static final double maximumManipulationDistance = 16;
-  private static final double globalHeatScalar = 10.0;
+  private static final double globalHeatScalar = 0.001;
 
   private final Map<Long, Double> loadedChunks = new ConcurrentHashMap<>(4096);
   private final Map<Long, Double> manipulationSpots = new HashMap<>();

@@ -101,7 +101,7 @@ public class CombatListener implements Listener {
       return;
     }
 
-    CombatEvaluator.managePlayerItemDrops(droppedItems, player.getLocation());
+    CombatEvaluator.managePlayerItemDrops(droppedItems, player.getLocation().getBlock());
   }
 
 }

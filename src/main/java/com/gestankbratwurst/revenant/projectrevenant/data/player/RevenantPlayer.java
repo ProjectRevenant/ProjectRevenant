@@ -93,7 +93,6 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   private boolean inLobby;
   @Getter
   private int damageLog;
-  private List<ItemStack> logoutInventory;
   //Score
   private final Map<ScoreType, Integer> scoreMap;
   //Perks
@@ -112,7 +111,6 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this.chosenPerks = new HashSet<>();
     this.unlockedRecipes = new HashSet<>();
     this.stashItems = new ArrayList<>();
-    this.logoutInventory = new ArrayList<>();
     for (BaseRecipes recipe : BaseRecipes.values()) {
       if (recipe.isStartingRecipe()) {
         //ToDo remove player message, only for debugging
@@ -150,16 +148,6 @@ public class RevenantPlayer implements DeserializationPostProcessable {
 
   public boolean inCombat(){
     return damageLog != 0;
-  }
-
-  public void setLogoutInventory(ItemStack[] inventory){
-    logoutInventory.clear();
-    logoutInventory.addAll(Arrays.asList(inventory));
-  }
-
-  public List<ItemStack> getLogoutInventory(){
-    return new ArrayList<>(logoutInventory) {
-    };
   }
 
   public void setStashItems(List<ItemStack> newStashItems) {

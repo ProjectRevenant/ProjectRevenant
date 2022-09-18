@@ -5,6 +5,7 @@ import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -91,7 +92,7 @@ public class CombatEvaluator {
 
   public static void managePlayerItemDrops(List<ItemStack> inventory, Block block) {
     ThreadLocalRandom random = ThreadLocalRandom.current();
-    World world = location.getWorld();
+    World world = block.getWorld();
 
     for (ItemStack item : inventory) {
       if (item == null) {
@@ -102,9 +103,7 @@ public class CombatEvaluator {
         item.setAmount(0);
       } else if (item.getAmount() > 1 && random.nextDouble() <= loosePartOfStack) {
         int newAmount = (int) (item.getAmount() * random.nextDouble(minLost, maxLost) + 0.5);
-        inventory.remove(item);
         item.setAmount(newAmount);
-        inventory.add(item);
       }
     }
 

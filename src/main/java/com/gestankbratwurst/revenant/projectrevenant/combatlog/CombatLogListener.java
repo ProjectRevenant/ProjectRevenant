@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class CombatLogListener implements Listener {
@@ -19,9 +20,13 @@ public class CombatLogListener implements Listener {
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
-    RevenantPlayer.of(player).setLogoutInventory(player.getInventory().getContents());
 
     manager.playerQuit(player);
+  }
+
+  @EventHandler
+  public void onJoin(PlayerJoinEvent event){
+    manager.replacedPlayerJoined(event.getPlayer());
   }
 
   @EventHandler
