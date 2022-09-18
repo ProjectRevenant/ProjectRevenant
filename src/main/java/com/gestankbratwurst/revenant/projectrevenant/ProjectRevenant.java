@@ -2,6 +2,8 @@ package com.gestankbratwurst.revenant.projectrevenant;
 
 import com.gestankbratwurst.core.mmcore.MMCore;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
+import com.gestankbratwurst.revenant.projectrevenant.combatlog.CombatLogListener;
+import com.gestankbratwurst.revenant.projectrevenant.combatlog.CombatLogManager;
 import com.gestankbratwurst.revenant.projectrevenant.communication.ChatListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.CraftingListener;
 import com.gestankbratwurst.revenant.projectrevenant.crafting.RevenantRecipeManager;
@@ -11,7 +13,7 @@ import com.gestankbratwurst.revenant.projectrevenant.crafting.station.CraftingSt
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerDataFlushTask;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerManager;
 import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerTickTask;
-import com.gestankbratwurst.revenant.projectrevenant.data.player.ReventantPlayerListener;
+import com.gestankbratwurst.revenant.projectrevenant.data.player.RevenantPlayerListener;
 import com.gestankbratwurst.revenant.projectrevenant.debug.DebugCommand;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.MetaProgressionManager;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.stash.StashListener;
@@ -96,6 +98,7 @@ public final class ProjectRevenant extends JavaPlugin {
   private MetaProgressionManager metaProgressionManager;
   private StashManager stashManager;
   private DynmapManager dynmapManager;
+  private CombatLogManager combatLogManager;
 
   public static RevenantPlayerManager getRevenantPlayerManager() {
     return JavaPlugin.getPlugin(ProjectRevenant.class).revenantPlayerManager;
@@ -145,6 +148,10 @@ public final class ProjectRevenant extends JavaPlugin {
     return JavaPlugin.getPlugin(ProjectRevenant.class).dynmapManager;
   }
 
+  public static CombatLogManager getCombatLogManager(){
+    return JavaPlugin.getPlugin(ProjectRevenant.class).combatLogManager;
+  }
+
 
 
 
@@ -176,6 +183,8 @@ public final class ProjectRevenant extends JavaPlugin {
     setupCustomMobManager();
 
     setupAbilityManager();
+
+    setupCombatLog();
 
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("RevenantItem", RevenantItem.getInternalNames());
     MMCore.getPaperCommandManager().getCommandCompletions().registerStaticCompletion("LootType", Arrays.stream(LootType.values()).map(Enum::toString).toList());
@@ -264,6 +273,11 @@ public final class ProjectRevenant extends JavaPlugin {
     TaskManager.getInstance().runRepeatedBukkit(abilitySecondTask, 1, 1);
   }
 
+  private void setupCombatLog(){
+    this.combatLogManager = new CombatLogManager();
+    Bukkit.getPluginManager().registerEvents(new CombatLogListener(combatLogManager), this);
+  }
+
   private void setupCustomMobManager() {
     CustomMobManager.setupLiveEntities();
     Bukkit.getPluginManager().registerEvents(new CustomMobListener(), this);
@@ -300,7 +314,7 @@ public final class ProjectRevenant extends JavaPlugin {
 
   private void setupRevenantPlayerManager() {
     revenantPlayerManager = new RevenantPlayerManager();
-    Bukkit.getPluginManager().registerEvents(new ReventantPlayerListener(revenantPlayerManager), this);
+    Bukkit.getPluginManager().registerEvents(new RevenantPlayerListener(revenantPlayerManager), this);
     long flushDelay = RevenantPlayerDataFlushTask.TICKS_BETWEEN_SAVES;
     TaskManager.getInstance().runRepeatedBukkitAsync(new RevenantPlayerDataFlushTask(revenantPlayerManager), flushDelay, flushDelay);
     TaskManager.getInstance().runRepeatedBukkit(new RevenantPlayerTickTask(revenantPlayerManager), 1, 1);

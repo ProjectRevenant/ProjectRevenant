@@ -16,8 +16,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.RayTraceResult;
+
+import java.util.function.BiConsumer;
 
 public class EmptyBottleGatherEffect extends AbilityEffect<PlayerInteractEvent> {
   public EmptyBottleGatherEffect() {
@@ -61,7 +65,18 @@ public class EmptyBottleGatherEffect extends AbilityEffect<PlayerInteractEvent> 
       case CLEAR:
         yield RevenantItem.clearWaterBottle();
     };
-    player.getInventory().setItem(equipmentSlot, filled);
+    PlayerInventory playerInv = player.getInventory();
+    ItemStack heldBottles = playerInv.getItem(equipmentSlot);
+    int heldBottlesAmount = heldBottles.getAmount();
+    if(heldBottlesAmount == 1){
+      playerInv.setItem(equipmentSlot, filled);
+    } else {
+      heldBottles.setAmount(heldBottlesAmount - 1);
+      playerInv.setItem(equipmentSlot, heldBottles);
+      playerInv.addItem(filled).forEach((integer, itemStack) -> {
+        player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+      });
+    }
     player.playSound(location, Sound.ITEM_BOTTLE_FILL, 0.8F, 1F);
   }
 

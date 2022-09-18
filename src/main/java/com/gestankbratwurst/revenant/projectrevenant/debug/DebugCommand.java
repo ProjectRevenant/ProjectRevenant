@@ -83,6 +83,11 @@ public class DebugCommand extends BaseCommand {
     ProjectRevenant.getChunkHeatManager().clearChunkHeat();
   }
 
+  @Subcommand("npc")
+  public void onNPC(Player sender){
+    ProjectRevenant.getCombatLogManager().playerQuit(sender);
+  }
+
   @Subcommand("createstash")
   public void onStashCreation(Player sender){
     RayTraceResult traceResult = sender.rayTraceBlocks(16);

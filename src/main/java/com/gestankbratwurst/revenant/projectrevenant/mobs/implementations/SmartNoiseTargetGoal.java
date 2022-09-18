@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 
 public class SmartNoiseTargetGoal<Zombie> extends TargetGoal {
@@ -19,11 +20,17 @@ public class SmartNoiseTargetGoal<Zombie> extends TargetGoal {
     this.randomInterval = reducedTickDelay(10);
     this.targetConditions = TargetingConditions.forCombat().range(this.getFollowDistance()).selector(livingEntity -> {
 
+      if(livingEntity instanceof Villager){
+        return mob.getSensing().hasLineOfSight(livingEntity);
+      }
+
       if (!(livingEntity instanceof Player player)) {
         return false;
       }
 
-      double noise = RevenantPlayer.of(player.getUUID()).getNoiseLevelAt(mob.getBukkitEntity().getLocation());
+      RevenantPlayer revenantPlayer = RevenantPlayer.of(player.getUUID());
+      double noise = revenantPlayer.getNoiseLevelAt(mob.getBukkitEntity().getLocation());
+
 
       if (noise >= minAttractionNoise) {
         return true;

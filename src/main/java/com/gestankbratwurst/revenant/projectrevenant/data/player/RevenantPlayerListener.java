@@ -1,6 +1,5 @@
 package com.gestankbratwurst.revenant.projectrevenant.data.player;
 
-import com.gestankbratwurst.core.mmcore.util.Msg;
 import com.gestankbratwurst.core.mmcore.util.tasks.TaskManager;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.ScoreType;
@@ -15,10 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.time.Duration;
-
 @RequiredArgsConstructor
-public class ReventantPlayerListener implements Listener {
+public class RevenantPlayerListener implements Listener {
 
   private final RevenantPlayerManager revenantPlayerManager;
 

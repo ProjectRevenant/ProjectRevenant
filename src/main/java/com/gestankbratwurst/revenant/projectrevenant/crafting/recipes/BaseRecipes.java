@@ -9,7 +9,6 @@ import com.gestankbratwurst.revenant.projectrevenant.metaprogression.score.Score
 import com.gestankbratwurst.revenant.projectrevenant.survival.items.RevenantItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.Material;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public enum BaseRecipes {
   DUMMY(IngredientRecipe.builder()
           .setRecipeId(UUID.fromString("70f50997-d8a6-4677-841c-bdb60195aa73"))
           .setName("Debug")
-          .addIcon(ItemBuilder.of(Material.BREAD).name("Dummy Food Rezept").build())
+          .addIcon(ItemBuilder.of(RevenantItem.dummyFood()).name("Dummy Food Rezept").build())
           .setType(RecipeType.BAKED)
           .setResult(new CompoundLoot()
                   .addLoot(new SimpleItemLoot(ItemBuilder.of(RevenantItem.dummyFood()).amount(16).build()))

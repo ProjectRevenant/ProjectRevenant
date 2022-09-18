@@ -3,16 +3,26 @@ package com.gestankbratwurst.revenant.projectrevenant.survival.combat;
 import com.gestankbratwurst.revenant.projectrevenant.ProjectRevenant;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.Body;
 import com.gestankbratwurst.revenant.projectrevenant.survival.body.BodyAttribute;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CombatEvaluator {
+
+  private final static double looseStack= 0.65;
+  private final static double loosePartOfStack = 0.85;
+  private final static double minLost = 0.5;
+  private final static double maxLost = 0.8;
 
   private static final Map<EntityDamageEvent.DamageCause, Double> environmentalPercentageDamages = Map.copyOf(
           new HashMap<>() {{
@@ -77,6 +87,26 @@ public class CombatEvaluator {
     Body body = ProjectRevenant.getBodyManager().getBody(defender);
     BodyAttribute healthAttr = body.getAttribute(BodyAttribute.HEALTH);
     return percentage * healthAttr.getMaxValueModified();
+  }
+
+  public static void managePlayerItemDrops(List<ItemStack> inventory, Location location){
+    ThreadLocalRandom random = ThreadLocalRandom.current();
+    World world = location.getWorld();
+
+    for(ItemStack item : List.copyOf(inventory)){
+      if(random.nextDouble() <= looseStack){
+        inventory.remove(item);
+      } else if(item.getAmount() > 1 && random.nextDouble() <= loosePartOfStack){
+        int newAmount = (int) (item.getAmount() * random.nextDouble(minLost, maxLost) + 0.5);
+        inventory.remove(item);
+        item.setAmount(newAmount);
+        inventory.add(item);
+      }
+    }
+
+    for(ItemStack item : inventory){
+      world.dropItemNaturally(location, item);
+    }
   }
 
 }

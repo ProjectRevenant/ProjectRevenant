@@ -5,7 +5,6 @@ import com.gestankbratwurst.revenant.projectrevenant.crafting.ingredients.Ingred
 import com.gestankbratwurst.revenant.projectrevenant.loot.drops.Loot;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -118,6 +117,7 @@ public class IngredientRecipe implements RevenantRecipe {
         component = component.style(Style.style(TextDecoration.STRIKETHROUGH));
       }
       builder.lore(component);
+      builder.lore("");
     });
     return builder.build();
   }

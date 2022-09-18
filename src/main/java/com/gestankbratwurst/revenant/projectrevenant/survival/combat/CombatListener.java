@@ -30,11 +30,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class CombatListener implements Listener {
 
-  private final static double looseStack= 0.65;
-  private final static double loosePartOfStack = 0.85;
-  private final static double minLost = 0.5;
-  private final static double maxLost = 0.8;
-
   private final BodyManager bodyManager;
 
   @EventHandler(priority = EventPriority.LOW)
@@ -76,6 +71,14 @@ public class CombatListener implements Listener {
       modifier += critDamage / 100.0;
     }
 
+    if(event.getEntity() instanceof Player defendingPlayer){
+      RevenantPlayer.of(defendingPlayer).setDamageLog();
+    }
+
+    if(event.getDamager() instanceof Player attackingPlayer){
+      RevenantPlayer.of(attackingPlayer).setDamageLog();
+    }
+
     event.setDamage(CombatEvaluator.evaluateAttack(event.getDamager(), livingEntity, event.isCritical(), modifier));
   }
 
@@ -92,25 +95,13 @@ public class CombatListener implements Listener {
   public void onPlayerDeath(PlayerDeathEvent event){
     Player player = event.getPlayer();
     List<ItemStack> droppedItems = event.getDrops();
+    event.getDrops().clear();
 
     if(player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE){
-      event.getDrops().clear();
       return;
     }
 
-    ThreadLocalRandom random = ThreadLocalRandom.current();
-
-    for(ItemStack item : List.copyOf(droppedItems)){
-      if(random.nextDouble() <= looseStack){
-        droppedItems.remove(item);
-      } else if(item.getAmount() > 1 && random.nextDouble() <= loosePartOfStack){
-        int newAmount = (int) (item.getAmount() * random.nextDouble(minLost, maxLost) + 0.5);
-        droppedItems.remove(item);
-        item.setAmount(newAmount);
-        droppedItems.add(item);
-      }
-    }
-
+    CombatEvaluator.managePlayerItemDrops(droppedItems, player.getLocation());
   }
 
 }

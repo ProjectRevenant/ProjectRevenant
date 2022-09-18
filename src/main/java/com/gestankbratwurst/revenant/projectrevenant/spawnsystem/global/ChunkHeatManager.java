@@ -26,7 +26,7 @@ public class ChunkHeatManager {
   private static final double coolingPerMinute = 5.0;
   private static final double maximumHeatDistance = 16;
   private static final double maximumManipulationDistance = 16;
-  private static final double globalHeatScalar = 0.01;
+  private static final double globalHeatScalar = 10.0;
 
   private final Map<Long, Double> loadedChunks = new ConcurrentHashMap<>(4096);
   private final Map<Long, Double> manipulationSpots = new HashMap<>();
@@ -65,7 +65,8 @@ public class ChunkHeatManager {
 
   public void addManipulation(long chunkKey, double value) {
     manipulationSpots.put(chunkKey, value);
-    ProjectRevenant.getDynmapManager().addMarker((UtilChunk.blockKeyToX((int) chunkKey) >> 4), (UtilChunk.blockKeyToZ((int) chunkKey) >> 4), MarkerIcon.WORLD, "Chunkheat", "Manipulation");
+    int[] chunkCoords = UtilChunk.getChunkCoords(chunkKey);
+    ProjectRevenant.getDynmapManager().addMarker(((chunkCoords[0] * 16) + 8), ((chunkCoords[1] * 16) + 8), MarkerIcon.WORLD, "Chunkheat", "Manipulation: " + value);
   }
 
   public double addHeat(long chunkKey, double heat) {
@@ -117,11 +118,13 @@ public class ChunkHeatManager {
         int playerX = playerLoc.getBlockX() >> 4;
         int playerZ = playerLoc.getBlockZ() >> 4;
 
-        double distanceSquared = Math.max(Math.abs((playerX - chunkPos[0])), 1) * Math.max(Math.abs((playerZ - chunkPos[1])), 1);
+        int dx = chunkPos[0] - playerX;
+        int dz = chunkPos[1] - playerZ;
 
-        if (distanceSquared <= maximumHeatDistance * maximumHeatDistance) {
-          additionalHeat += playerBaseHeating;
-          additionalHeat += (RevenantPlayer.of(player).getNoiseLevel() / Math.exp(distanceSquared * 0.03));
+        double distance = Math.sqrt(dx * dx + dz * dz);
+
+        if (distance <= maximumHeatDistance) {
+          additionalHeat += Math.max(0, RevenantPlayer.of(player).getNoiseLevel() * (1.0 - distance * distance * 0.002 - distance * 0.03));
         }
       }
 

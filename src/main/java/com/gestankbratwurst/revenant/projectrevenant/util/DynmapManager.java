@@ -34,17 +34,16 @@ public class DynmapManager {
     int[] chunkPos = UtilChunk.getChunkCoords(chunkKey);
     double[] xArea = {chunkPos[0] * 16, chunkPos[0] * 16 + 16};
     double[] yArea = {chunkPos[1] * 16, chunkPos[1] * 16 + 16};
-    String label = chunkKey + "";
+    String label = chunkKey + Bukkit.getWorlds().get(0).getName();
     AreaMarker currentAreaMarker = chunkMarkerSet.findAreaMarker(label);
     Color fillColor = lerpRGB(Math.min((float) Math.min(heatValue, maxValue) / maxValue, 1.0f));
     if(currentAreaMarker != null){
-      //ToDo holy macceroni das hier muss doch einfacher gehen
-      currentAreaMarker.setFillStyle(0.4,  Integer.decode("0x" + Integer.toHexString(fillColor.getRGB()).substring(2)));
+      currentAreaMarker.setFillStyle(0.75,  (fillColor.getRGB()) & 0xFFFFFF);
       currentAreaMarker.setDescription("Heat: " + heatValue);
     } else {
       AreaMarker newAreaMarker = chunkMarkerSet.createAreaMarker(label, "Chunkheat", true, Bukkit.getWorlds().get(0).getName(), xArea, yArea, false);
       if(newAreaMarker != null){
-        newAreaMarker.setFillStyle(0.4, Integer.decode("0x" + Integer.toHexString(fillColor.getRGB()).substring(2)));
+        newAreaMarker.setFillStyle(0.75, (fillColor.getRGB()) & 0xFFFFFF);
         newAreaMarker.setDescription("Heat: " + heatValue);
         newAreaMarker.setLineStyle(1, new Color(255, 255, 255).getRGB(), 1);
       }
@@ -58,6 +57,8 @@ public class DynmapManager {
   }
 
   public static Color lerpRGB(float t) {
+    t = (float) Math.min(1.0, t);
+    t = (float) Math.max(0.0, t);
     float r = coldColor.getRed() + (hotColor.getRed() - coldColor.getRed()) * t;
     float g = coldColor.getGreen() + (hotColor.getGreen() - coldColor.getGreen()) * t;
     float b = coldColor.getBlue() + (hotColor.getBlue() - coldColor.getBlue()) * t;

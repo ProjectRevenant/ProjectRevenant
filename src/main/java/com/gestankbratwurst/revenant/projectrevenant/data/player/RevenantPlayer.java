@@ -33,6 +33,7 @@ import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -62,6 +63,8 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   private static final double sprintingNoiseMod = 2;
   private static final double sneakingNoiseMod = 0.5;
 
+  public static final int damageLogDuration = 30 * 20;
+
   @Identity
   private final UUID playerId;
   @Getter
@@ -70,22 +73,30 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   private final transient BossBar experienceBossBar;
   private transient int levelBarCounter = 0;
   private final Set<UUID> unlockedRecipes;
+  //Survived Time
   @Getter
   @Setter
   private long survivalTime;
   @Getter
   @Setter
   private long joinTimestamp;
+  //Stash
   @Getter
   private int stashSize = 3;
   private final List<ItemStack> stashItems;
+  //Spawning & Logout/ins
   @Getter
   @Setter
   private Position logoutPosition = Position.ZERO;
   @Getter
   @Setter
   private boolean inLobby;
+  @Getter
+  private int damageLog;
+  private List<ItemStack> logoutInventory;
+  //Score
   private final Map<ScoreType, Integer> scoreMap;
+  //Perks
   @Getter
   private int availablePerkPoints = 0;
   @Getter
@@ -101,6 +112,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     this.chosenPerks = new HashSet<>();
     this.unlockedRecipes = new HashSet<>();
     this.stashItems = new ArrayList<>();
+    this.logoutInventory = new ArrayList<>();
     for (BaseRecipes recipe : BaseRecipes.values()) {
       if (recipe.isStartingRecipe()) {
         //ToDo remove player message, only for debugging
@@ -130,6 +142,24 @@ public class RevenantPlayer implements DeserializationPostProcessable {
     Preconditions.checkArgument(amount <= availablePerkPoints, "Cant spend more points than available.");
     availablePerkPoints -= amount;
     spentPerkPoints += amount;
+  }
+
+  public void setDamageLog(){
+    this.damageLog = damageLogDuration;
+  }
+
+  public boolean inCombat(){
+    return damageLog != 0;
+  }
+
+  public void setLogoutInventory(ItemStack[] inventory){
+    logoutInventory.clear();
+    logoutInventory.addAll(Arrays.asList(inventory));
+  }
+
+  public List<ItemStack> getLogoutInventory(){
+    return new ArrayList<>(logoutInventory) {
+    };
   }
 
   public void setStashItems(List<ItemStack> newStashItems) {
@@ -162,7 +192,7 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   }
 
   public int getScore(ScoreType type) {
-    return scoreMap.get(type);
+    return scoreMap.getOrDefault(type, 0);
   }
 
   public void unlockRecipe(RevenantRecipe recipe, boolean playerMessage) {
@@ -338,6 +368,9 @@ public class RevenantPlayer implements DeserializationPostProcessable {
   }
 
   protected void tick() {
+    if(damageLog > 0){
+      damageLog--;
+    }
     if (levelBarCounter > 0) {
       levelBarCounter--;
       if (levelBarCounter == 0) {

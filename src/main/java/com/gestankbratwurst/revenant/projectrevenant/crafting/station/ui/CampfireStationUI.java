@@ -35,7 +35,7 @@ public class CampfireStationUI extends RecipeStationUI<PlayerCampfireStation> {
   protected void init(Player player) {
     super.init(player);
     this.setGUIItem(47, campfireToggleIcon());
-    this.setGUIItem(50, campfireFeedIcon(player));
+    this.setGUIItem(51, campfireFeedIcon(player));
   }
 
   @Override
